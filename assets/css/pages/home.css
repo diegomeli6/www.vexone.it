@@ -160,8 +160,8 @@
 .faq-item.open .faq-arr { transform:rotate(180deg); }
 .faq-arr { transition:transform .3s; display:inline-block; }
 .step-num { font-size:72px; font-weight:700;  letter-spacing:-0.015em; line-height:1; color:#EEEEF0; }
-/* ── COMPARATORE: MULTI-COLLO ── */
-.collo-card { background:#F8F9FA; border-radius:14px; padding:14px; border:1.5px solid #E5E7EB; margin-bottom:10px; }
+.collo-card { background:#F8F9FA; border-radius:14px; padding:14px; border:1.5px solid #E5E7EB; margin-bottom:10px; transition:border-color .25s, box-shadow .25s, background-color .25s, transform .25s, opacity .25s; }
+.collo-card.collo-highlight { border-color:#0078FF !important; background:#F0F7FF !important; box-shadow:0 0 0 3px rgba(0,120,255,.18) !important; }
 .collo-remove { width:22px; height:22px; border-radius:50%; border:none; background:#E5E7EB; color:#9CA3AF; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; line-height:1; }
 .collo-remove:hover { background:#dc2626; color:#fff; }
 .tipo-btn { border:1.5px solid #E5E7EB; border-radius:10px; padding:8px 4px; text-align:center; cursor:pointer; background:#fff; transition:all .2s; flex:1; }
@@ -298,19 +298,28 @@
 
 .hero-bg-photo {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(820px, 100vh, 920px);
   background-image: url('../../images/Courier_collecting_package_at_home_202609031237.webp');
   background-size: cover;
-  background-position: 72% center;
+  background-position: 72% top;
+  background-repeat: no-repeat;
   opacity: 0.35;
   filter: saturate(1.1);
   pointer-events: none;
   z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
 }
 
 .hero-bg-overlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(820px, 100vh, 920px);
   background: linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0.96) 38%, rgba(255, 255, 255, 0.70) 65%, rgba(255, 255, 255, 0.25) 100%);
   pointer-events: none;
   z-index: 2;

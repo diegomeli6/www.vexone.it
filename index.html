@@ -247,7 +247,7 @@
   <div class="hero-wrapper">
     <div class="hero-bg-photo" style="background-image: url('assets/images/Courier_collecting_package_at_home_202609031237.webp');"></div>
     <div class="hero-bg-overlay"></div>
-    <header class="relative max-w-7xl mx-auto px-6 pt-16 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center z-10">
+    <header class="relative max-w-7xl mx-auto px-6 pt-16 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start z-10">
 
  <div class="lg:col-span-5 relative z-10">
  <div class="inline-flex items-center gap-2 mb-8 bg-vexBlue/5 border border-vexBlue/10 px-4 py-2 rounded-full">
@@ -330,10 +330,11 @@
  <div class="mb-5">
  <span class="lbl mb-2"> Aggiungi rapido</span>
  <div class="flex flex-wrap gap-2">
- <button class="quick-btn" onclick="addColloFromQuick({nome:'Busta',tipo:'busta',peso:0.5,l:32,w:23,h:2})"> Busta</button>
- <button class="quick-btn" onclick="addColloFromQuick({nome:'Small',tipo:'scatola',peso:2,l:30,w:20,h:15})"> Small</button>
- <button class="quick-btn" onclick="addColloFromQuick({nome:'Medium',tipo:'scatola',peso:5,l:40,w:30,h:25})"> Medium</button>
- <button class="quick-btn" onclick="addColloFromQuick({nome:'Large',tipo:'scatola',peso:15,l:60,w:40,h:40})"> Large</button>
+ <button type="button" class="quick-btn" onclick="addColloFromQuick({nome:'Busta',tipo:'busta',peso:0.5,l:32,w:23,h:2})">Busta (0.5 kg)</button>
+ <button type="button" class="quick-btn" onclick="addColloFromQuick({nome:'Small',tipo:'scatola',peso:2,l:30,w:20,h:15})">Small (2 kg)</button>
+ <button type="button" class="quick-btn" onclick="addColloFromQuick({nome:'Medium',tipo:'scatola',peso:5,l:40,w:30,h:25})">Medium (5 kg)</button>
+ <button type="button" class="quick-btn" onclick="addColloFromQuick({nome:'Large',tipo:'scatola',peso:15,l:60,w:40,h:40})">Large (15 kg)</button>
+ <button type="button" class="quick-btn" onclick="addColloFromQuick({nome:'Pallet',tipo:'pallet',peso:150,l:120,w:80,h:100})">Pallet (150 kg)</button>
  </div>
  </div>
 
@@ -1172,8 +1173,66 @@
  // ── COSTANTI ──
  const PRESET_KEY = 'vexone:presets:v1';
  const MAX_PRESETS = 30;
- const TIPO_LABELS = { scatola:'', busta:'', pallet:'' };
+ const TIPO_LABELS = {
+   scatola: '<svg class="w-4 h-4 text-vexBlue inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+   busta: '<svg class="w-4 h-4 text-vexBlue inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+   pallet: '<svg class="w-4 h-4 text-vexBlue inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>'
+ };
  let currentTipoPreset = 'scatola';
+
+ // ── TOGGLE TIPO SPEDIZIONE HOME (Pacco / Busta / Pallet) ──
+ function setHpType(idx, el) {
+   const btns = document.querySelectorAll('.hp-btn');
+   btns.forEach(b => b.classList.remove('on'));
+   if (el) {
+     el.classList.add('on');
+   } else if (btns[idx]) {
+     btns[idx].classList.add('on');
+   }
+   const pill = document.getElementById('hp-pill');
+   if (pill) pill.style.transform = `translateX(${idx * 100}%)`;
+
+   const sw = document.getElementById('hp-switch');
+   if (sw) sw.setAttribute('data-type', idx);
+
+   const tipos = ['scatola', 'busta', 'pallet'];
+   const newTipo = tipos[idx] || 'scatola';
+
+   if (colli.length > 0) {
+     const c = colli[0];
+     const isUnfilled = !c.peso && !c.l && !c.w && !c.h;
+     const isDefaultPreset = c.nomePreset === 'Busta' || c.nomePreset === 'Pallet';
+     
+     c.tipo = newTipo;
+     if (newTipo === 'busta' && (isUnfilled || isDefaultPreset)) {
+       c.peso = 0.5; c.l = 32; c.w = 23; c.h = 2;
+       c.nomePreset = 'Busta';
+     } else if (newTipo === 'pallet' && (isUnfilled || isDefaultPreset)) {
+       c.peso = 150; c.l = 120; c.w = 80; c.h = 100;
+       c.nomePreset = 'Pallet';
+     } else if (newTipo === 'scatola' && isDefaultPreset) {
+       c.peso = ''; c.l = ''; c.w = ''; c.h = '';
+       c.nomePreset = null;
+     }
+     renderColli();
+     const elCollo = document.getElementById('collo-el-' + c.id);
+     if (elCollo) {
+       elCollo.classList.add('collo-highlight');
+       setTimeout(() => elCollo.classList.remove('collo-highlight'), 600);
+     }
+   }
+ }
+
+ function syncHpSwitchWithTipo(tipo) {
+   const idx = tipo === 'busta' ? 1 : (tipo === 'pallet' ? 2 : 0);
+   const btns = document.querySelectorAll('.hp-btn');
+   btns.forEach(b => b.classList.remove('on'));
+   if (btns[idx]) btns[idx].classList.add('on');
+   const pill = document.getElementById('hp-pill');
+   if (pill) pill.style.transform = `translateX(${idx * 100}%)`;
+   const sw = document.getElementById('hp-switch');
+   if (sw) sw.setAttribute('data-type', idx);
+ }
 
  // ── STATO COLLI ──
  // Schema: { id, tipo, peso, l, w, h, q, nomePreset }
@@ -1203,70 +1262,103 @@
  }
 
  function addColloFromQuick(preset) {
- addCollo(preset);
- showToast(` ${preset.nome} aggiunto`);
+   const isFirstEmpty = colli.length === 1 && (!colli[0].peso && !colli[0].l && !colli[0].w && !colli[0].h);
+   if (isFirstEmpty) {
+     colli[0].tipo = preset.tipo || 'scatola';
+     colli[0].peso = preset.peso || '';
+     colli[0].l = preset.l || '';
+     colli[0].w = preset.w || '';
+     colli[0].h = preset.h || '';
+     colli[0].q = preset.q || 1;
+     colli[0].nomePreset = preset.nome || null;
+     renderColli();
+     syncHpSwitchWithTipo(preset.tipo);
+     showToast(`${preset.nome} impostato`);
+     const el = document.getElementById('collo-el-' + colli[0].id);
+     if (el) {
+       el.classList.add('collo-highlight');
+       setTimeout(() => el.classList.remove('collo-highlight'), 800);
+     }
+   } else {
+     addCollo(preset);
+     syncHpSwitchWithTipo(preset.tipo);
+     showToast(`${preset.nome} aggiunto`);
+     const last = colli[colli.length - 1];
+     if (last) {
+       const el = document.getElementById('collo-el-' + last.id);
+       if (el) {
+         el.classList.add('collo-highlight');
+         setTimeout(() => el.classList.remove('collo-highlight'), 800);
+       }
+     }
+   }
  }
 
  function removeColloById(id) {
- const idx = colli.findIndex(c => c.id === id);
- if (idx === -1) return;
- const el = document.getElementById('collo-el-' + id);
- if (el) { el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='all .2s'; }
- setTimeout(() => { colli.splice(idx, 1); renderColli(); }, 200);
+   if (colli.length <= 1) return;
+   const idx = colli.findIndex(c => c.id === id);
+   if (idx === -1) return;
+   const el = document.getElementById('collo-el-' + id);
+   if (el) { el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='all .2s'; }
+   setTimeout(() => {
+     colli.splice(idx, 1);
+     if (colli.length === 0) { addCollo(); return; }
+     renderColli();
+   }, 200);
  }
 
  function updateColloField(id, field, value) {
- const c = colli.find(c => c.id === id);
- if (c) c[field] = field === 'q' ? Math.max(1, parseInt(value)||1) : value;
+   const c = colli.find(c => c.id === id);
+   if (c) c[field] = field === 'q' ? Math.max(1, parseInt(value)||1) : value;
  }
 
  function renderColli() {
- const list = document.getElementById('colli-list');
- if (!list) return;
- list.innerHTML = '';
- colli.forEach((c, i) => {
- const div = document.createElement('div');
- div.className = 'collo-card';
- div.id = 'collo-el-' + c.id;
- const isBusta = c.tipo === 'busta';
- div.innerHTML = `
- <div class="flex items-center justify-between mb-3">
- <div class="flex items-center gap-2">
- <span class="text-base">${TIPO_LABELS[c.tipo]||''}</span>
- <span class="text-xs font-medium text-gray-600">Collo ${i+1}${c.nomePreset ? ' · '+c.nomePreset : ''}</span>
- </div>
- <div class="flex items-center gap-2">
- <button class="collo-remove" onclick="removeColloById('${c.id}')" title="Rimuovi">×</button>
- </div>
- </div>
- <div class="grid grid-cols-2 gap-2">
- <div>
- <span class="lbl"> Peso (kg)</span>
- <input class="inp" type="number" placeholder="Es. 2.5" step=".1" min=".1" value="${c.peso}"
- oninput="updateColloField('${c.id}','peso',this.value)">
- </div>
- <div>
- <span class="lbl"> L × W${isBusta?'':' × H'} (cm)</span>
- <div class="flex gap-1">
- <input class="inp" placeholder="L" type="number" min="1" value="${c.l}" oninput="updateColloField('${c.id}','l',this.value)">
- <input class="inp" placeholder="W" type="number" min="1" value="${c.w}" oninput="updateColloField('${c.id}','w',this.value)">
- ${isBusta ? '' : `<input class="inp" placeholder="H" type="number" min="1" value="${c.h}" oninput="updateColloField('${c.id}','h',this.value)">`}
- </div>
- </div>
- <div>
- <span class="lbl"> Quantità</span>
- <div class="flex items-center gap-2">
- <button onclick="changeQ('${c.id}',-1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">−</button>
- <span class="font-bold text-base min-w-[20px] text-center" id="q-${c.id}">${c.q}</span>
- <button onclick="changeQ('${c.id}',1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">+</button>
- </div>
- </div>
- </div>`;
- list.appendChild(div);
- });
- const el = document.getElementById('colli-count');
- const tot = colli.reduce((s,c) => s + (parseInt(c.q)||1), 0);
- if (el) el.textContent = tot === 1 ? '1 collo' : `${tot} colli`;
+   const list = document.getElementById('colli-list');
+   if (!list) return;
+   list.innerHTML = '';
+   colli.forEach((c, i) => {
+     const div = document.createElement('div');
+     div.className = 'collo-card';
+     div.id = 'collo-el-' + c.id;
+     const isBusta = c.tipo === 'busta';
+     div.innerHTML = `
+     <div class="flex items-center justify-between mb-3">
+       <div class="flex items-center gap-2">
+         <span class="inline-flex items-center">${TIPO_LABELS[c.tipo]||''}</span>
+         <span class="text-xs font-semibold text-gray-700">Collo ${i+1}${c.nomePreset ? ' · '+c.nomePreset : ''}</span>
+       </div>
+       <div class="flex items-center gap-2">
+         ${colli.length > 1 ? `<button type="button" class="collo-remove" onclick="removeColloById('${c.id}')" title="Rimuovi collo">×</button>` : ''}
+       </div>
+     </div>
+     <div class="grid grid-cols-2 gap-2">
+       <div>
+         <span class="lbl">Peso (kg)</span>
+         <input class="inp" type="number" placeholder="Es. 2.5" step=".1" min=".1" value="${c.peso}"
+           oninput="updateColloField('${c.id}','peso',this.value)">
+       </div>
+       <div>
+         <span class="lbl">Dimensioni (cm)</span>
+         <div class="flex gap-1">
+           <input class="inp" placeholder="L" type="number" min="1" value="${c.l}" title="Lunghezza" oninput="updateColloField('${c.id}','l',this.value)">
+           <input class="inp" placeholder="W" type="number" min="1" value="${c.w}" title="Larghezza" oninput="updateColloField('${c.id}','w',this.value)">
+           ${isBusta ? '' : `<input class="inp" placeholder="H" type="number" min="1" value="${c.h}" title="Altezza" oninput="updateColloField('${c.id}','h',this.value)">`}
+         </div>
+       </div>
+       <div>
+         <span class="lbl">Quantità</span>
+         <div class="flex items-center gap-2">
+           <button type="button" onclick="changeQ('${c.id}',-1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">−</button>
+           <span class="font-bold text-base min-w-[20px] text-center" id="q-${c.id}">${c.q}</span>
+           <button type="button" onclick="changeQ('${c.id}',1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">+</button>
+         </div>
+       </div>
+     </div>`;
+     list.appendChild(div);
+   });
+   const el = document.getElementById('colli-count');
+   const tot = colli.reduce((s,c) => s + (parseInt(c.q)||1), 0);
+   if (el) el.textContent = tot === 1 ? '1 collo' : `${tot} colli`;
  }
 
  function changeQ(id, delta) {
@@ -1350,14 +1442,11 @@
  function applyPreset(nome) {
  const p = presets.find(x => x.nome === nome);
  if (!p) return;
- // Aggiorna stats
  p.usageCount = (p.usageCount||0) + 1;
  p.lastUsed = Date.now();
  savePresetsToStorage();
  renderPresets();
- // Aggiungi come nuovo collo
- addCollo({ tipo: p.tipo, peso: p.peso, l: p.l, w: p.w, h: p.h, q: 1, nome: p.nome });
- showToast(` ${p.nome} aggiunto`);
+ addColloFromQuick({ tipo: p.tipo, peso: p.peso, l: p.l, w: p.w, h: p.h, q: 1, nome: p.nome });
  }
 
  function selectTipoPreset(tipo, el) {
@@ -1472,8 +1561,10 @@
  if (dCap) params.set('d-cap', dCap);
  if (dCity) params.set('d-city', dCity);
  // Colli con dati completi
+ const currTipo = getCurrentTipo();
+ params.set('tipo', currTipo);
  const colliDaPassare = mobile
- ? [{ id:makeId(), tipo:getCurrentTipo(), peso:'', l:'', w:'', h:'', q:1, nomePreset:null }]
+ ? [{ id:makeId(), tipo:currTipo, peso:'', l:'', w:'', h:'', q:1, nomePreset:null }]
  : colli.filter(c => c.peso || c.l);
  if (colliDaPassare.length > 0) {
  params.set('colli', encodeURIComponent(JSON.stringify(colliDaPassare)));
