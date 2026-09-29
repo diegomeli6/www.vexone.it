@@ -1,0 +1,22 @@
+/* ==========================================================================
+   VEXONE - MASTER STYLESHEET (style.css)
+   ==========================================================================
+   Questo foglio di stile funge da punto d'ingresso principale e documentazione
+   dell'architettura CSS modulare del progetto VexOne.
+   
+   Struttura:
+   - main.css          : Design System condiviso, variabili CSS, reset, tipografia,
+                         navbar, mobile drawer, bottoni, input, dropdown e toast.
+   - pages/home.css    : Stili specifici della Homepage (index.html).
+   - pages/comparatore.css: Stili specifici del Comparatore Tariffe.
+   - pages/checkout.css: Stili del flusso di Checkout.
+   - pages/dashboard.css: Stili della Dashboard utente e supporto Dark Mode.
+   - pages/portafoglio.css: Stili del Wallet, ricariche e fatturazione PDF.
+   - pages/tracking.css: Stili del tracciamento spedizioni in tempo reale.
+   - pages/impostazioni.css: Stili del pannello impostazioni e preferenze.
+   - pages/assistenza.css: Stili del Centro Assistenza e FAQ interattive.
+   - pages/admin.css   : Stili del pannello di amministrazione e KPI.
+   - pages/legal.css   : Stili condivisi delle pagine legali (Privacy, Cookie, Termini).
+   ========================================================================== */
+
+@import url('main.css');

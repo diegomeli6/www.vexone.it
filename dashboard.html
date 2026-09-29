@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Dashboard</title>
+<meta name="description" content="Dashboard utente VEX ONE: monitora spedizioni attive, consegne di oggi e storico ordini.">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/dashboard.css">
+ <script>
+  (function(){
+    try {
+      const isLogged = localStorage.getItem('vexone_logged_in') === 'true' || 
+                       localStorage.getItem('vexone:auth:v1') === 'true' ||
+                       !!localStorage.getItem('vexone_access_token');
+      if (isLogged) {
+        document.documentElement.classList.add('is-logged-in');
+      } else {
+        window.location.replace('login.html?redirect=dashboard.html');
+      }
+    } catch(e){}
+  })();
+ </script>
+</head>
+<body>
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+ <div class="flex justify-between items-center mb-10">
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:26px;width:auto">
+ <button onclick="toggleMobileMenu()" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white text-lg border-none cursor-pointer">&times;</button>
+ </div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='index.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='dashboard.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg><span>Dashboard</span></div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='comparatore.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span>Nuova Spedizione</span><span class="ml-auto text-vexLime text-sm font-bold">+</span></div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='tracking.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg><span>Tracking Live</span></div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='portafoglio.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>Portafoglio</span></div>
+ <div class="mob-link flex items-center gap-3" onclick="window.location.href='notifiche.html'"><svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>Centro Notifiche</span></div>
+ <div style="margin-top:auto;padding-top:40px">
+  <div class="flex items-center gap-4 p-4 rounded-2xl" style="background:rgba(255,255,255,.05)">
+  <div class="w-12 h-12 bg-vexBlue rounded-full flex items-center justify-center font-bold text-white text-sm" id="mob-avatar">VX</div>
+  <div>
+  <p class="text-white font-bold text-sm" id="mob-name">Utente</p>
+  <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:var(--txtf)" id="mob-meta">VEX Base · € 0,00</p>
+  </div>
+  </div>
+ </div>
+</div>
+
+<div id="page-dashboard" style="min-height:100vh">
+  <main class="app-page-container">
+
+  <!-- HEADER UNIFICATO -->
+  <header class="page-header">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="page-eyebrow" id="dash-eyebrow">
+          <span>Oggi</span>
+          <span>·</span>
+          <span>Aggiornato in tempo reale</span>
+        </div>
+        <h1 class="page-title" id="dash-greeting">Bentornato</h1>
+        <p class="page-subtitle">Panoramica operativa delle tue spedizioni, consegne in arrivo oggi e storico recente.</p>
+      </div>
+      <div class="flex items-center gap-3 self-start md:self-auto">
+        <div class="inline-flex items-center gap-2.5 px-4 h-10 rounded-lg border border-gray-200 bg-white shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          <span class="text-xs font-medium text-gray-500">Spedizioni attive:</span>
+          <span class="text-xs font-bold text-gray-900" id="dash-active-count">0 in transito</span>
+        </div>
+        <button onclick="window.location.href='comparatore.html'" class="btn-lime h-10 px-5">+ Crea Spedizione</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- OGGI IN CONSEGNA -->
+  <div class="mb-10 anim" style="animation-delay:.06s">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2.5">
+        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+        <h2 class="text-lg font-bold tracking-tight text-gray-900">Oggi in Consegna</h2>
+        <span class="badge b-blue" id="today-badge">0 attivi</span>
+      </div>
+      <a href="tracking.html" class="text-xs font-semibold text-vexBlue hover:underline underline-offset-4">Tracking completo →</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="today-grid">
+      <!-- Popolato dinamicamente da loadDashboardData() -->
+    </div>
+  </div>
+
+ <!-- TABELLA SPEDIZIONI -->
+ <div class="card mb-6 anim" style="animation-delay:.10s">
+ <div class="p-6 pb-4">
+ <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+ <h2 class="text-xl font-bold tracking-tight" style="color:var(--txt)">Ultime Spedizioni</h2>
+ <div class="flex items-center gap-2.5 w-full sm:w-auto">
+ <div class="relative flex-1 sm:w-60">
+ <svg class="icon absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" style="width:14px;height:14px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+ <input type="text" id="ship-search" placeholder="Cerca ID, destinatario, città..." class="inp" style="padding-left:28px;font-size:11px" oninput="filterTable()">
+ </div>
+ <button onclick="exportCSV()" class="btn-ghost flex items-center gap-1.5"><span>↓</span> CSV</button>
+ </div>
+ </div>
+ <div class="ftabs mb-5">
+ <button class="ftab on" onclick="setFilter('all',this)">Tutte <span style="opacity:.4" id="ftab-all-cnt">0</span></button>
+ <button class="ftab" onclick="setFilter('transito',this)">In Transito <span style="opacity:.4" id="ftab-trans-cnt">0</span></button>
+ <button class="ftab" onclick="setFilter('consegnato',this)">Consegnate <span style="opacity:.4" id="ftab-deliv-cnt">0</span></button>
+ <button class="ftab" onclick="setFilter('annullato',this)">Annullate <span style="opacity:.4" id="ftab-canc-cnt">0</span></button>
+ </div>
+ </div>
+ <div class="hidden md:grid gap-3 px-6 pb-3 border-b text-xs font-semibold" style="grid-template-columns:24px 1fr 0.8fr 1.3fr 0.85fr 0.9fr 100px 76px;border-color:var(--brd);color:var(--txtd)">
+ <div></div><div>Tracking ID</div><div>Data</div><div>Destinatario</div><div>Vettore</div><div>Peso / Dim.</div><div class="text-center">Stato</div><div class="text-right">Costo</div>
+ </div>
+ <div class="px-3 py-2" id="ship-table">
+
+ <div id="no-results" class="hidden text-center py-12">
+ <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center mx-auto mb-2"><svg class="icon" style="width:24px;height:24px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+ <p class="font-bold text-sm" style="color:var(--txtd)">Nessuna spedizione trovata.</p>
+ </div>
+ </div>
+ <div class="flex justify-between items-center px-6 py-3.5 border-t" style="border-color:var(--brd)">
+ <span class="text-xs font-semibold text-gray-500" id="table-count">Mostrate 6 di 47 spedizioni</span>
+ <button id="btn-show-all" onclick="toggleShowAllShipments(this)" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer flex items-center gap-1.5 transition-colors">
+ <span>Mostra tutte le spedizioni</span>
+ <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+ </button>
+ </div>
+ </div>
+
+  <!-- ═══ KPI RESOCONTO MENSILE ═══ -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 anim" style="animation-delay:.12s">
+    <div class="kpi-card">
+      <div class="flex justify-between items-start mb-2">
+        <span class="kpi-label">Spedizioni Mese</span>
+        <span class="kpi-badge neutral" id="kpi-month-badge">
+          0 mese
+        </span>
+      </div>
+      <p class="kpi-value" id="kpi-month-ship">0</p>
+      <p class="kpi-sub" id="kpi-month-ship-sub">Mese corrente</p>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex justify-between items-start mb-2">
+        <span class="kpi-label">Consegne Puntuali</span>
+        <span class="kpi-badge neutral" id="kpi-puntuali-badge">
+          —
+        </span>
+      </div>
+      <p class="kpi-value" id="kpi-puntuali">—</p>
+      <p class="kpi-sub" id="kpi-puntuali-sub">Nessuna spedizione</p>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex justify-between items-start mb-2">
+        <span class="kpi-label">Risparmio VEX ONE</span>
+        <span class="kpi-badge save">
+          Miglior tariffa
+        </span>
+      </div>
+      <p class="kpi-value" id="kpi-risparmio" style="color:#16a34a">€ 0,00</p>
+      <p class="kpi-sub">Rispetto ai listini corriere diretti</p>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex justify-between items-start mb-2">
+        <span class="kpi-label">Corriere Più Usato</span>
+        <span class="kpi-badge neutral" id="kpi-carrier-badge">
+          —
+        </span>
+      </div>
+      <p class="kpi-value" id="kpi-top-carrier" style="font-size:20px;line-height:1.2;margin-top:2px">—</p>
+      <p class="kpi-sub" id="kpi-top-carrier-sub">Nessun corriere utilizzato</p>
+    </div>
+  </div>
+
+  <!-- ═══ ANALYTICS & CENTRO OPERATIVO ═══ -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 anim" style="animation-delay:.15s">
+
+    <!-- COLONNA SINISTRA (7 COL): SPESA VETTORI E ANDAMENTO SETTIMANALE -->
+    <div class="lg:col-span-7 flex flex-col">
+      <div class="card p-6 flex flex-col justify-between" style="min-height:100%">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b" style="border-color:var(--brd)">
+          <div>
+            <h3 class="text-lg font-bold tracking-tight text-gray-900 m-0">Spesa &amp; Volumi per Vettore</h3>
+            <p class="text-xs text-gray-500 font-medium m-0 mt-0.5">Ripartizione delle spedizioni per corriere convenzionato</p>
+          </div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 self-start sm:self-auto">
+            <span>Totale speso:</span>
+            <span class="font-bold text-gray-900" id="dash-tot-spent">€ 0,00</span>
+          </div>
+        </div>
+
+        <!-- Donut + Barre Corrieri -->
+        <div id="carrier-chart-container">
+          <div class="py-10 text-center text-xs text-gray-400">
+            Nessuna spesa o volume registrato per il mese corrente.
+          </div>
+        </div>
+
+        <!-- Sezione Andamento Settimanale Compatta -->
+        <div class="pt-4 border-t" style="border-color:var(--brd)">
+          <div class="flex justify-between items-center mb-2.5">
+            <span class="text-xs font-bold text-gray-900 uppercase tracking-wider">Andamento Spedizioni</span>
+            <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-blue-500 inline-block"></span>Spedite</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm inline-block" style="background:#84cc16"></span>Consegnate</span>
+            </div>
+          </div>
+          <div style="position:relative;height:60px" class="flex items-center justify-center text-xs text-gray-400">
+            Il grafico settimanale si popolerà automaticamente con le tue prime spedizioni.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA (5 COL): CENTRO OPERATIVO (RUBRICA + FATTURE + RITIRO PREDEFINITO) -->
+    <div class="lg:col-span-5 flex flex-col">
+      <div class="card p-6 flex flex-col justify-between" style="min-height:100%">
+        <!-- Rubrica Frequenti -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <div>
+              <h3 class="text-base font-bold tracking-tight text-gray-900 m-0">Rubrica Frequenti</h3>
+              <p class="text-xs text-gray-500 font-medium m-0">Destinatari abituali · 1-click spedizione</p>
+            </div>
+            <button onclick="window.location.href='comparatore.html'" class="text-xs font-semibold text-vexBlue bg-transparent border-none cursor-pointer hover:underline">+ Nuovo</button>
+          </div>
+          <div class="space-y-1.5" id="contacts-container">
+            <div class="p-4 rounded-xl border border-dashed border-gray-200 bg-gray-50/70 text-center">
+              <p class="text-xs font-medium text-gray-500 m-0">Nessun destinatario salvato in rubrica.</p>
+              <p class="text-[11px] text-gray-400 m-0 mt-0.5">I contatti a cui spedisci più spesso compariranno qui per velocizzare gli ordini.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fatture Recenti -->
+        <div class="pt-4 mt-4 border-t" style="border-color:var(--brd)">
+          <div class="flex justify-between items-center mb-2.5">
+            <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wider m-0">Ultime Fatture</h4>
+            <a href="portafoglio.html" class="text-xs font-semibold text-vexBlue hover:underline">Tutte le fatture →</a>
+          </div>
+          <div class="space-y-1" id="invoices-container">
+            <div class="p-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/70 text-center">
+              <p class="text-xs font-medium text-gray-500 m-0">Nessuna fattura emessa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Indirizzo Ritiro Predefinito -->
+        <div class="pt-4 mt-4 border-t" style="border-color:var(--brd)">
+          <div class="pickup-card" onclick="window.location.href='impostazioni.html#indirizzi'">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                <svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-gray-900 m-0" id="pickup-title">Ritiro Predefinito</p>
+                <p class="text-xs text-gray-600 m-0 mt-0.5" id="pickup-address">Nessun indirizzo predefinito impostato</p>
+                <p class="text-xs text-gray-400 font-medium m-0 mt-0.5">Configura il tuo indirizzo di ritiro predefinito</p>
+              </div>
+              <span class="text-xs font-semibold text-vexBlue flex-shrink-0 mt-0.5 hover:underline">Imposta →</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+ </main>
+</div>
+
+<!-- Toast Notifiche -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">Operazione completata</span>
+</div>
+
+<!-- Floating Action Button (+ Nuova Spedizione) -->
+<a href="comparatore.html" class="fab-new-shipment" title="Crea una nuova spedizione">
+  <span class="fab-icon">+</span>
+  <span>Nuova Spedizione</span>
+</a>
+
+<script>
+  let REAL_SHIPMENTS = [];
+  let curFilter = 'all';
+  let _showingAll = false;
+  let _tt;
+
+  function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
+  function toggleRow(wrap){const wasOpen=wrap.classList.contains('expanded');document.querySelectorAll('.ship-wrap.expanded').forEach(w=>w.classList.remove('expanded'));if(!wasOpen)wrap.classList.add('expanded')}
+  function showToast(msg){clearTimeout(_tt);const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');_tt=setTimeout(()=>t.classList.remove('show'),3200)}
+
+  function setFilter(s, btn) {
+    curFilter = s;
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('.ship-wrap.expanded').forEach(w => w.classList.remove('expanded'));
+    filterTable();
+  }
+
+  function filterTable() {
+    const q = (document.getElementById('ship-search')?.value || '').toLowerCase().trim();
+    let vis = 0;
+    const wraps = document.querySelectorAll('#ship-table .ship-wrap');
+    wraps.forEach(wrap => {
+      const ok = (curFilter === 'all' || wrap.dataset.status === curFilter) && (!q || (wrap.dataset.search || '').includes(q));
+      wrap.style.display = ok ? '' : 'none';
+      if (ok) vis++;
+    });
+    const noRes = document.getElementById('no-results');
+    if (noRes) noRes.classList.toggle('hidden', vis > 0 || wraps.length === 0);
+    const c = document.getElementById('table-count');
+    if (c) c.textContent = `Mostrate ${vis} di ${wraps.length} spedizioni`;
+  }
+
+  function toggleShowAllShipments(btn) {
+    _showingAll = !_showingAll;
+    const wraps = document.querySelectorAll('#ship-table .ship-wrap');
+    const tableCount = document.getElementById('table-count');
+    if (_showingAll) {
+      wraps.forEach(w => w.style.display = '');
+      btn.innerHTML = `<span>Mostra meno</span> <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`;
+      if (tableCount) tableCount.textContent = `Mostrate tutte le spedizioni (${wraps.length})`;
+    } else {
+      filterTable();
+      btn.innerHTML = `<span>Mostra tutte le spedizioni</span> <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
+    }
+  }
+
+  function exportCSV() {
+    if (!REAL_SHIPMENTS.length) {
+      showToast('Nessuna spedizione da esportare');
+      return;
+    }
+    const h = ['Tracking ID','Data','Destinatario','Città','Vettore','Peso','Stato','Costo'];
+    const d = REAL_SHIPMENTS.map(s => [
+      s.tracking_code || s.code || s.id || '—',
+      s.date ? new Date(s.date).toLocaleDateString('it-IT') : '—',
+      s.recipient?.name || s.destinatario || '—',
+      s.recipient?.city || s.citta || '—',
+      s.courier || s.vettore || '—',
+      s.weight ? `${s.weight}kg` : '—',
+      s.status || '—',
+      s.cost ? Number(s.cost).toFixed(2) : '0.00'
+    ]);
+    const csv = '\uFEFF' + [h, ...d].map(r => r.map(v => `"${v}"`).join(',')).join('\r\n');
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })),
+      download: 'vexone_spedizioni.csv'
+    });
+    a.click();
+    showToast('Export CSV completato');
+  }
+
+  /* ═══ CARICAMENTO DATI REALI DAL BACKEND ═══ */
+  async function loadDashboardData() {
+    // 1. Dati Utente
+    const user = (typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getUser() : {};
+    const greeting = document.getElementById('dash-greeting');
+    if (greeting) {
+      greeting.textContent = 'Bentornato, ' + (user.nome || user.displayName || 'Utente');
+    }
+
+    // Data odierna in italiano
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const eyebrow = document.getElementById('dash-eyebrow');
+    if (eyebrow) {
+      eyebrow.innerHTML = `<span>${dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}</span> <span>·</span> <span>Monitoraggio live</span>`;
+    }
+
+    // Indirizzo predefinito utente se presente
+    try {
+      const profile = JSON.parse(localStorage.getItem('vexone_user_profile') || '{}');
+      if (profile.info?.address || profile.address) {
+        const addr = profile.info?.address || profile.address;
+        const city = profile.info?.city || profile.city || '';
+        const cap = profile.info?.cap || profile.cap || '';
+        document.getElementById('pickup-title').textContent = 'Ritiro Predefinito · ' + (profile.info?.name || user.nome || 'Sede');
+        document.getElementById('pickup-address').textContent = `${addr}${city ? ' · ' + city : ''}${cap ? ' (' + cap + ')' : ''}`;
+      }
+    } catch(e) {}
+
+    // 2. Spedizioni Reali
+    let shipments = [];
+    if (window.VEX_API && typeof window.VEX_API.getShipments === 'function' && window.VEX_API.getToken()) {
+      try {
+        const res = await window.VEX_API.getShipments();
+        if (Array.isArray(res)) shipments = res;
+      } catch(err) {
+        console.warn('[Dashboard] Impossibile recuperare spedizioni live:', err);
+      }
+    }
+    REAL_SHIPMENTS = shipments;
+
+    // 3. Render Spedizioni e Contatori
+    renderDashboardShipments(shipments);
+  }
+
+  function renderDashboardShipments(shipments) {
+    const active = shipments.filter(s => s.status !== 'consegnato' && s.status !== 'delivered' && s.status !== 'annullato');
+    const today = shipments.filter(s => s.todayAlert || s.status === 'consegna');
+    const delivered = shipments.filter(s => s.status === 'consegnato' || s.status === 'delivered');
+    const cancelled = shipments.filter(s => s.status === 'annullato');
+
+    // Header & Tabs
+    const activeCountEl = document.getElementById('dash-active-count');
+    if (activeCountEl) activeCountEl.textContent = `${active.length} in transito`;
+
+    const todayBadge = document.getElementById('today-badge');
+    if (todayBadge) todayBadge.textContent = `${today.length} attivi`;
+
+    const fAll = document.getElementById('ftab-all-cnt');
+    const fTrans = document.getElementById('ftab-trans-cnt');
+    const fDeliv = document.getElementById('ftab-deliv-cnt');
+    const fCanc = document.getElementById('ftab-canc-cnt');
+    if (fAll) fAll.textContent = shipments.length;
+    if (fTrans) fTrans.textContent = active.length;
+    if (fDeliv) fDeliv.textContent = delivered.length;
+    if (fCanc) fCanc.textContent = cancelled.length;
+
+    // Render "Oggi in Consegna"
+    const todayGrid = document.getElementById('today-grid');
+    if (todayGrid) {
+      if (!today.length) {
+        todayGrid.innerHTML = `
+          <div class="col-span-full p-8 rounded-2xl bg-white border border-gray-100 text-center" style="box-shadow:0 4px 18px rgba(0,0,0,.04)">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            </div>
+            <p class="font-bold text-sm text-gray-800 m-0">Nessuna consegna prevista per oggi</p>
+            <p class="text-xs text-gray-400 mt-1 max-w-sm mx-auto">Non risultano spedizioni in arrivo nella giornata odierna. Quando una spedizione è programmata, comparirà qui in tempo reale.</p>
+          </div>`;
+      } else {
+        todayGrid.innerHTML = today.map(s => `
+          <div class="today-card" onclick="window.location.href='tracking.html?code=${encodeURIComponent(s.tracking_code || s.code || '')}'">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-xs font-bold text-gray-900">${s.tracking_code || s.code || 'VEX-ORD'}</span>
+              <span class="badge b-blue">In Consegna</span>
+            </div>
+            <p class="text-sm font-semibold text-gray-800 mb-0.5">${s.recipient?.name || s.destinatario || 'Destinatario'}</p>
+            <p class="text-xs text-gray-500 font-normal mb-3">${s.recipient?.city || s.citta || 'Italia'} · ${s.courier || 'Corriere'} · ${s.weight || '1'} kg</p>
+            <div class="flex items-center gap-2">
+              <span class="pulse-dot bg-blue-500 animate-pulse"></span>
+              <span class="text-xs font-semibold text-blue-600">Arrivo previsto in giornata</span>
+            </div>
+          </div>`).join('');
+      }
+    }
+
+    // Render "Ultime Spedizioni" Table
+    const shipTable = document.getElementById('ship-table');
+    const tableCount = document.getElementById('table-count');
+    if (shipTable) {
+      if (!shipments.length) {
+        shipTable.innerHTML = `
+          <div class="py-14 text-center px-4">
+            <div class="w-14 h-14 rounded-2xl bg-blue-50 text-vexBlue flex items-center justify-center mx-auto mb-3">
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M12 22V12"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 mb-1">Nessuna spedizione trovata</h3>
+            <p class="text-xs text-gray-500 max-w-sm mx-auto mb-4">Non hai ancora effettuato spedizioni con questo account. Confronta le tariffe e crea la tua prima spedizione in pochi secondi.</p>
+            <a href="comparatore.html" class="btn-lime inline-flex items-center gap-2 py-2 px-5 rounded-xl text-xs font-bold no-underline">
+              + Crea Nuova Spedizione
+            </a>
+          </div>`;
+        if (tableCount) tableCount.textContent = 'Mostrate 0 di 0 spedizioni';
+      } else {
+        shipTable.innerHTML = shipments.map(s => {
+          const code = s.tracking_code || s.code || 'VEX-ORD';
+          const recipient = s.recipient?.name || s.destinatario || 'Destinatario';
+          const city = s.recipient?.city || s.citta || 'Italia';
+          const courier = s.courier || s.vettore || 'Corriere';
+          const status = s.status || 'transito';
+          const cost = s.cost ? `€ ${Number(s.cost).toFixed(2).replace('.', ',')}` : '€ 0,00';
+          const date = s.date ? new Date(s.date).toLocaleDateString('it-IT') : 'Recente';
+          const isDelivered = status === 'consegnato' || status === 'delivered';
+          const isCancelled = status === 'annullato';
+          const badgeClass = isDelivered ? 'b-green' : (isCancelled ? 'b-gray' : 'b-blue');
+          const badgeLabel = isDelivered ? 'Consegnato' : (isCancelled ? 'Annullato' : 'In Transito');
+          const searchData = `${code} ${recipient} ${city} ${courier}`.toLowerCase();
+
+          return `
+            <div class="ship-wrap" data-status="${isCancelled ? 'annullato' : (isDelivered ? 'consegnato' : 'transito')}" data-search="${searchData}">
+              <div class="trow" style="grid-template-columns:24px 1fr 0.8fr 1.3fr 0.85fr 0.9fr 100px 76px" onclick="toggleRow(this.closest('.ship-wrap'))">
+                <div class="chevron"><svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div class="font-bold text-sm flex items-center gap-1.5" style="color:var(--txt)"><span class="w-1.5 h-1.5 rounded-full ${isDelivered?'bg-green-500':'bg-vexBlue'} flex-shrink-0"></span>${code}</div>
+                <div class="text-xs font-bold" style="color:var(--txtd)">${date}</div>
+                <div><span class="block text-sm font-bold" style="color:var(--txt)">${recipient}</span><span class="text-xs font-normal" style="color:var(--txtd)">${city}</span></div>
+                <div class="text-xs font-medium" style="color:var(--txt)">${window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getLogoHtml(courier, 20, true) : courier}</div>
+                <div class="text-xs font-normal" style="color:var(--txtd)">${s.weight||'1'} kg</div>
+                <div class="text-center"><span class="badge ${badgeClass}">${badgeLabel}</span></div>
+                <div class="text-right font-bold text-sm" style="color:var(--txt)">${cost}</div>
+              </div>
+              <div class="row-expanded">
+                <div class="flex flex-wrap gap-2 pt-2">
+                  <button class="row-btn primary" onclick="window.location.href='comparatore.html'">↩ Rispedisci simile</button>
+                  <button class="row-btn" onclick="window.location.href='tracking.html?code=${encodeURIComponent(code)}'">Tracking live</button>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+        if (tableCount) tableCount.textContent = `Mostrate ${shipments.length} di ${shipments.length} spedizioni`;
+      }
+    }
+
+    // KPI Cards
+    const kpiMonthShip = document.getElementById('kpi-month-ship');
+    const kpiPuntuali = document.getElementById('kpi-puntuali');
+    const kpiRisparmio = document.getElementById('kpi-risparmio');
+    const kpiTopCarrier = document.getElementById('kpi-top-carrier');
+    if (kpiMonthShip) kpiMonthShip.textContent = shipments.length;
+    if (kpiPuntuali) kpiPuntuali.textContent = shipments.length > 0 ? '100%' : '—';
+    if (kpiRisparmio) kpiRisparmio.textContent = '€ 0,00';
+    if (kpiTopCarrier) {
+      if (shipments.length > 0 && shipments[0].courier) {
+        kpiTopCarrier.innerHTML = window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getLogoHtml(shipments[0].courier, 18, true) : shipments[0].courier;
+      } else {
+        kpiTopCarrier.textContent = '—';
+      }
+    }
+  }
+
+  // Inizializzazione pagina al caricamento
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDashboardData();
+  });
+</script>
+<script src="assets/js/carrier-logos.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/nav-user.js"></script>
+</body>
+</html>

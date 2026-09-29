@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+<title>VEX ONE — Admin</title>
+<meta name="description" content="Pannello di amministrazione VEX ONE: gestione clienti, monitoraggio spedizioni, fatture e configurazione tariffe.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/admin.css?v=light1">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script src="assets/js/tailwind-config.js"></script>
+</head>
+<body>
+<div class="app">
+
+ <!-- ============ SIDEBAR ============ -->
+ <aside class="sidebar" id="sidebar">
+  <a href="index.html" class="logo" style="text-decoration:none;color:inherit;display:block">
+    <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:24px;width:auto;display:block">
+    <div class="b">Admin Panel</div>
+  </a>
+  <nav id="nav">
+    <div class="nsec">Panoramica</div>
+    <button class="nlink on" data-view="dash"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span> Dashboard</button>
+    <div class="nsec">Operativo</div>
+    <button class="nlink" data-view="ship"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18.5" r="2.5"/><circle cx="7" cy="18.5" r="2.5"/></svg></span> Spedizioni <span class="nbadge red">4</span></button>
+    <button class="nlink" data-view="clients"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Clienti</button>
+    <div class="nsec">Denaro</div>
+    <button class="nlink" data-view="invoices"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span> Fatture &amp; Incassi <span class="nbadge red">1</span></button>
+    <button class="nlink" data-view="wallet"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span> Transazioni &amp; Wallet</button>
+    <div class="nsec">Configurazione</div>
+    <button class="nlink" data-view="prezzi"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></span> Prezzi</button>
+  </nav>
+  <div class="userbox">
+  <div class="userrow">
+    <div class="uav" style="background:#0078FF;color:#fff;display:flex;align-items:center;justify-content:center">
+      <svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#FFFFFF">Admin VEX</div>
+      <div style="font-size:10px;font-weight:600;color:#9CA3AF">Super Admin</div>
+    </div>
+    <a href="index.html" style="margin-left:auto;color:#EF4444;text-decoration:none;font-size:12px;display:flex;align-items:center" title="Esci">
+      <svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+  </div>
+  </aside>
+
+ <!-- ============ MAIN ============ -->
+ <div class="main">
+  <div class="topbar">
+  <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu"></button>
+  <div style="font-size:13px;font-weight:700;color:var(--mute)" id="crumb">Dashboard</div>
+  <div style="margin-left:auto;display:flex;gap:14px;align-items:center">
+    <!-- Tasto Notifiche Admin -->
+    <div class="notif-wrap" id="notif-wrap">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+        <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+      <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+        <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+          <span class="text-xs font-bold text-gray-700">Notifiche Admin</span>
+          <button onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">4 Spedizioni richiedono verifica</p>
+            <p class="text-[11px] text-gray-500 m-0">SDA & GLS · Hub Milano</p>
+            <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 11:20</p>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">1 Nuova richiesta fattura</p>
+            <p class="text-[11px] text-gray-500 m-0">Studio Delta Srl</p>
+            <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:40</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="dashboard.html" style="font-size:12px;font-weight:600;color:#0078FF;text-decoration:none">← Torna all'App</a>
+    <span style="font-size:11px;color:var(--mute);font-weight:700">Aprile 2026</span>
+  </div>
+  </div>
+ <div class="content" id="content"><!-- views injected --></div>
+ </div>
+</div>
+
+<div class="toast" id="toast"><span style="width:8px;height:8px;border-radius:50%;background:var(--lime)"></span><span id="toast-msg">Fatto</span></div>
+
+<script>
+/* ============ SHARED HELPERS ============ */
+const fmt=n=>'€ '+n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0=n=>(n<0?'− € ':'€ ')+Math.abs(Math.round(n)).toLocaleString('it-IT');
+let tT;
+function toast(m){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2600)}
+
+/* ============ ROUTER ============ */
+const VIEWS={}; // riempito dai moduli
+const CRUMBS={dash:'Dashboard',ship:'Spedizioni',clients:'Clienti',invoices:'Fatture & Incassi',wallet:'Transazioni & Wallet',prezzi:'Prezzi'};
+let currentView='dash';
+
+function go(view){
+ currentView=view;
+ document.querySelectorAll('.nlink').forEach(b=>b.classList.toggle('on', b.dataset.view===view));
+ document.getElementById('crumb').textContent=CRUMBS[view]||'';
+ const c=document.getElementById('content');
+ c.innerHTML=VIEWS[view] ? VIEWS[view]() : '<p>Sezione in arrivo</p>';
+ if(INIT[view]) INIT[view]();
+ document.getElementById('sidebar').classList.remove('open');
+ window.scrollTo(0,0);
+ document.querySelector('.main').scrollTo(0,0);
+}
+const INIT={}; // init per-view dopo il render
+
+document.getElementById('nav').addEventListener('click',e=>{
+ const btn=e.target.closest('.nlink'); if(!btn) return;
+ go(btn.dataset.view);
+});
+</script>
+<script>
+/* ============ DATI CONDIVISI ============ */
+const CLIENTS=[
+ {id:'beta',name:'Azienda Beta Srl',ini:'AB',col:'#0078FF',plan:'Premium',ship:84,markup:18,margin:498,wallet:942,fido:0,email:'ordini@beta.it'},
+ {id:'tecno',name:'Tecno Sud Srl',ini:'TS',col:'#16a34a',plan:'Premium',ship:61,markup:15,margin:498,wallet:-180,fido:500,email:'info@tecnosud.it'},
+ {id:'gamma',name:'Gamma Studio',ini:'GS',col:'#d97706',plan:'Premium',ship:43,markup:22,margin:284,wallet:24,fido:0,email:'hello@gammastudio.it'},
+ {id:'rossi',name:'Mario Rossi',ini:'MR',col:'#7c3aed',plan:'Standard',ship:38,markup:30,margin:201,wallet:0,fido:0,email:'m.rossi@gmail.com'},
+ {id:'delta',name:'Delta Logistica',ini:'DL',col:'#0891b2',plan:'Standard',ship:29,markup:18,margin:142,wallet:168,fido:0,email:'spedizioni@delta.it'},
+ {id:'verdi',name:'Verdi Import',ini:'VI',col:'#db2777',plan:'Standard',ship:18,markup:18,margin:88,wallet:1840,fido:0,email:'a.verdi@import.it'},
+];
+
+/* ============ VIEW: DASHBOARD ============ */
+VIEWS.dash=()=>`
+ <div style="margin-bottom:20px">
+ <h1 class="page">Dashboard</h1>
+ <p class="psub">Il colpo d'occhio della tua attività — Aprile 2026</p>
+ </div>
+
+ <!-- KPI principali -->
+ <div class="kgrid" style="margin-bottom:14px">
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)">Margine del mese</div><div class="kv" style="color:var(--lime)">€ 1.840</div><div class="ks" style="color:var(--greenL)">▲ +18% vs Marzo</div></div>
+ <div class="kbox"><div class="kk">Cassa reale</div><div class="kv">€ 8.420</div><div class="ks" style="color:var(--mute)">soldi tuoi</div></div>
+ <div class="kbox warn"><div class="kk" style="color:var(--amber)">Credito wallet da onorare</div><div class="kv" style="color:var(--amber)">€ 2.974</div><div class="ks" style="color:#7c4a06">debito verso clienti</div></div>
+ <div class="kbox"><div class="kk">Spedizioni del mese</div><div class="kv" style="color:var(--blue)">287</div><div class="ks" style="color:var(--mute)">253 consegnate</div></div>
+ </div>
+
+ <!-- DA GESTIRE: alert aggregati -->
+ <div class="card" style="padding:22px 24px;margin-bottom:18px">
+ <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+ <h3 class="sectitle"> Richiede la tua attenzione</h3>
+ <span class="chip chip-red" id="dash-total-alerts">9 cose</span>
+ </div>
+ <div id="dash-alerts" style="display:grid;grid-template-columns:1fr;gap:10px"></div>
+ </div>
+
+ <!-- saldo previsto + scorciatoie -->
+ <div style="display:grid;grid-template-columns:1fr;gap:18px">
+ <div class="card" style="padding:22px 24px">
+ <h3 class="sectitle" style="margin-bottom:14px">Salute della cassa — saldo previsto</h3>
+ <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+ <div><div class="lbl">Da incassare</div><div style="font-size:22px;font-weight:700;color:var(--blue)">€ 2.794</div></div>
+ <div style="font-size:20px;color:var(--mute)">−</div>
+ <div><div class="lbl">Da pagare a DVA</div><div style="font-size:22px;font-weight:700;color:var(--amber)">€ 2.891</div></div>
+ <div style="font-size:20px;color:var(--mute)">=</div>
+ <div><div class="lbl">Saldo previsto</div><div style="font-size:22px;font-weight:700;color:var(--red)">− € 97</div></div>
+ <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="go('invoices')">Vai a Fatture &amp; Incassi →</button>
+ </div>
+ <div class="callout" style="margin-top:16px">
+ <span style="font-size:15px"></span>
+ <p style="font-size:11.5px;color:#7c4a06;font-weight:600;margin:0;line-height:1.5">Saldo previsto leggermente negativo: potresti dover pagare DVA prima che i clienti scadenti paghino. Conviene sollecitare gli incassi in ritardo.</p>
+ </div>
+ </div>
+ </div>
+`;
+INIT.dash=()=>{
+ const alerts=[
+ {ic:'',col:'red',t:'4 spedizioni da gestire',d:'1 ritardo, 1 giacenza, 1 indirizzo errato, 1 in dogana',view:'ship',cta:'Gestisci'},
+ {ic:'',col:'red',t:'1 fattura scaduta — € 1.598',d:'Tecno Sud, scaduta da 7 giorni',view:'invoices',cta:'Solleci­ta'},
+ {ic:'',col:'amber',t:'Wallet sotto soglia',d:'Mario Rossi vuoto, Gamma Studio quasi esaurito (€24)',view:'wallet',cta:'Vedi'},
+ {ic:'',col:'amber',t:'Tecno Sud in fido — € 180',d:'Sta usando il fido concordato di €500 (36%)',view:'wallet',cta:'Vedi'},
+ ];
+ const colMap={red:['rgba(220,38,38,.06)','rgba(220,38,38,.2)','#991b1b'],amber:['rgba(217,119,6,.06)','rgba(217,119,6,.22)','#7c4a06']};
+ document.getElementById('dash-alerts').innerHTML=alerts.map(a=>{
+ const[bg,bd,fg]=colMap[a.col];
+ return `<div style="display:flex;gap:12px;align-items:center;padding:13px 16px;border-radius:14px;background:${bg};border:1px solid ${bd}">
+ <span style="font-size:17px">${a.ic}</span>
+ <div style="flex:1"><div style="font-weight:700;font-size:12.5px;color:${fg}">${a.t}</div><div style="font-size:11px;font-weight:600;color:${fg};opacity:.8;margin-top:1px">${a.d}</div></div>
+ <button class="btn btn-ghost btn-sm" onclick="go('${a.view}')">${a.cta} →</button>
+ </div>`;
+ }).join('');
+};
+</script>
+<script>
+/* ============ VIEW: CLIENTI (lista + dettaglio 360) ============ */
+let clientView='list', currentClient=null;
+VIEWS.clients=()=> clientView==='list' ? clientsListHTML() : clientDetailHTML(currentClient);
+
+function clientsListHTML(){
+ return `
+ <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+ <div><h1 class="page">Clienti</h1><p class="psub">Gestisci profili, prezzi e margini dei clienti</p></div>
+ <button class="btn btn-dark" onclick="toast('Apro creazione cliente')">+ Aggiungi cliente</button>
+ </div>
+ <div class="kgrid" style="margin-bottom:18px">
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)">Margine totale /mese</div><div class="kv" style="color:var(--lime)">€ 1.711</div></div>
+ <div class="kbox"><div class="kk">Clienti attivi</div><div class="kv">6</div></div>
+ <div class="kbox"><div class="kk">Markup medio</div><div class="kv" style="color:var(--blue)">+20%</div></div>
+ <div class="kbox"><div class="kk">Spedizioni /mese</div><div class="kv">273</div></div>
+ </div>
+ <div class="card" style="overflow:hidden">
+ <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap">
+ <input class="srch" id="cli-search" placeholder=" Cerca cliente, email..." oninput="renderClientsList()">
+ <button class="btn btn-ghost btn-sm" onclick="toast('Export CSV')">Esporta CSV</button>
+ </div>
+ <div style="overflow-x:auto"><table class="tbl">
+ <thead><tr><th>Cliente</th><th>Piano</th><th>Spediz.</th><th>Markup</th><th>Wallet</th><th>Margine /mese</th><th></th></tr></thead>
+ <tbody id="cli-list-body"></tbody>
+ </table></div>
+ </div>`;
+}
+INIT.clients=()=>{ if(clientView==='list') renderClientsList(); else INIT_clientDetail(); };
+
+function renderClientsList(){
+ const q=(document.getElementById('cli-search')?.value||'').toLowerCase().trim();
+ const list=CLIENTS.filter(c=>c.name.toLowerCase().includes(q)||c.email.toLowerCase().includes(q));
+ const body=document.getElementById('cli-list-body');
+ if(!body) return;
+ body.innerHTML=list.map(c=>{
+ const wColor=c.wallet>0?'var(--green)':(c.wallet<0?'var(--red)':'var(--mute)');
+ const planChip=c.plan==='Premium'?'<span class="chip chip-dark">Premium</span>':'<span class="chip chip-gray">Standard</span>';
+ return `<tr class="clk" onclick="openClient('${c.id}')">
+ <td><span style="display:inline-flex;align-items:center;gap:10px"><span class="av" style="background:${c.col};width:30px;height:30px;font-size:10px">${c.ini}</span><span><span style="font-weight:700;">${c.name}</span><br><span style="font-size:10px;color:var(--mute);font-weight:600">${c.email}</span></span></span></td>
+ <td>${planChip}</td>
+ <td style="font-weight:700;">${c.ship}</td>
+ <td><span class="chip chip-blue">+${c.markup}%</span></td>
+ <td style="font-weight:700;color:${wColor}">${fmt0(c.wallet)}</td>
+ <td style="font-weight:700;color:var(--green)">${fmt0(c.margin)}</td>
+ <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openClient('${c.id}')">Apri</button></td>
+ </tr>`;
+ }).join('');
+}
+function openClient(id){ currentClient=id; clientView='detail'; go('clients'); }
+function backToClients(){ clientView='list'; go('clients'); }
+
+function clientDetailHTML(id){
+ const c=CLIENTS.find(x=>x.id===id)||CLIENTS[1];
+ const wColor=c.wallet>0?'var(--green)':(c.wallet<0?'var(--red)':'var(--mute)');
+ const ricMedio=Math.round(c.markup*2.6); // demo: media reale > globale per fasce
+ return `
+ <button class="btn btn-ghost btn-sm" onclick="backToClients()" style="margin-bottom:16px">← Tutti i clienti</button>
+ <div class="card" style="padding:24px 26px;margin-bottom:18px">
+ <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+ <div class="av" style="background:${c.col};width:60px;height:60px;font-size:21px;border-radius:var(--radius-md)">${c.ini}</div>
+ <div style="flex:1;min-width:200px">
+ <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+ <h1 class="page" style="font-size:23px">${c.name}</h1>
+ ${c.plan==='Premium'?'<span class="chip chip-dark">Premium</span>':'<span class="chip chip-gray">Standard</span>'}
+ <span class="chip chip-green">● Attivo</span>
+ </div>
+ <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:#6B7280;font-weight:600">
+ <span> ${c.email}</span><span> ${c.ship} spediz./mese</span>
+ </div>
+ </div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap">
+ <button class="btn btn-lime btn-sm" onclick="toast('Nuovo preventivo')">+ Preventivo</button>
+ <button class="btn btn-dark btn-sm" onclick="toast('Nuova spedizione')">+ Spedizione</button>
+ <button class="btn btn-ghost btn-sm" onclick="toast('Scrivi al cliente')"> Scrivi</button>
+ </div>
+ </div>
+ <div class="kgrid" style="margin-top:18px">
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)">Margine /mese</div><div class="kv" style="color:var(--lime)">${fmt0(c.margin)}</div></div>
+ <div class="kbox"><div class="kk">Wallet</div><div class="kv" style="color:${wColor}">${fmt0(c.wallet)}</div>${c.fido>0?'<div class="ks" style="color:var(--amber)">fido '+fmt0(c.fido)+'</div>':''}</div>
+ <div class="kbox"><div class="kk">Ricarico medio</div><div class="kv" style="color:var(--blue)">~${ricMedio}%</div></div>
+ <div class="kbox"><div class="kk">Salute</div><div class="kv" style="color:var(--green);font-size:17px;margin-top:9px">Sano </div></div>
+ </div>
+ </div>
+
+ <div style="display:grid;grid-template-columns:1fr;gap:18px">
+ <div class="card" style="padding:18px 20px">
+ <div class="tabs" id="cd-tabs">
+ <button class="tab on" data-t="ship"> Spedizioni</button>
+ <button class="tab" data-t="inv"> Fatture</button>
+ <button class="tab" data-t="price"> Prezzi</button>
+ </div>
+ <div id="cd-content"></div>
+ </div>
+ </div>`;
+}
+function INIT_clientDetail(){
+ const c=CLIENTS.find(x=>x.id===currentClient)||CLIENTS[1];
+ const tabs=document.getElementById('cd-tabs');
+ const content=document.getElementById('cd-content');
+ function show(t){
+ tabs.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ if(t==='ship'){
+ content.innerHTML=`<table class="tbl"><thead><tr><th>Tracking</th><th>Data</th><th>Peso</th><th>Vendi</th><th>Margine</th><th>Stato</th></tr></thead><tbody>
+ <tr><td><span class="mono">VEX240419B</span></td><td>19 Apr</td><td>42 kg</td><td style="font-weight:700;">€ 78,00</td><td style="font-weight:700;color:var(--green)">€ 30,00</td><td><span class="chip chip-red">In ritardo</span></td></tr>
+ <tr><td><span class="mono">VEX240415P</span></td><td>15 Apr</td><td>Pallet</td><td style="font-weight:700;">€ 132,00</td><td style="font-weight:700;color:var(--green)">€ 42,00</td><td><span class="chip chip-green">Consegnato</span></td></tr>
+ <tr><td><span class="mono">VEX240410R</span></td><td>10 Apr</td><td>3 kg</td><td style="font-weight:700;">€ 4,60</td><td style="font-weight:700;color:var(--green)">€ 1,00</td><td><span class="chip chip-green">Consegnato</span></td></tr>
+ </tbody></table>
+ <div style="text-align:center;padding:14px 0 4px"><button class="btn btn-ghost btn-sm" onclick="go('ship')">Vedi tutte in Spedizioni →</button></div>`;
+ } else if(t==='inv'){
+ content.innerHTML=`<table class="tbl"><thead><tr><th>Numero</th><th>Data</th><th>Imponibile</th><th>IVA</th><th>Stato</th></tr></thead><tbody>
+ <tr><td><span class="mono">#2026-041</span></td><td>25 Mar</td><td style="font-weight:700;">€ 1.310,00</td><td style="color:var(--mute)">€ 288,20</td><td><span class="chip chip-amber">Scaduta</span></td></tr>
+ <tr><td><span class="mono">#2026-021</span></td><td>25 Feb</td><td style="font-weight:700;">€ 1.045,00</td><td style="color:var(--mute)">€ 229,90</td><td><span class="chip chip-green">Pagata</span></td></tr>
+ </tbody></table>
+ <div style="text-align:center;padding:14px 0 4px"><button class="btn btn-ghost btn-sm" onclick="go('invoices')">Vedi in Fatture &amp; Incassi →</button></div>`;
+ } else {
+ content.innerHTML=`
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)"><span style="font-weight:700;color:#4B5563">Markup globale</span><span style="font-weight:700;color:var(--blue)">+${c.markup}%</span></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)"><span style="font-weight:700;color:#4B5563">Override per fascia</span><span style="font-weight:700">2 fasce <span class="chip chip-violet">pallet a prev.</span></span></div>
+ <div style="background:var(--bg);border:1.5px solid var(--line2);border-radius:14px;padding:16px;margin-top:14px">
+ <div class="lbl" style="margin-bottom:3px"> Margine minimo per questo cliente</div>
+ <p style="font-size:10px;color:var(--mute);font-weight:600;margin:0 0 12px">Eccezione al minimo globale (€1,50).</p>
+ <div style="display:flex;align-items:center;gap:12px">
+ <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:var(--mute)">€</span><input class="inp" id="cd-floor" value="1.00" style="padding-left:26px;width:90px;text-align:center;font-size:16px"></div>
+ <button class="btn btn-green btn-sm" onclick="toast('Margine minimo salvato per ${c.name}')">Salva</button>
+ </div>
+ </div>
+ <button class="btn btn-dark btn-sm" style="width:100%;margin-top:14px" onclick="go('prezzi')">Apri condizioni complete →</button>`;
+ }
+ }
+ tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)show(b.dataset.t);});
+ show('ship');
+}
+</script>
+<script>
+/* ============ VIEW: SPEDIZIONI ============ */
+const SHIP=[
+ {id:1,trk:'VEX240419B',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',carrier:'BRT Express',ci:'',from:'Napoli',to:'Milano',kg:'42 kg',dva:48,vex:78,group:'exc',exc:'ritardo',status:['In ritardo','chip-red'],excMsg:'Doveva arrivare il 18 Apr. Ferma al deposito di Milano da 26h.',excAction:'Sollecita BRT',tl:[['done','Creata'],['done','Ritirata'],['done','In transito'],['problem','Bloccata al deposito MI'],['pending','In consegna'],['pending','Consegnato']]},
+ {id:2,trk:'VEX240418X',cli:'Delta Logistica',ini:'DL',col:'#0891b2',carrier:'DHL Express',ci:'',from:'Roma',to:'Torino',kg:'8 kg',dva:13.6,vex:18,group:'exc',exc:'giacenza',status:['Giacenza','chip-amber'],excMsg:'Destinatario assente. In giacenza, va riprogrammata la consegna.',excAction:'Contatta cliente',tl:[['done','Creata'],['done','Ritirata'],['done','In transito'],['done','Tentativo fallito'],['problem','In giacenza'],['pending','Consegnato']]},
+ {id:3,trk:'VEX240417Q',cli:'Mario Rossi',ini:'MR',col:'#7c3aed',carrier:'UPS Standard',ci:'',from:'Firenze',to:'Bologna',kg:'2 kg',dva:6.9,vex:8.5,group:'exc',exc:'indirizzo',status:['Indirizzo errato','chip-red'],excMsg:'Civico inesistente. Serve correggere l\'indirizzo col cliente.',excAction:'Correggi indirizzo',tl:[['done','Creata'],['done','Ritirata'],['problem','Indirizzo non trovato'],['pending','In consegna'],['pending','Consegnato']]},
+ {id:4,trk:'VEX240416W',cli:'Azienda Beta Srl',ini:'AB',col:'#0078FF',carrier:'FedEx Economy',ci:'',from:'Bari',to:'Parigi (FR)',kg:'15 kg',dva:42,vex:58,group:'exc',exc:'dogana',status:['Bloccata in dogana','chip-violet'],excMsg:'Extra-UE ferma in dogana: manca la fattura commerciale.',excAction:'Carica documento',tl:[['done','Creata'],['done','Ritirata'],['done','In transito int.'],['problem','Trattenuta in dogana'],['pending','Consegnato']]},
+ {id:5,trk:'VEX240419K',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',carrier:'DHL Express',ci:'',from:'Napoli',to:'Roma',kg:'5 kg',dva:5.86,vex:6.9,group:'transit',status:['In transito','chip-blue'],tl:[['done','Creata'],['done','Ritirata'],['current','In transito'],['pending','In consegna'],['pending','Consegnato']]},
+ {id:6,trk:'VEX240419M',cli:'Gamma Studio',ini:'GS',col:'#d97706',carrier:'BRT Express',ci:'',from:'Milano',to:'Venezia',kg:'1 kg',dva:4.5,vex:5.4,group:'transit',status:['In consegna','chip-amber'],tl:[['done','Creata'],['done','Ritirata'],['done','In transito'],['current','In consegna'],['pending','Consegnato']]},
+ {id:7,trk:'VEX240416T',cli:'Delta Logistica',ini:'DL',col:'#0891b2',carrier:'DHL Express',ci:'',from:'Roma',to:'Palermo',kg:'Pallet',dva:90,vex:132,group:'transit',status:['In transito','chip-blue'],tl:[['done','Creata'],['done','Ritirata'],['current','In transito'],['pending','In consegna'],['pending','Consegnato']]},
+ {id:8,trk:'VEX240415P',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',carrier:'BRT Express',ci:'',from:'Napoli',to:'Bologna',kg:'Pallet',dva:90,vex:132,group:'delivered',status:['Consegnato','chip-green'],tl:[['done','Creata'],['done','Ritirata'],['done','In transito'],['done','In consegna'],['done','Consegnato']]},
+ {id:9,trk:'VEX240413H',cli:'Gamma Studio',ini:'GS',col:'#d97706',carrier:'DHL Express',ci:'',from:'Milano',to:'Napoli',kg:'2 kg',dva:9.3,vex:11.9,group:'delivered',status:['Consegnato','chip-green'],tl:[['done','Creata'],['done','Ritirata'],['done','In transito'],['done','Consegnato']]},
+];
+let shipTab='exc';
+
+VIEWS.ship=()=>`
+ <div style="margin-bottom:18px"><h1 class="page">Spedizioni</h1><p class="psub">I problemi per primi. Quello che richiede attenzione, prima che lo faccia il cliente.</p></div>
+ <div class="kgrid" style="margin-bottom:18px">
+ <div class="kbox alert" onclick="setShipTab('exc')"><div class="kk" style="color:var(--red)"> Da gestire</div><div class="kv" style="color:var(--red)">4</div></div>
+ <div class="kbox"><div class="kk">In transito</div><div class="kv" style="color:var(--blue)">28</div></div>
+ <div class="kbox"><div class="kk">Consegnate (mese)</div><div class="kv" style="color:var(--green)">253</div></div>
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)">Margine generato</div><div class="kv" style="color:var(--lime)">€ 1.840</div></div>
+ </div>
+ <div class="card" style="overflow:hidden">
+ <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+ <div style="display:flex;gap:5px;flex-wrap:wrap" id="ship-tabs">
+ <button class="btn btn-sm" data-g="exc"> Da gestire</button>
+ <button class="btn btn-sm" data-g="all">Tutte</button>
+ <button class="btn btn-sm" data-g="transit">In transito</button>
+ <button class="btn btn-sm" data-g="delivered">Consegnate</button>
+ </div>
+ <input class="srch" id="ship-search" placeholder=" Cerca tracking, cliente, città..." oninput="renderShip()">
+ </div>
+ <div style="overflow-x:auto"><table class="tbl">
+ <thead><tr><th>Tracking</th><th>Cliente</th><th>Tratta</th><th>Corriere</th><th>Peso</th><th>DVA</th><th>VEX</th><th>Margine</th><th>Stato</th></tr></thead>
+ <tbody id="ship-body"></tbody>
+ </table></div>
+ </div>
+ <p class="psub" style="text-align:center">Clicca una spedizione per il dettaglio completo.</p>
+ <div id="ship-drawer-host"></div>
+`;
+INIT.ship=()=>{ bindShipTabs(); renderShip(); };
+function setShipTab(g){ shipTab=g; if(currentView==='ship'){ bindShipTabs(); renderShip(); } }
+function bindShipTabs(){
+ const host=document.getElementById('ship-tabs'); if(!host) return;
+ host.querySelectorAll('button').forEach(b=>{
+ b.classList.toggle('btn-dark', b.dataset.g===shipTab);
+ b.classList.toggle('btn-ghost', b.dataset.g!==shipTab);
+ b.onclick=()=>{ shipTab=b.dataset.g; bindShipTabs(); renderShip(); };
+ });
+}
+function renderShip(){
+ const q=(document.getElementById('ship-search')?.value||'').toLowerCase().trim();
+ let list=SHIP.filter(s=>{
+ if(shipTab!=='all' && s.group!==shipTab) return false;
+ if(q && !(s.trk.toLowerCase().includes(q)||s.cli.toLowerCase().includes(q)||s.from.toLowerCase().includes(q)||s.to.toLowerCase().includes(q))) return false;
+ return true;
+ });
+ const body=document.getElementById('ship-body'); if(!body) return;
+ if(!list.length){ body.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--mute);padding:46px">${shipTab==='exc'?' Niente da gestire — tutto sotto controllo':'Nessuna spedizione trovata'}</td></tr>`; return; }
+ body.innerHTML=list.map(s=>{
+ const m=s.vex-s.dva;
+ return `<tr class="clk" onclick="openShip(${s.id})">
+ <td><span class="mono">${s.trk}</span></td>
+ <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av" style="background:${s.col};width:26px;height:26px;font-size:11px;">${s.ini}</span>${s.cli}</span></td>
+ <td><span style="font-size:11px;color:#6B7280;font-weight:600">${s.from} → ${s.to}</span></td>
+ <td style="white-space:nowrap">${s.ci} ${s.carrier}</td><td>${s.kg}</td>
+ <td style="color:var(--mute)">${fmt(s.dva)}</td><td style="font-weight:700;">${fmt(s.vex)}</td>
+ <td style="font-weight:700;color:var(--green)">${fmt(m)}</td>
+ <td><span class="chip ${s.status[1]}">${s.status[0]}</span></td>
+ </tr>`;
+ }).join('');
+}
+function openShip(id){
+ const s=SHIP.find(x=>x.id===id); if(!s) return;
+ const m=s.vex-s.dva;
+ const exc = s.group==='exc' ? `<div class="callout" style="margin-bottom:16px"><span style="font-size:15px"></span><div><strong style="font-size:12px;color:#991b1b">Problema: ${s.status[0]}</strong><p style="font-size:11.5px;color:#7c2020;font-weight:600;margin:5px 0 10px;line-height:1.5">${s.excMsg}</p><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-red" onclick="toast('${s.excAction}')">${s.excAction}</button><button class="btn btn-ghost btn-sm" onclick="toast('Apro ticket')">Apri ticket</button></div></div></div>`:'';
+ const tl=s.tl.map(t=>{const cls=t[0];const dot=cls==='done'?'background:var(--green);border-color:var(--green)':cls==='current'?'background:var(--blue);border-color:var(--blue)':cls==='problem'?'background:var(--red);border-color:var(--red)':'background:#fff;border-color:var(--line2)';return `<div style="display:flex;gap:11px;padding-bottom:13px;align-items:flex-start"><div style="width:16px;height:16px;border-radius:50%;border:2px solid;${dot};flex-shrink:0;margin-top:1px"></div><div style="font-size:12px;font-weight:${cls==='pending'?'600':'800'};color:${cls==='pending'?'var(--mute)':'var(--ink)'}">${t[1]}</div></div>`;}).join('');
+ document.getElementById('ship-drawer-host').innerHTML=`
+ <div onclick="closeShip()" style="position:fixed;inset:0;background:rgba(10,10,11,.5);backdrop-filter:blur(6px);z-index:400"></div>
+ <div style="position:fixed;top:0;right:0;height:100vh;width:460px;max-width:94vw;background:#fff;z-index:401;box-shadow:-20px 0 60px rgba(0,0,0,.18);overflow-y:auto">
+ <div style="padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start">
+ <div><div style="font-size:10px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--mute)">${s.trk}</div><h2 style="font-size:19px;font-weight:700;letter-spacing:-0.015em;margin:5px 0 7px">${s.from} → ${s.to}</h2><span class="chip ${s.status[1]}">${s.status[0]}</span></div>
+ <button onclick="closeShip()" style="background:#EDEEF1;border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-weight:700;color:#6B7280"></button>
+ </div>
+ <div style="padding:22px 24px">
+ ${exc}
+ <div style="background:linear-gradient(135deg,#0A0A0B,#16181d);border-radius:16px;padding:18px 20px;color:#fff;margin-bottom:18px">
+ <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Costo DVA</span><span>${fmt(s.dva)}</span></div>
+ <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Tuo margine</span><span style="color:var(--lime)">+ ${fmt(m)}</span></div>
+ <div style="display:flex;justify-content:space-between;padding:11px 0 0;margin-top:5px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:700"><span>Prezzo VEX</span><span style="font-size:15px;font-weight:700">${fmt(s.vex)}</span></div>
+ <div style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;margin-top:8px">Peso ${s.kg} · ${s.carrier} · ricarico ${(m/s.dva*100).toFixed(0)}%</div>
+ </div>
+ <div onclick="openClientByName('${s.cli}')" style="display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:18px;cursor:pointer">
+ <span class="av" style="background:${s.col};width:34px;height:34px;font-size:11px">${s.ini}</span>
+ <div><div style="font-size:13px;font-weight:700">${s.cli}</div><div style="font-size:10px;color:var(--mute);font-weight:700">Apri scheda cliente →</div></div>
+ </div>
+ <div class="lbl" style="margin-bottom:12px">Tracking</div>${tl}
+ <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)">
+ <button class="btn btn-dark btn-sm" onclick="toast('Traccia su ${s.carrier}')">Traccia sul corriere</button>
+ <button class="btn btn-ghost btn-sm" onclick="toast('Scrivi a ${s.cli}')">Contatta cliente</button>
+ </div>
+ </div>
+ </div>`;
+}
+function closeShip(){ const h=document.getElementById('ship-drawer-host'); if(h) h.innerHTML=''; }
+function openClientByName(name){ const c=CLIENTS.find(x=>x.name===name); if(c){ closeShip(); openClient(c.id); } }
+</script>
+<script>
+/* ============ VIEW: FATTURE & INCASSI ============ */
+let IN_INV=[
+ {n:'#2026-041',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',emessa:'25 Mar',scad:'24 Apr',imp:1310,stato:'scaduta',lateDays:7},
+ {n:'#2026-040',cli:'Azienda Beta Srl',ini:'AB',col:'#0078FF',emessa:'25 Apr',scad:'25 Mag',imp:980,stato:'attesa'},
+ {n:'#2026-039',cli:'Delta Logistica',ini:'DL',col:'#0891b2',emessa:'20 Apr',scad:'20 Mag',imp:640,stato:'pagata'},
+ {n:'#2026-038',cli:'Gamma Studio',ini:'GS',col:'#d97706',emessa:'18 Apr',scad:'18 Mag',imp:520,stato:'pagata'},
+];
+let OUT_INV=[
+ {n:'DVA 4471/04',forn:'DVA Express',ini:'DV',col:'#0A0A0B',scad:'30 Apr',imp:2370,iva:521.40,stato:'dapagare'},
+ {n:'88/2026',forn:'Imballaggi Sud',ini:'IS',col:'#7c3aed',scad:'15 Mag',imp:90,iva:19.80,stato:'dapagare'},
+];
+let invTab='in';
+VIEWS.invoices=()=>`
+ <div style="margin-bottom:18px"><h1 class="page">Fatture &amp; Incassi</h1><p class="psub">Chi ti deve pagare, chi devi pagare tu, e cosa è in ritardo.</p></div>
+ <div class="kgrid" style="margin-bottom:14px">
+ <div class="kbox alert"><div class="kk" style="color:var(--red)"> Scaduto da incassare</div><div class="kv" style="color:var(--red)">€ 1.598</div></div>
+ <div class="kbox"><div class="kk">Da incassare (non scaduto)</div><div class="kv" style="color:var(--blue)">€ 1.196</div></div>
+ <div class="kbox warn"><div class="kk" style="color:var(--amber)">Da pagare a DVA</div><div class="kv" style="color:var(--amber)">€ 2.891</div></div>
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)">Saldo previsto</div><div class="kv" style="color:var(--lime)">− € 97</div></div>
+ </div>
+ <div class="callout" style="margin-bottom:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#7c4a06;font-weight:600;margin:0;line-height:1.5">Il <strong>saldo previsto</strong> mette insieme incassi attesi e pagamenti dovuti. Se negativo, conviene sollecitare gli incassi in ritardo. Monitora la cassa, non sostituisce la contabilità del commercialista.</p></div>
+ <div class="tabs" style="max-width:460px">
+ <button class="tab on" id="inv-t-in" onclick="setInvTab('in')"> Incassi (dai clienti)</button>
+ <button class="tab" id="inv-t-out" onclick="setInvTab('out')"> Pagamenti (a DVA)</button>
+ </div>
+ <div id="inv-content"></div>
+`;
+INIT.invoices=()=>renderInvTab();
+function setInvTab(t){ invTab=t; document.getElementById('inv-t-in').classList.toggle('on',t==='in'); document.getElementById('inv-t-out').classList.toggle('on',t==='out'); renderInvTab(); }
+function renderInvTab(){
+ const c=document.getElementById('inv-content'); if(!c) return;
+ if(invTab==='in') c.innerHTML=invInHTML(); else c.innerHTML=invOutHTML();
+}
+function invInHTML(){
+ const groups=[
+ {k:'scaduta',title:'Scadute — da sollecitare',color:'var(--red)'},
+ {k:'attesa',title:'Da incassare (non scadute)',color:'var(--blue)'},
+ {k:'pagata',title:'Incassate',color:'var(--green)'},
+ ];
+ return `<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px"><button class="btn btn-ghost btn-sm" onclick="toast('Esporto per commercialista')">Esporta per commercialista</button><button class="btn btn-dark btn-sm" onclick="toast('Preparo fattura dai dati spedizioni')">+ Prepara fattura</button></div>`+
+ groups.map(g=>{
+ const rows=IN_INV.filter(r=>r.stato===g.k); if(!rows.length) return '';
+ const sum=rows.reduce((a,r)=>a+r.imp*1.22,0);
+ return `<div style="margin-bottom:20px"><div style="display:flex;align-items:center;gap:10px;padding:0 4px 10px"><span style="width:9px;height:9px;border-radius:50%;background:${g.color}"></span><span style="font-size:12px;font-weight:700;color:${g.color}">${g.title}</span><span class="chip chip-gray">${rows.length}</span><span style="margin-left:auto;font-size:13px;font-weight:700;color:${g.color}">${fmt(sum)}</span></div>
+ <div class="card" style="overflow:hidden"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Numero</th><th>Cliente</th><th>Emessa</th><th>Totale</th><th>Scadenza</th><th></th></tr></thead><tbody>${rows.map(r=>{
+ const tot=r.imp*1.22;
+ const sc=r.stato==='scaduta'?`<span style="font-weight:700;color:var(--red)">scaduta da ${r.lateDays} gg</span>`:r.stato==='attesa'?`<span style="color:var(--mute);font-weight:700">scade ${r.scad}</span>`:'<span class="chip chip-green">incassata</span>';
+ const act=r.stato==='pagata'?`<button class="btn btn-ghost btn-sm" onclick="toast('Apro ${r.n}')">Apri</button>`:`<button class="btn btn-green" onclick="markInvPaid('${r.n}')"> Incassata</button>${r.stato==='scaduta'?`<button class="btn btn-amber" onclick="toast('Sollecito a ${r.cli}')">Sollecita</button>`:''}`;
+ return `<tr><td><span class="mono">${r.n}</span></td><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av" style="background:${r.col};width:26px;height:26px;font-size:11px;">${r.ini}</span>${r.cli}</span></td><td>${r.emessa}</td><td style="font-weight:700;">${fmt(tot)}</td><td>${sc}</td><td style="text-align:right;white-space:nowrap">${act}</td></tr>`;
+ }).join('')}</tbody></table></div></div></div>`;
+ }).join('');
+}
+function invOutHTML(){
+ const groups=[{k:'dapagare',title:'Da pagare',color:'var(--amber)'},{k:'pagata',title:'Pagate',color:'var(--green)'}];
+ return `<div class="note-box" style="margin-bottom:16px"><span style="font-size:15px"></span><p style="font-size:11.5px;color:#3a4250;font-weight:600;margin:0;line-height:1.5">Cosa devi a DVA e ai fornitori. Segna quando paghi, così il saldo previsto resta veritiero.</p></div>`+
+ groups.map(g=>{
+ const rows=OUT_INV.filter(r=>r.stato===g.k); if(!rows.length) return '';
+ const sum=rows.reduce((a,r)=>a+r.imp+r.iva,0);
+ return `<div style="margin-bottom:20px"><div style="display:flex;align-items:center;gap:10px;padding:0 4px 10px"><span style="width:9px;height:9px;border-radius:50%;background:${g.color}"></span><span style="font-size:12px;font-weight:700;color:${g.color}">${g.title}</span><span class="chip chip-gray">${rows.length}</span><span style="margin-left:auto;font-size:13px;font-weight:700;color:${g.color}">${fmt(sum)}</span></div>
+ <div class="card" style="overflow:hidden"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Riferimento</th><th>Fornitore</th><th>Totale</th><th>Scadenza</th><th></th></tr></thead><tbody>${rows.map(r=>{
+ const tot=r.imp+r.iva;
+ const act=r.stato==='pagata'?'<span class="chip chip-green">pagata</span>':`<button class="btn btn-green" onclick="markOutPaid('${r.n}')"> Pagata</button>`;
+ return `<tr><td><span class="mono" style="font-size:11px">${r.n}</span></td><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av" style="background:${r.col};width:26px;height:26px;font-size:11px;">${r.ini}</span>${r.forn}</span></td><td style="font-weight:700;">${fmt(tot)}</td><td>${r.stato==='dapagare'?`<span style="color:var(--amber);font-weight:700;">scade ${r.scad}</span>`:`<span style="color:var(--mute);font-weight:700">${r.scad}</span>`}</td><td style="text-align:right">${act}</td></tr>`;
+ }).join('')}</tbody></table></div></div></div>`;
+ }).join('');
+}
+function markInvPaid(n){const r=IN_INV.find(x=>x.n===n);if(r){r.stato='pagata';renderInvTab();toast(' '+n+' incassata');}}
+function markOutPaid(n){const r=OUT_INV.find(x=>x.n===n);if(r){r.stato='pagata';renderInvTab();toast(' '+n+' pagata');}}
+</script>
+<script>
+/* ============ VIEW: TRANSAZIONI & WALLET ============ */
+const TX=[
+ {date:'21 Apr 14:32',sub:'ricarica',dir:'in',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',ref:'RIC-2041',metodo:'Bonifico',amt:500,inv:'#2026-042'},
+ {date:'21 Apr 11:10',sub:'spedizione',dir:'out_wallet',cli:'Tecno Sud Srl',ini:'TS',col:'#16a34a',ref:'VEX240419K',metodo:'Wallet',amt:6.90},
+ {date:'21 Apr 09:45',sub:'uscita',dir:'out',cli:'DVA Express',ini:'DV',col:'#0A0A0B',ref:'DVA 4471/04',metodo:'Bonifico',amt:2891.40,tipo:'Pagamento a DVA'},
+ {date:'20 Apr 17:20',sub:'spedizione',dir:'in',cli:'Mario Rossi',ini:'MR',col:'#7c3aed',ref:'VEX240418L',metodo:'Carta',amt:8.50,inv:'#2026-041'},
+ {date:'20 Apr 15:00',sub:'ricarica',dir:'in',cli:'Azienda Beta Srl',ini:'AB',col:'#0078FF',ref:'RIC-2040',metodo:'Carta',amt:1000,inv:'#2026-040'},
+ {date:'20 Apr 10:30',sub:'spedizione',dir:'out_wallet',cli:'Azienda Beta Srl',ini:'AB',col:'#0078FF',ref:'VEX240417W',metodo:'Wallet',amt:58},
+ {date:'19 Apr 16:12',sub:'uscita',dir:'out',cli:'Gamma Studio',ini:'GS',col:'#d97706',ref:'RIM-018',metodo:'Wallet',amt:11.90,tipo:'Rimborso'},
+ {date:'19 Apr 12:05',sub:'ricarica',dir:'in',cli:'Delta Logistica',ini:'DL',col:'#0891b2',ref:'RIC-2039',metodo:'Bonifico',amt:300,inv:'#2026-039'},
+];
+let walletTab='all',txFilter='tutti';
+VIEWS.wallet=()=>`
+ <div style="margin-bottom:18px"><h1 class="page">Transazioni &amp; Wallet</h1><p class="psub">Ogni movimento di denaro e il credito di ogni cliente nel borsellino.</p></div>
+ <div class="kgrid" style="margin-bottom:14px">
+ <div class="kbox dark"><div class="kk" style="color:rgba(255,255,255,.5)"> Cassa reale</div><div class="kv" style="color:var(--lime)">€ 8.420</div><div class="ks" style="color:rgba(255,255,255,.6)">soldi tuoi</div></div>
+ <div class="kbox warn"><div class="kk" style="color:var(--amber)"> Credito wallet clienti</div><div class="kv" style="color:var(--amber)">€ 2.974</div><div class="ks" style="color:#7c4a06">non sono tuoi</div></div>
+ <div class="kbox"><div class="kk">Margine (mese)</div><div class="kv" style="color:var(--green)">€ 1.840</div></div>
+ <div class="kbox"><div class="kk">Movimenti (mese)</div><div class="kv" style="color:var(--blue)">142</div></div>
+ </div>
+ <div class="callout" style="margin-bottom:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#7c4a06;font-weight:600;margin:0;line-height:1.5">Il <strong>credito nei wallet (€2.974)</strong> sono soldi versati ma non ancora consumati — un tuo debito verso i clienti, non un incasso da spendere. Tienilo separato dalla cassa reale. Gestione fiscale di ricariche/acconti da definire col commercialista.</p></div>
+ <div class="tabs">
+ <button class="tab on" id="w-t-all" onclick="setWalletTab('all')"> Transazioni</button>
+ <button class="tab" id="w-t-wallet" onclick="setWalletTab('wallet')"> Wallet per cliente</button>
+ <button class="tab" id="w-t-alert" onclick="setWalletTab('alert')"> Avvisi wallet</button>
+ </div>
+ <div id="w-content"></div>
+`;
+INIT.wallet=()=>renderWalletTab();
+function setWalletTab(t){walletTab=t;['all','wallet','alert'].forEach(x=>document.getElementById('w-t-'+x).classList.toggle('on',x===t));renderWalletTab();}
+function renderWalletTab(){
+ const c=document.getElementById('w-content'); if(!c) return;
+ if(walletTab==='all') c.innerHTML=txHTML();
+ else if(walletTab==='wallet') c.innerHTML=walletClientsHTML();
+ else c.innerHTML=walletAlertsHTML();
+ if(walletTab==='all') bindTxFilters();
+}
+function txHTML(){
+ return `<div class="card" style="overflow:hidden">
+ <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+ <div style="display:flex;gap:5px;flex-wrap:wrap" id="tx-filters">
+ <button class="btn btn-sm" data-f="tutti">Tutti</button><button class="btn btn-sm" data-f="entrate">↓ Entrate</button>
+ <button class="btn btn-sm" data-f="uscite">↑ Uscite</button><button class="btn btn-sm" data-f="ricarica"> Ricariche</button>
+ </div>
+ <input class="srch" id="tx-search" placeholder=" Cerca cliente, tipo, riferimento..." oninput="renderTxRows()">
+ </div>
+ <div style="overflow-x:auto"><table class="tbl">
+ <thead><tr><th>Data</th><th>Tipo</th><th>Cliente</th><th>Riferimento</th><th>Metodo</th><th>Fattura</th><th style="text-align:right">Importo</th></tr></thead>
+ <tbody id="tx-body"></tbody>
+ </table></div>
+ </div>
+ <p class="psub" style="text-align:center">Regola fattura: si emette quando <strong>entrano i soldi</strong> (ricarica + spedizioni dirette). Le spedizioni da wallet non rifatturano. Da confermare col commercialista.</p>`;
+}
+function bindTxFilters(){
+ const host=document.getElementById('tx-filters'); if(!host) return;
+ host.querySelectorAll('button').forEach(b=>{
+ b.classList.toggle('btn-dark',b.dataset.f===txFilter);
+ b.classList.toggle('btn-ghost',b.dataset.f!==txFilter);
+ b.onclick=()=>{txFilter=b.dataset.f;bindTxFilters();renderTxRows();};
+ });
+ renderTxRows();
+}
+function renderTxRows(){
+ const q=(document.getElementById('tx-search')?.value||'').toLowerCase().trim();
+ const list=TX.filter(t=>{
+ if(txFilter==='entrate'&&t.dir!=='in')return false;
+ if(txFilter==='uscite'&&!(t.dir==='out'||t.dir==='out_wallet'))return false;
+ if(txFilter==='ricarica'&&t.sub!=='ricarica')return false;
+ if(q&&!(t.cli.toLowerCase().includes(q)||t.ref.toLowerCase().includes(q)||(t.tipo||'').toLowerCase().includes(q)))return false;
+ return true;
+ });
+ const body=document.getElementById('tx-body'); if(!body) return;
+ if(!list.length){body.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--mute);padding:34px">Nessuna transazione</td></tr>';return;}
+ body.innerHTML=list.map(t=>{
+ const isIn=t.dir==='in',isWO=t.dir==='out_wallet';
+ let tipoChip;
+ if(t.sub==='ricarica')tipoChip='<span class="chip chip-green">Ricarica</span>';
+ else if(t.sub==='spedizione'&&isWO)tipoChip='<span class="chip chip-violet">Spediz. da wallet</span>';
+ else if(t.sub==='spedizione')tipoChip='<span class="chip chip-blue">Spediz. diretta</span>';
+ else tipoChip='<span class="chip chip-amber">'+(t.tipo||'Movimento')+'</span>';
+ let fatt;
+ if(t.sub==='ricarica'||(t.sub==='spedizione'&&!isWO))fatt='<span class="chip chip-green"> '+(t.inv||'emessa')+'</span>';
+ else if(t.sub==='spedizione'&&isWO)fatt='<span class="chip chip-gray">già in ricarica</span>';
+ else fatt='<span style="color:var(--mute);font-size:11px;font-weight:700">—</span>';
+ return `<tr><td style="color:var(--mute);white-space:nowrap">${t.date}</td><td>${tipoChip}</td><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av" style="background:${t.col};width:26px;height:26px;font-size:11px;">${t.ini}</span>${t.cli}</span></td><td><span class="mono" style="color:var(--mute);font-size:11px">${t.ref}</span></td><td><span style="font-size:11px;font-weight:700;color:#6B7280">${t.metodo}</span></td><td>${fatt}</td><td style="text-align:right;font-weight:700;color:${isIn?'var(--green)':'var(--red)'}">${isIn?'+ ':'− '}${fmt(t.amt)}</td></tr>`;
+ }).join('');
+}
+function walletClientsHTML(){
+ return `<div class="card" style="overflow:hidden">
+ <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h3 class="sectitle">Borsellino di ogni cliente</h3><span style="font-size:11px;color:var(--mute);font-weight:700">Totale credito: <strong style="color:var(--amber)">€ 2.974</strong></span></div>
+ <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Cliente</th><th>Saldo wallet</th><th>Fido</th><th>Stato</th><th></th></tr></thead><tbody>${CLIENTS.map(c=>{
+ const inFido=c.wallet<0,wColor=c.wallet>0?'var(--green)':(c.wallet<0?'var(--red)':'var(--mute)');
+ let st;
+ if(inFido)st=`<span style="font-size:10px;font-weight:700;color:var(--red)">fido usato ${Math.round(Math.abs(c.wallet)/c.fido*100)}%</span>`;
+ else if(c.wallet===0)st='<span style="font-size:10px;font-weight:700;color:var(--mute)">vuoto — deve ricaricare</span>';
+ else st='<span style="font-size:10px;font-weight:700;color:var(--green)">credito disponibile</span>';
+ return `<tr class="clk" onclick="openClient('${c.id}')"><td><span style="display:inline-flex;align-items:center;gap:9px"><span class="av" style="background:${c.col};width:28px;height:28px;font-size:10px">${c.ini}</span><strong>${c.name}</strong></span></td><td style="font-weight:700;font-size:15px;color:${wColor}">${fmt0(c.wallet)}</td><td>${c.fido>0?'<span class="chip chip-amber">fido '+fmt0(c.fido)+'</span>':'<span class="chip chip-gray">no fido</span>'}</td><td>${st}</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openClient('${c.id}')">Dettaglio</button></td></tr>`;
+ }).join('')}</tbody></table></div>
+ </div>
+ <p class="psub" style="text-align:center">Il fido è attivo solo per i clienti che scegli. Gli altri devono avere saldo positivo per spedire.</p>`;
+}
+function walletAlertsHTML(){
+ const alerts=[];
+ CLIENTS.forEach(c=>{
+ if(c.wallet<0)alerts.push(['',c.name+' è in fido (saldo '+fmt0(c.wallet)+')','Usa il fido di '+fmt0(c.fido)+'. Se supera il limite, blocca le spedizioni o chiedi ricarica.','Fido','chip-red']);
+ else if(c.wallet===0)alerts.push(['',c.name+' ha il wallet vuoto','Non potrà spedire finché non ricarica.','Vuoto','chip-gray']);
+ else if(c.wallet<30)alerts.push(['',c.name+' ha il wallet quasi esaurito ('+fmt0(c.wallet)+')','Con la prossima spedizione potrebbe finire.','Basso','chip-amber']);
+ else if(c.wallet>1500)alerts.push(['',c.name+' ha molto credito inutilizzato ('+fmt0(c.wallet)+')','Denaro che gli devi: utile per la cassa.','Alto','chip-blue']);
+ });
+ return `<div class="card" style="overflow:hidden"><div style="padding:16px 20px;border-bottom:1px solid var(--line)"><h3 class="sectitle">Avvisi sui wallet — ${alerts.length} situazioni</h3></div>${alerts.map(a=>`<div style="display:flex;gap:14px;padding:15px 20px;border-bottom:1px solid var(--line);align-items:flex-start"><span style="font-size:17px">${a[0]}</span><div style="flex:1"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:3px"><strong style="font-size:12.5px">${a[1]}</strong><span class="chip ${a[4]}">${a[3]}</span></div><p style="font-size:11.5px;color:#6B7280;font-weight:600;margin:0;line-height:1.5">${a[2]}</p></div><button class="btn btn-ghost btn-sm" onclick="toast('Promemoria ricarica inviato')">Promemoria</button></div>`).join('')}</div>`;
+}
+</script>
+<script>
+/* ============ VIEW: TARIFFE GLOBALI (pricing) ============ */
+let PFLOOR=1.50;
+let pSampleCost=10, pVatMode='net', pGlobType='pct';
+let prezziTab='globale';
+
+/* ===== VIEW PREZZI: contenitore con barra precedenza + 3 tab + simulatore ===== */
+VIEWS.prezzi=()=>`
+ <div style="margin-bottom:16px"><h1 class="page">Prezzi</h1><p class="psub">Un solo posto per gestire il ricarico. Tre livelli che lavorano insieme, non in conflitto.</p></div>
+
+ <!-- BARRA PRECEDENZA: sempre visibile -->
+ <div style="background:linear-gradient(135deg,#0A0A0B,#16181d);border-radius:16px;padding:16px 20px;margin-bottom:14px;color:#fff">
+ <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+ <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.75);">Ordine di applicazione</span>
+ <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto">
+ <span class="chip" style="background:rgba(124,58,237,.25);color:#c4a5ff">1 · Cliente</span>
+ <span style="color:rgba(255,255,255,.3)">▸</span>
+ <span class="chip" style="background:rgba(0,120,255,.25);color:#7db8ff">2 · Fascia peso</span>
+ <span style="color:rgba(255,255,255,.3)">▸</span>
+ <span class="chip" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.75)">3 · Globale</span>
+ </div>
+ </div>
+ <p style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin:10px 0 0;line-height:1.5">Vince <strong style="color:#fff">la regola più specifica</strong>: se un cliente ha un override, batte tutto; altrimenti decide la fascia di peso; il globale è la rete di sicurezza per ciò che non rientra in nessuna fascia. <strong style="color:var(--lime)">Non competono — il globale è il "tutto il resto".</strong></p>
+ </div>
+
+ <!-- FLOOR bar -->
+ <div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 20px;display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+ <span style="font-size:16px"></span><span style="font-size:12px;font-weight:700">Margine minimo garantito su ogni prezzo:</span><span style="font-size:18px;font-weight:700;color:var(--green)" id="pz-floor-bar">€ 1,50</span>
+ <span style="margin-left:auto;font-size:10px;color:var(--mute);font-weight:700">le eccezioni per cliente si impostano nella sua scheda</span>
+ </div>
+
+ <!-- 3 TAB -->
+ <div class="tabs" style="max-width:540px">
+ <button class="tab on" id="pz-t-globale" onclick="setPrezziTab('globale')"> Globale</button>
+ <button class="tab" id="pz-t-fasce" onclick="setPrezziTab('fasce')"> Fasce di peso</button>
+ <button class="tab" id="pz-t-sim" onclick="setPrezziTab('sim')"> Chi vince?</button>
+ </div>
+ <div id="pz-content"></div>
+`;
+INIT.prezzi=()=>renderPrezziTab();
+function setPrezziTab(t){
+ prezziTab=t;
+ ['globale','fasce','sim'].forEach(x=>document.getElementById('pz-t-'+x).classList.toggle('on',x===t));
+ renderPrezziTab();
+}
+function renderPrezziTab(){
+ const c=document.getElementById('pz-content'); if(!c) return;
+ if(prezziTab==='globale'){ c.innerHTML=globalePanelHTML(); initGlobalePanel(); }
+ else if(prezziTab==='fasce'){ c.innerHTML=fasciePanelHTML(); initFasciePanel(); }
+ else { c.innerHTML=simulatorHTML(); initSimulator(); }
+}
+
+/* ===== SIMULATORE "CHI VINCE" ===== */
+function simulatorHTML(){ return `
+ <div class="note-box" style="margin-bottom:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#3a4250;font-weight:600;margin:0;line-height:1.5">Scegli un cliente, un peso e il costo DVA: ti dico <strong>quale regola si applica e perché</strong>, mostrando anche quelle scartate. Così non hai dubbi su cosa pagherà davvero il cliente.</p></div>
+ <div style="display:grid;grid-template-columns:1fr;gap:18px">
+ <div class="card" style="padding:24px">
+ <h3 class="sectitle" style="margin-bottom:16px">Imposta il caso</h3>
+ <div style="display:grid;grid-template-columns:1fr;gap:16px">
+ <div><label class="lbl">Cliente</label><select class="inp" id="sim-cli" onchange="runSim()">${CLIENTS.map(c=>`<option value="${c.id}">${c.name}${c.markup!==18?' (override +'+c.markup+'%)':''}</option>`).join('')}</select></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+ <div><label class="lbl">Peso spedizione (kg)</label><input class="inp" id="sim-kg" value="40" oninput="runSim()"></div>
+ <div><label class="lbl">Costo DVA (€)</label><input class="inp" id="sim-cost" value="48" oninput="runSim()"></div>
+ </div>
+ </div>
+ </div>
+ <div id="sim-result"></div>
+ </div>
+`; }
+function initSimulator(){ runSim(); }
+function bandForKg(kg){
+ // mappa peso → fascia (limiti coerenti con BANDS)
+ const limits=[2,5,10,30,50,100,Infinity];
+ for(let i=0;i<limits.length;i++){ if(kg<=limits[i]) return i; }
+ return BANDS.length-1;
+}
+function runSim(){
+ const cli=CLIENTS.find(c=>c.id===document.getElementById('sim-cli').value)||CLIENTS[0];
+ const kg=parseFloat((document.getElementById('sim-kg').value||'').replace(',','.'))||0;
+ const cost=parseFloat((document.getElementById('sim-cost').value||'').replace(',','.'))||0;
+ const host=document.getElementById('sim-result'); if(!host) return;
+
+ // calcolo i tre livelli
+ const bi=bandForKg(kg);
+ const band=BANDS[bi];
+ const globalPct=22; // markup globale di default demo
+ const clientOverride = cli.markup!==18 ? cli.markup : null; // demo: 18 = "segue globale"
+
+ // determino il vincitore: cliente > fascia > globale
+ let winner, winPct, winReason, winLevel;
+ if(clientOverride!=null){ winner='cliente'; winPct=clientOverride; winLevel=1; winReason='Questo cliente ha un override personale, che batte fascia e globale.'; }
+ else if(band){ winner='fascia'; winPct=band.mk; winLevel=2; winReason='Il pacco da '+kg+' kg rientra nella fascia "'+band.name+'", che batte il globale.'; }
+ else { winner='globale'; winPct=globalPct; winLevel=3; winReason='Nessuna fascia applicabile: si usa il markup globale di riserva.'; }
+
+ let margin=cost*winPct/100, floored=false;
+ if(margin<PFLOOR){ margin=PFLOOR; floored=true; }
+ const final=cost+margin;
+
+ // righe dei tre livelli con stato vince/scartato
+ const levels=[
+ {n:1,key:'cliente',label:'Override cliente',val: clientOverride!=null?('+'+clientOverride+'%'):'nessuno', active: clientOverride!=null, color:'#7c3aed'},
+ {n:2,key:'fascia',label:'Fascia '+(band?band.name:'—'),val: band?('+'+band.mk+'%'):'—', active: !!band, color:'#0078FF'},
+ {n:3,key:'globale',label:'Markup globale',val:'+'+globalPct+'%', active:true, color:'#6B7280'},
+ ];
+ const rows=levels.map(l=>{
+ const isWin=l.key===winner;
+ const isSkipped = (l.n<winLevel) ? false : (l.n>winLevel ? true : false); // sopra il vincitore: non applicabile; sotto: scartato
+ let badge, opacity;
+ if(isWin){ badge='<span class="chip chip-green"> VINCE</span>'; opacity='1'; }
+ else if(l.n<winLevel){ badge='<span class="chip chip-gray">non impostato</span>'; opacity='.5'; }
+ else { badge='<span class="chip chip-gray" style="text-decoration:line-through">scartato</span>'; opacity='.5'; }
+ return `<div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);opacity:${opacity}">
+ <span style="width:22px;height:22px;border-radius:50%;background:${l.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${l.n}</span>
+ <div style="flex:1"><span style="font-weight:700;font-size:12px">${l.label}</span></div>
+ <span style="font-weight:700;font-size:13px;color:${isWin?l.color:'var(--mute)'}">${l.val}</span>
+ ${badge}
+ </div>`;
+ }).join('');
+
+ host.innerHTML=`
+ <div class="card" style="overflow:hidden">
+ <div style="padding:16px 20px;border-bottom:1px solid var(--line)"><h3 class="sectitle">Come si decide il prezzo</h3></div>
+ ${rows}
+ <div style="background:linear-gradient(135deg,#0A0A0B,#16181d);padding:20px;color:#fff">
+ <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px">
+ <span style="font-size:16px"></span>
+ <p style="font-size:12px;font-weight:700;margin:0;line-height:1.5">Vince <strong style="color:var(--lime)">${winner==='cliente'?'l\'override cliente':winner==='fascia'?'la fascia di peso':'il markup globale'}</strong> al <strong style="color:var(--lime)">+${winPct}%</strong>. ${winReason}</p>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Costo DVA</div><div style="font-size:18px;font-weight:700;">${fmt(cost)}</div></div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">+ Margine${floored?' ':''}</div><div style="font-size:18px;font-weight:700;color:var(--lime)">+ ${fmt(margin)}</div></div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Cliente paga</div><div style="font-size:18px;font-weight:700;">${fmt(final)}</div></div>
+ </div>
+ ${floored?'<p style="font-size:10px;color:#fbbf24;font-weight:700;margin:10px 0 0"> Il margine calcolato era sotto €1,50: applicato il minimo garantito.</p>':''}
+ </div>
+ </div>`;
+}
+
+function globalePanelHTML(){ return `
+ <p class="psub" style="margin:-4px 0 18px">Il markup di base, applicato quando una spedizione non rientra in nessuna fascia. È la rete di sicurezza.</p>
+ <div style="display:grid;grid-template-columns:1fr;gap:18px" id="pricing-grid">
+ <div class="card" style="padding:26px">
+ <h3 class="sectitle">Markup globale di default</h3>
+ <p class="psub" style="margin-bottom:20px">Si applica a ogni cliente senza override e a ogni spedizione senza fascia.</p>
+ <label class="lbl">Percentuale di ricarico sul costo DVA</label>
+ <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+ <div style="position:relative;width:140px"><input class="inp" id="p-pct" value="22" oninput="pRecalc()" style="font-size:28px;font-weight:700;text-align:center;padding-right:32px"><span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;font-weight:700;color:var(--mute)">%</span></div>
+ <div style="flex:1;min-width:200px"><div id="p-pct-msg" style="font-size:10px;font-weight:700;color:var(--green);min-height:13px"> valido</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+ <button class="btn btn-ghost btn-sm" onclick="pSetPreset(15)">+15%</button><button class="btn btn-dark btn-sm" onclick="pSetPreset(22)">+22%</button><button class="btn btn-ghost btn-sm" onclick="pSetPreset(30)">+30%</button><button class="btn btn-ghost btn-sm" onclick="pSetPreset(40)">+40%</button>
+ </div></div>
+ </div>
+ <div class="hr"></div>
+ <label class="lbl"> Margine minimo garantito (paracadute)</label>
+ <p class="psub" style="margin:-2px 0 10px">Il margine sotto cui nessun prezzo può scendere, su tutti i clienti senza eccezione. Protegge dalle perdite sulle spedizioni piccole.</p>
+ <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+ <div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:var(--mute)">€</span><input class="inp" id="p-floor" value="1.50" oninput="pFloorEdited()" style="padding-left:28px;width:110px;font-size:18px;font-weight:700;text-align:center"></div>
+ <button class="btn btn-green btn-sm" id="p-floor-save" style="opacity:.4;pointer-events:none" onclick="pSaveFloor()">Salva minimo</button>
+ <span style="font-size:10px;font-weight:700;color:var(--mute)" id="p-floor-hint">valore attuale</span>
+ </div>
+ <div class="hr"></div>
+ <label class="lbl">Come mostriamo i prezzi</label>
+ <div style="display:flex;gap:6px;max-width:400px">
+ <button class="btn btn-sm" id="p-net" onclick="pSetVat('net')" style="flex:1;padding:11px">IVA esclusa (B2B)</button>
+ <button class="btn btn-sm" id="p-gross" onclick="pSetVat('gross')" style="flex:1;padding:11px">IVA inclusa (B2C)</button>
+ </div>
+ <button class="btn btn-lime" style="width:100%;margin-top:20px;padding:14px" onclick="toast(' Markup globale salvato')"> Salva markup globale</button>
+ </div>
+ <div>
+ <div style="background:linear-gradient(135deg,#0A0A0B,#16181d);border-radius:var(--radius-lg);padding:26px;color:#fff">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.75);">Anteprima dal vivo</span><span id="p-state" class="chip chip-green"> sano</span></div>
+ <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px 12px">
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Costo DVA</div><div style="font-size:22px;font-weight:700;" id="p-cost">€ 10,00</div></div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">+ Markup</div><div style="font-size:22px;font-weight:700;color:var(--lime)" id="p-markup">+ € 2,20</div></div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Cliente paga</div><div style="font-size:22px;font-weight:700;" id="p-final">€ 12,20</div></div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Tuo margine</div><div style="font-size:22px;font-weight:700;color:var(--lime)" id="p-margin">€ 2,20</div></div>
+ </div>
+ </div>
+ <div class="card" style="padding:20px;margin-top:16px">
+ <div style="display:flex;justify-content:space-between;margin-bottom:6px"><label class="lbl" style="margin:0">Costo DVA campione</label><span style="font-size:12px;font-weight:700;color:var(--blue)" id="p-slider-val">€ 10,00</span></div>
+ <input type="range" id="p-slider" min="2" max="40" step="0.5" value="10" oninput="pSetSample(this.value)" style="width:100%;accent-color:var(--blue)">
+ <p class="psub" style="margin-top:8px">Trascina sui valori bassi per vedere il <strong style="color:var(--amber)">paracadute</strong> in azione.</p>
+ </div>
+ </div>
+ </div>
+`; }
+function initGlobalePanel(){ pSetVat('net'); pRecalc(); pFloorRefreshHint(); }
+function pFloorRefreshHint(){
+ const el=document.getElementById('p-floor'); if(!el) return;
+ el.value=PFLOOR.toFixed(2);
+ const hint=document.getElementById('p-floor-hint');
+ if(hint) hint.textContent='attuale: '+fmt(PFLOOR);
+}
+function pFloorEdited(){
+ const el=document.getElementById('p-floor');
+ const raw=(el.value||'').trim().replace(',','.');
+ const v=parseFloat(raw);
+ const hint=document.getElementById('p-floor-hint');
+ const save=document.getElementById('p-floor-save');
+ el.classList.remove('err','warnf');
+ if(raw===''||isNaN(v)||v<0){
+ el.classList.add('err');
+ hint.innerHTML='<span style="color:var(--red)"> il minimo non può essere negativo o vuoto</span>';
+ save.style.opacity=.4; save.style.pointerEvents='none';
+ return;
+ }
+ save.style.opacity=1; save.style.pointerEvents='all';
+ if(v===0){ el.classList.add('warnf'); hint.innerHTML='<span style="color:var(--amber)"> a €0 nessuna protezione sulle piccole spedizioni</span>'; }
+ else hint.innerHTML='nuovo minimo: '+fmt(v);
+}
+function pSaveFloor(){
+ const raw=(document.getElementById('p-floor').value||'').trim().replace(',','.');
+ const v=parseFloat(raw);
+ if(isNaN(v)||v<0){ toast(' Inserisci un valore valido (zero o positivo)'); return; }
+ PFLOOR=v;
+ const save=document.getElementById('p-floor-save');
+ save.style.opacity=.4; save.style.pointerEvents='none';
+ const bar=document.getElementById('pz-floor-bar'); if(bar) bar.textContent=fmt(v);
+ pFloorRefreshHint();
+ pRecalc();
+ toast(' Margine minimo globale: '+fmt(v)+' (su tutti i clienti senza eccezione)');
+}
+function pSetPreset(v){document.getElementById('p-pct').value=v;pRecalc();}
+function pSetSample(v){pSampleCost=parseFloat(v);document.getElementById('p-slider-val').textContent=fmt(pSampleCost);pRecalc();}
+function pSetVat(m){pVatMode=m;const n=document.getElementById('p-net'),g=document.getElementById('p-gross');if(n){n.classList.toggle('btn-dark',m==='net');n.classList.toggle('btn-ghost',m!=='net');}if(g){g.classList.toggle('btn-dark',m==='gross');g.classList.toggle('btn-ghost',m!=='gross');}pRecalc();}
+function pRecalc(){
+ const el=document.getElementById('p-pct'); if(!el) return;
+ const raw=(el.value||'').replace(',','.');const pct=parseFloat(raw);
+ const msg=document.getElementById('p-pct-msg');
+ el.classList.remove('err','warnf');
+ if(raw===''||isNaN(pct)){msg.textContent=' inserisci un numero';msg.style.color='var(--red)';el.classList.add('err');}
+ else if(pct<=0){msg.textContent=' markup 0 = nessun guadagno';msg.style.color='var(--red)';el.classList.add('err');}
+ else if(pct<5){msg.textContent=' sotto il 5%? forse intendevi '+pct+'0%';msg.style.color='var(--amber)';el.classList.add('warnf');}
+ else if(pct>100){msg.textContent=' oltre 100%, sicuro?';msg.style.color='var(--amber)';el.classList.add('warnf');}
+ else{msg.textContent=' valido';msg.style.color='var(--green)';}
+ const p=isNaN(pct)?0:pct,cost=pSampleCost;
+ let markup=cost*p/100,floored=false;
+ if(markup<PFLOOR){markup=PFLOOR;floored=true;}
+ const finalNet=cost+markup,shown=pVatMode==='gross'?finalNet*1.22:finalNet;
+ document.getElementById('p-cost').textContent=fmt(cost);
+ document.getElementById('p-markup').textContent='+ '+fmt(markup);
+ document.getElementById('p-final').textContent=fmt(shown);
+ document.getElementById('p-margin').textContent=fmt(markup);
+ const st=document.getElementById('p-state');
+ if(markup<=0){st.className='chip chip-red';st.textContent=' in perdita';}
+ else if(floored){st.className='chip chip-amber';st.textContent=' salvato dal minimo';}
+ else{st.className='chip chip-green';st.textContent=' sano';}
+}
+</script>
+<script>
+/* ============ VIEW: FASCE DI PESO ============ */
+const BANDS=[
+ {name:'0 – 2 kg',desc:'Buste, plichi',cost:4,mk:25,mkt:5.5,scale:7},
+ {name:'2 – 5 kg',desc:'Pacchi standard',cost:5,mk:20,mkt:6,scale:7},
+ {name:'5 – 10 kg',desc:'Pacchi medi',cost:12,mk:35,mkt:null,scale:22},
+ {name:'10 – 30 kg',desc:'Pacchi pesanti',cost:30,mk:50,mkt:60,scale:55},
+ {name:'30 – 50 kg',desc:'Molto pesanti',cost:48,mk:65,mkt:110,scale:130},
+ {name:'50 – 100 kg',desc:'Voluminosi',cost:80,mk:55,mkt:null,scale:180},
+ {name:'100+ kg',desc:'Oltre soglia',cost:140,mk:50,mkt:null,scale:300},
+];
+let bandsTab='list',palMode='pct';
+function fasciePanelHTML(){ return `
+ <p class="psub" style="margin:-4px 0 16px">Il tuo vero listino. Se impostate, le fasce hanno la precedenza sul markup globale: ogni spedizione cade in una fascia, quindi il globale resta di riserva.</p>
+ <div class="tabs" style="max-width:420px">
+ <button class="tab on" id="b-t-list" onclick="setBandsTab('list')"> Listino fasce</button>
+ <button class="tab" id="b-t-pallet" onclick="setBandsTab('pallet')"> Pallet a preventivo</button>
+ </div>
+ <div id="b-content"></div>
+`; }
+function initFasciePanel(){ renderBandsTab(); }
+function setBandsTab(t){bandsTab=t;document.getElementById('b-t-list').classList.toggle('on',t==='list');document.getElementById('b-t-pallet').classList.toggle('on',t==='pallet');renderBandsTab();}
+function renderBandsTab(){
+ const c=document.getElementById('b-content'); if(!c) return;
+ if(bandsTab==='list'){ c.innerHTML=bandsListHTML(); renderBandRows(); }
+ else { c.innerHTML=palletHTML(); calcPallet(); }
+}
+function bandsListHTML(){
+ return `<div class="note-box" style="margin-bottom:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#3a4250;font-weight:600;margin:0;line-height:1.5">Queste percentuali le vedi <strong>solo tu</strong>. Il cliente vede solo il prezzo finale. La colonna mercato serve a controllare di non sforare la concorrenza.</p></div>
+ <div class="card" style="padding:8px"><div style="overflow-x:auto"><table class="tbl">
+ <thead><tr><th>Fascia</th><th style="text-align:center">Markup %</th><th style="text-align:center">Margine</th><th>Tu vendi</th><th>Mercato noto</th></tr></thead>
+ <tbody id="band-rows"></tbody>
+ </table></div></div>
+ <div class="win" style="margin-top:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#14532d;font-weight:700;margin:0;line-height:1.5">La % scende sui piccoli (concorrenza feroce) e sale sui grossi (il cliente si aspetta di pagare tanto e tu lo fai comunque risparmiare). Il margine in € cresce, il prezzo resta competitivo.</p></div>`;
+}
+function bandCalc(b){let m=b.cost*(parseFloat(b.mk)||0)/100,fl=false;if(m<1.5){m=1.5;fl=true;}return{m,you:b.cost+m,fl};}
+function compTag(you,mkt){if(mkt==null||isNaN(mkt)||mkt<=0)return['chip-gray','—'];const s=(mkt-you)/mkt*100;if(you>mkt)return['chip-amber',' sopra (+'+Math.round(you-mkt)+')'];if(s<8)return['chip-amber','stretto'];return['chip-green','sotto del '+s.toFixed(0)+'%'];}
+function renderBandRows(){
+ const body=document.getElementById('band-rows'); if(!body) return;
+ body.innerHTML=BANDS.map((b,i)=>{
+ const{m,you,fl}=bandCalc(b);const[ct,cx]=compTag(you,b.mkt);
+ return `<tr><td><strong style="">${b.name}</strong><br><span style="font-size:10px;color:var(--mute);font-weight:700">${b.desc}</span></td>
+ <td style="text-align:center"><input class="inp" value="${b.mk}" oninput="editBand(${i},this.value)" style="width:64px;text-align:center;font-size:14px;padding:7px"></td>
+ <td style="text-align:center"><span style="font-weight:700;color:var(--green)" id="bm-${i}">${fmt(m)}</span>${fl?'<br><span style="font-size:11px;color:var(--amber);font-weight:700"> min</span>':''}</td>
+ <td><span style="font-weight:700;" id="by-${i}">${fmt0(you)}</span> <span class="chip ${ct}" id="bc-${i}" style="margin-left:4px">${cx}</span><div style="font-size:11px;color:var(--mute);font-weight:700;margin-top:2px">DVA ${fmt0(b.cost)}</div></td>
+ <td><input class="inp" value="${b.mkt!=null?b.mkt:''}" placeholder="se lo sai" oninput="editMkt(${i},this.value)" style="width:110px;font-size:11px;padding:7px"></td>
+ </tr>`;
+ }).join('');
+}
+function editBand(i,v){BANDS[i].mk=v;const{m,you}=bandCalc(BANDS[i]);const bm=document.getElementById('bm-'+i),by=document.getElementById('by-'+i);if(bm)bm.textContent=fmt(m);if(by)by.textContent=fmt0(you);refreshComp(i);}
+function editMkt(i,v){const s=(''+v).trim().replace(',','.');const n=parseFloat(s);BANDS[i].mkt=(s===''||isNaN(n)||n<=0)?null:n;refreshComp(i);}
+function refreshComp(i){const{you}=bandCalc(BANDS[i]);const[ct,cx]=compTag(you,BANDS[i].mkt);const el=document.getElementById('bc-'+i);if(el){el.className='chip '+ct;el.textContent=cx;}}
+function palletHTML(){
+ return `<div class="callout" style="margin-bottom:16px"><span style="font-size:16px"></span><p style="font-size:11.5px;color:#7c4a06;font-weight:700;margin:0;line-height:1.5"><strong>I pallet non hanno listino fisso.</strong> DVA quota sul momento. Inserisci il costo, vedi il prezzo, lo confermi tu. Spedizioni grosse e poche: una a una, mai alla cieca.</p></div>
+ <div class="card" style="padding:26px">
+ <h3 class="sectitle" style="margin-bottom:14px">Calcolatore preventivo pallet</h3>
+ <div style="background:linear-gradient(135deg,#0A0A0B,#16181d);border-radius:var(--radius-md);padding:22px;color:#fff">
+ <div style="display:grid;grid-template-columns:1fr;gap:16px">
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+ <div><label class="lbl" style="color:rgba(255,255,255,.5)">Costo DVA quotato (€)</label><input class="inp" id="pal-cost" value="78" oninput="calcPallet()" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);color:#fff"></div>
+ <div><label class="lbl" style="color:rgba(255,255,255,.5)">Confronto mercato (opz.)</label><input class="inp" id="pal-mkt" placeholder="€ ?" oninput="calcPallet()" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);color:#fff"></div>
+ </div>
+ <div><label class="lbl" style="color:rgba(255,255,255,.5)">Come calcolo il margine</label>
+ <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-sm" id="palm-pct" onclick="setPalMode('pct')" style="flex:1;padding:9px">% Percentuale</button><button class="btn btn-sm" id="palm-fix" onclick="setPalMode('fix')" style="flex:1;padding:9px">€ Margine fisso</button></div>
+ <input class="inp" id="pal-mk" value="45" oninput="calcPallet()" placeholder="markup %" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);color:#fff">
+ <input class="inp" id="pal-fix" placeholder="margine € fisso" oninput="calcPallet()" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);color:#fff;display:none">
+ </div>
+ </div>
+ <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Tuo margine</div><div style="font-size:24px;font-weight:700;color:var(--lime)" id="pal-margin">€ 35,10</div></div>
+ <div style="font-size:20px;color:rgba(255,255,255,.3)">→</div>
+ <div><div class="lbl" style="color:rgba(255,255,255,.4)">Cliente paga</div><div style="font-size:24px;font-weight:700;" id="pal-final">€ 113,10</div></div>
+ <span style="font-size:11px;font-weight:700;color:var(--lime);margin-left:auto" id="pal-comp"></span>
+ </div>
+ <div id="pal-warn" style="margin-top:12px;font-size:11px;font-weight:700;color:#fbbf24;display:none"></div>
+ </div>
+ <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px"><button class="btn btn-ghost btn-sm" onclick="toast('Preventivo scartato')">Scarta</button><button class="btn btn-dark" onclick="toast(' Preventivo pallet confermato')">Conferma preventivo</button></div>
+ </div>`;
+}
+function setPalMode(m){palMode=m;const p=document.getElementById('palm-pct'),f=document.getElementById('palm-fix');if(p){p.classList.toggle('btn-dark',m==='pct');p.classList.toggle('btn-ghost',m!=='pct');}if(f){f.classList.toggle('btn-dark',m==='fix');f.classList.toggle('btn-ghost',m!=='fix');}document.getElementById('pal-mk').style.display=m==='pct'?'block':'none';document.getElementById('pal-fix').style.display=m==='fix'?'block':'none';calcPallet();}
+function calcPallet(){
+ const cost=parseFloat((document.getElementById('pal-cost')?.value||'').replace(',','.'))||0;
+ let margin=0;
+ if(palMode==='fix')margin=parseFloat((document.getElementById('pal-fix').value||'').replace(',','.'))||0;
+ else margin=cost*(parseFloat((document.getElementById('pal-mk').value||'').replace(',','.'))||0)/100;
+ const final=cost+margin;
+ document.getElementById('pal-margin').textContent=fmt(margin);
+ document.getElementById('pal-final').textContent=fmt(final);
+ const w=document.getElementById('pal-warn');
+ if(cost>0&&margin>0&&margin/cost<0.08){w.style.display='block';w.textContent=' Margine sottile: solo '+(margin/cost*100).toFixed(0)+'% del costo.';}
+ else if(cost>0&&margin<=0){w.style.display='block';w.textContent=' Margine zero o negativo.';}
+ else w.style.display='none';
+ const s=(''+(document.getElementById('pal-mkt')?.value||'')).trim().replace(',','.');const mkt=parseFloat(s);const comp=document.getElementById('pal-comp');
+ if(s!==''&&!isNaN(mkt)&&mkt>0){if(final>mkt){comp.textContent=' sopra di '+fmt0(final-mkt);comp.style.color='#fbbf24';}else{comp.textContent='cliente risparmia '+fmt0(mkt-final);comp.style.color='var(--lime)';}}else comp.textContent='';
+}
+
+/* ============ BOOT ============ */
+go('dash');
+</script>
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/nav-user.js"></script>
+</body>
+</html>

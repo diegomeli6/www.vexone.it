@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEX ONE — Gestione &amp; Impostazioni Portafoglio</title>
+  <meta name="description" content="Gestione avanzata del portafoglio VEX ONE: storico movimenti contabili, esportazione PDF, carte memorizzate e limiti di spesa.">
+
+  <!-- Tailwind CSS CDN + Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="assets/js/tailwind-config.js"></script>
+
+  <!-- jsPDF per esportazione PDF reale -->
+  <!-- jsPDF per esportazione PDF reale (locale + fallback CDN) -->
+  <script src="assets/js/jspdf.umd.min.js"></script>
+  <script>
+    if (!window.jspdf) {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>');
+    }
+  </script>
+
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/portafoglio.css?v=3">
+  <style>
+    .subnav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #4B5563;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .subnav-pill:hover, .subnav-pill.active {
+      background: #0078FF;
+      color: #FFFFFF;
+      border-color: #0078FF;
+      box-shadow: 0 4px 12px rgba(0, 120, 255, 0.2);
+    }
+    .settings-section {
+      scroll-margin-top: 100px;
+    }
+  </style>
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body class="bg-gray-50/50">
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════ CONTENUTO PRINCIPALE ════════════════════ -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  
+  <!-- BREADCRUMB & HEADER -->
+  <header class="mb-8">
+    <div class="flex items-center gap-2 text-xs font-semibold text-gray-500 mb-2">
+      <a href="portafoglio.html" class="hover:text-blue-600 transition-colors no-underline text-gray-500">Portafoglio</a>
+      <span>/</span>
+      <span class="text-gray-900">Gestione &amp; Impostazioni</span>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900 m-0">Gestione &amp; Impostazioni Portafoglio</h1>
+        <p class="text-sm text-gray-500 font-medium m-0 mt-1 max-w-2xl leading-relaxed">
+          Consulta lo storico completo con esportazione PDF, gestisci le carte memorizzate per le ricariche rapide e configura i tetti massimi di spesa.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="portafoglio.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 text-xs font-semibold text-gray-700 shadow-sm transition-all no-underline">
+          <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Torna alla Ricarica</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Pills -->
+    <div class="flex items-center gap-2 flex-wrap mt-6 pt-4 border-t border-gray-200/80">
+      <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mr-2">Salta a:</span>
+      <a href="#storico" class="subnav-pill">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Storico Transazioni</span>
+      </a>
+      <a href="#carte" class="subnav-pill">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <span>Carte Memorizzate</span>
+      </a>
+      <a href="#impostazioni" class="subnav-pill">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Auto-ricarica &amp; Limiti</span>
+      </a>
+      <a href="#fatturazione" class="subnav-pill">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        <span>Dati Fatturazione</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="space-y-8">
+
+    <!-- ════════════════════ SEZIONE 1: STORICO TRANSAZIONI ════════════════════ -->
+    <section id="storico" class="settings-section card">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-gray-100">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight text-gray-900 m-0">Storico Movimenti &amp; Transazioni</h2>
+          <p class="text-xs text-gray-500 font-normal m-0 mt-0.5">Seleziona le singole voci da esportare oppure scarica l'estratto conto PDF completo</p>
+        </div>
+
+        <!-- Tasto Esporta PDF Funzionante -->
+        <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-500 hover:text-blue-600 shadow-sm text-xs font-semibold text-gray-700 transition-all cursor-pointer" id="btn-export-pdf" onclick="exportFilteredOrSelectedPDF()">
+          <svg class="w-4 h-4 text-gray-500 group-hover:text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          <span id="btn-export-text">Esporta PDF Storico</span>
+        </button>
+      </div>
+
+      <!-- Filtri tipo e periodo -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div class="tx-filters flex items-center gap-1.5" role="group" aria-label="Filtra transazioni per tipo">
+          <button class="tx-filter-btn on" data-filter="all">Tutte</button>
+          <button class="tx-filter-btn" data-filter="ricarica">Ricariche</button>
+          <button class="tx-filter-btn" data-filter="spedizione">Spedizioni</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <select class="date-select" id="date-filter" aria-label="Filtra per periodo">
+            <option value="all">Tutto il periodo</option>
+            <option value="7d">Ultimi 7 giorni</option>
+            <option value="30d">Ultimi 30 giorni</option>
+            <option value="month">Questo mese</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Barra di selezione multipla -->
+      <div class="flex items-center justify-between p-2.5 px-3.5 bg-gray-50 rounded-xl border border-gray-200 mb-3">
+        <label class="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-gray-700 m-0">
+          <input type="checkbox" id="tx-select-all" class="w-4 h-4 rounded accent-blue-600 cursor-pointer" onchange="toggleSelectAllTx(this.checked)">
+          <span>Seleziona tutte</span>
+        </label>
+        <span id="tx-selected-count" class="text-xs font-semibold text-gray-500">0 selezionate</span>
+      </div>
+
+      <!-- Contenitore righe transazioni -->
+      <div id="tx-list" aria-live="polite"></div>
+    </section>
+
+
+    <!-- ════════════════════ SEZIONE 2: CARTE MEMORIZZATE ════════════════════ -->
+    <section id="carte" class="settings-section card">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-gray-100">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight text-gray-900 m-0">Carte Memorizzate</h2>
+          <p class="text-xs text-gray-500 font-normal m-0 mt-0.5">Gestisci le carte salvate per le tue ricariche istantanee</p>
+        </div>
+        <button type="button" class="btn-ghost text-xs font-semibold text-blue-600 border border-blue-200 bg-blue-50/50 hover:bg-blue-100 px-3.5 py-2 rounded-xl" onclick="toggleAddCardForm()">
+          + Aggiungi nuova carta
+        </button>
+      </div>
+
+      <!-- Form per aggiungere una nuova carta -->
+      <div id="box-add-card-form" style="display:none" class="p-4 rounded-xl border border-blue-200 bg-blue-50/30 mb-5">
+        <p class="text-xs font-bold text-gray-900 mb-3">Aggiungi metodo di pagamento al conto</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+          <div class="md:col-span-2">
+            <label class="lbl" for="new-card-num">Numero carta</label>
+            <input class="inp" id="new-card-num" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
+          </div>
+          <div>
+            <label class="lbl" for="new-card-exp">Scadenza (MM/AA)</label>
+            <input class="inp" id="new-card-exp" placeholder="MM/AA" maxlength="5" inputmode="numeric">
+          </div>
+          <div>
+            <label class="lbl" for="new-card-cvv">CVV</label>
+            <input class="inp" id="new-card-cvv" type="password" placeholder="•••" maxlength="4" inputmode="numeric">
+          </div>
+          <div class="md:col-span-2">
+            <label class="lbl" for="new-card-holder">Intestatario</label>
+            <input class="inp" id="new-card-holder" placeholder="Nome come sulla carta" value="">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn-ghost px-3 py-1.5 text-xs" onclick="toggleAddCardForm()">Annulla</button>
+          <button type="button" class="btn-blue px-4 py-1.5 text-xs font-semibold" onclick="saveNewCardFromSettings()">Salva carta</button>
+        </div>
+      </div>
+
+      <div id="methods-list"></div>
+    </section>
+
+
+    <!-- ════════════════════ SEZIONE 3: IMPOSTAZIONI PORTAFOGLIO ════════════════════ -->
+        <div class="flex justify-end mt-3">
+          <button type="button" class="btn-blue px-4 py-2 text-xs font-semibold" onclick="salvaAutoRicarica()">Salva auto-ricarica</button>
+        </div>
+      </div>
+
+      <!-- TETTO MENSILE SPESA -->
+      <div class="p-4 rounded-xl border border-gray-200 bg-gray-50/50 mb-5">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <p class="text-sm font-bold text-gray-900 m-0">Tetto Mensile di Spesa</p>
+            <p class="text-xs text-gray-500 m-0 mt-0.5">Blocca o segnala quando il totale delle spedizioni supera il budget prefissato.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div>
+            <label class="lbl" for="limit-period">Periodo di riferimento</label>
+            <select class="inp" id="limit-period">
+              <option value="month">Mensile solare</option>
+              <option value="30d">Ultimi 30 giorni consecutivi</option>
+            </select>
+          </div>
+          <div>
+            <label class="lbl" for="limit-amount">Importo massimo autorizzato</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">€</span>
+              <input class="inp pl-7" type="number" id="limit-amount" value="1000" min="100" step="50" placeholder="1000">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-3">
+          <button type="button" class="btn-blue px-4 py-2 text-xs font-semibold" onclick="salvaLimiteSpesa()">Salva limite spesa</button>
+        </div>
+      </div>
+
+      <!-- AVVISO SALDO IN ESAURIMENTO -->
+      <div class="p-4 rounded-xl border border-gray-200 bg-gray-50/50">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <p class="text-sm font-bold text-gray-900 m-0">Avviso Saldo in Esaurimento</p>
+            <p class="text-xs text-gray-500 m-0 mt-0.5">Invia un'email al tuo team contabile prima che il saldo si esaurisca.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div>
+            <label class="lbl" for="notify-threshold">Avvisami quando scende sotto</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">€</span>
+              <input class="inp pl-7" type="number" id="notify-threshold" value="30" min="10" step="5" placeholder="30">
+            </div>
+          </div>
+          <div>
+            <label class="lbl" for="notify-email">Email destinatario notifica</label>
+            <input class="inp" type="email" id="notify-email" value="amministrazione@vexone.it" placeholder="email@azienda.it">
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-3">
+          <button type="button" class="btn-blue px-4 py-2 text-xs font-semibold" onclick="salvaAvvisi()">Salva preferenze avviso</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════ SEZIONE 4: FATTURAZIONE FISCALE ════════════════════ -->
+    <section id="fatturazione" class="settings-section card">
+      <div class="mb-4 pb-4 border-b border-gray-100">
+        <h2 class="text-xl font-bold tracking-tight text-gray-900 m-0">Dati di Fatturazione Elettronica</h2>
+        <p class="text-xs text-gray-500 font-normal m-0 mt-0.5">Utilizzati per l'emissione delle fatture SDI di ogni ricarica e spedizione</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="lbl" for="bill-ragione">Ragione Sociale / Denominazione</label>
+          <input class="inp" id="bill-ragione" placeholder="Nome Azienda o Persona Fisica" value="">
+        </div>
+        <div>
+          <label class="lbl" for="bill-piva">Partita IVA / Codice Fiscale</label>
+          <input class="inp" id="bill-piva" placeholder="IT00000000000" value="">
+        </div>
+        <div>
+          <label class="lbl" for="bill-sdi">Codice Destinatario SDI</label>
+          <input class="inp" id="bill-sdi" placeholder="0000000" maxlength="7" value="">
+        </div>
+        <div>
+          <label class="lbl" for="bill-pec">Indirizzo PEC</label>
+          <input class="inp" id="bill-pec" type="email" placeholder="latua@pec.it" value="">
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-4">
+        <button type="button" class="btn-blue px-4 py-2 text-xs font-semibold" onclick="salvaDatiFatturazione()">Salva dati fiscali</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ════════════════════ FAB NUOVA SPEDIZIONE ════════════════════ -->
+<a href="comparatore.html" class="fab-new-shipment" aria-label="Crea una nuova spedizione">
+  <span class="fab-icon">+</span>
+  <span>Nuova Spedizione</span>
+</a>
+
+<!-- TOAST NOTIFICHE -->
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <span class="toast-dot"></span>
+  <span id="toast-msg">Notifica</span>
+</div>
+
+<!-- FOOTER UNIFICATO -->
+
+<!-- Modal Overlay Conferma Rimozione Carta -->
+<div id="modal-confirm-remove-card" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="remove-card-title">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 transform transition-all">
+    <div class="flex items-center gap-3.5 mb-4">
+      <div class="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0 border border-red-100">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          <line x1="10" y1="11" x2="10" y2="17"/>
+          <line x1="14" y1="11" x2="14" y2="17"/>
+        </svg>
+      </div>
+      <div>
+        <h3 id="remove-card-title" class="text-base font-bold text-gray-900 m-0">Rimuovere questa carta?</h3>
+        <p class="text-xs text-gray-500 m-0 mt-0.5" id="remove-card-subtitle">•••• •••• •••• ****</p>
+      </div>
+    </div>
+    <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200/80 mb-5">
+      <p class="text-xs text-gray-600 leading-relaxed m-0" id="remove-card-desc">
+        Sei sicuro di voler eliminare questo metodo di pagamento salvato? Non sarà più utilizzabile per le ricariche rapide istantanee.
+      </p>
+      <p class="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2.5 mt-2.5 hidden m-0" id="remove-card-warn-default">
+        <strong>Nota bene:</strong> Questa è attualmente la carta predefinita del conto. Rimuovendola, un'altra carta disponibile verrà impostata automaticamente come predefinita.
+      </p>
+    </div>
+    <div class="flex items-center justify-end gap-3">
+      <button type="button" class="px-4 py-2 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl transition-all cursor-pointer" onclick="closeRemoveCardModal()">
+        Annulla
+      </button>
+      <button type="button" id="btn-confirm-delete-card" class="px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-sm cursor-pointer" onclick="executeDeleteCard()">
+        Sì, rimuovi carta
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="vex-footer">
+  <div style="max-width:1560px;margin:0 auto" class="px-5 sm:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <img src="assets/logos/logo-dark.svg" alt="VEX ONE" style="height:28px;margin-bottom:14px;filter:brightness(0) invert(1)">
+        <p class="text-xs text-gray-400 font-medium leading-relaxed">
+          Il comparatore corrieri italiano. Confronta, prenota e spedisci dai migliori corrieri in tempo reale.
+        </p>
+      </div>
+      <div>
+        <p class="foot-title">Piattaforma</p>
+        <a href="comparatore.html" class="foot-link">Calcola Tariffa</a>
+        <a href="tracking.html" class="foot-link">Traccia Spedizione</a>
+        <a href="dashboard.html" class="foot-link">Dashboard</a>
+      </div>
+      <div>
+        <p class="foot-title">Supporto</p>
+        <a href="#" class="foot-link">Centro Assistenza</a>
+        <a href="#" class="foot-link">Contatta</a>
+        <a href="#" class="foot-link">Come Imballare</a>
+      </div>
+      <div>
+        <p class="foot-title">Legale</p>
+        <a href="#" class="foot-link">Privacy Policy</a>
+        <a href="#" class="foot-link">Termini &amp; Condizioni</a>
+        <a href="#" class="foot-link">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="foot-sep"></div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium">
+      <p>© 2026 VEX ONE Srl · P.IVA 01234567890</p>
+      <p>Made with precision</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/nav-user.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+   STORAGE E LOGICA CONDIVISA
+════════════════════════════════════════════════════════ */
+const safeStorage = {
+  get: (k) => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} }
+};
+
+const KEY_SALDO = 'vexone:wallet:saldo:v1';
+const KEY_TX = 'vexone:wallet:tx:v1';
+const KEY_METHODS = 'vexone:wallet:methods:v1';
+const KEY_AUTORELOAD = 'vexone:wallet:autoreload:v1';
+const KEY_NOTIFY = 'vexone:wallet:notify:v1';
+const KEY_SPENDLIMIT = 'vexone:wallet:spendlimit:v1';
+const KEY_BILLING = 'vexone:wallet:billing:v1';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  if (!t || !m) return;
+  m.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function fmtEur(n) {
+  return '€ ' + Number(n).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* ════════════════════════════════════════════════════════
+   METODI DI PAGAMENTO
+════════════════════════════════════════════════════════ */
+const INITIAL_METHODS = [];
+
+function getMethods() {
+  const raw = safeStorage.get(KEY_METHODS);
+  if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+  return [];
+}
+function setMethods(arr) { safeStorage.set(KEY_METHODS, JSON.stringify(arr)); }
+
+function renderMethods() {
+  const list = getMethods();
+  const el = document.getElementById('methods-list');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div class="p-5 rounded-xl border border-dashed border-gray-200 bg-gray-50 text-center"><p class="text-xs font-semibold text-gray-700 m-0">Nessuna carta memorizzata</p><p class="text-[11px] text-gray-400 m-0 mt-1">Aggiungi una carta per abilitare le ricariche rapide con un solo click.</p></div>';
+    return;
+  }
+  const brandLabel = { visa:'VISA', mc:'MASTERCARD', amex:'AMEX', other:'CARD' };
+  el.innerHTML = list.map(m => `
+    <div class="method-row ${m.default?'default':''}">
+      <div class="method-brand ${m.brand}">${brandLabel[m.brand] || 'CARD'}</div>
+      <div class="method-info">
+        <div class="num">•••• •••• •••• ${m.last4}</div>
+        <div class="meta">${m.holder} · Scadenza ${m.exp}</div>
+      </div>
+      <div class="method-actions">
+        ${m.default ? '<span class="method-default-badge">Predefinita</span>' : `<button type="button" class="method-btn-default" onclick="setDefaultMethod('${m.id}')">Imposta predefinita</button>`}
+        <button type="button" class="method-btn-remove" onclick="requestRemoveCard('${m.id}')">Rimuovi</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setDefaultMethod(id) {
+  const list = getMethods().map(m => ({...m, default: m.id === id}));
+  setMethods(list);
+  renderMethods();
+  showToast('Metodo predefinito aggiornato');
+}
+
+let pendingDeleteCardId = null;
+
+function requestRemoveCard(id) {
+  const list = getMethods();
+  const card = list.find(m => m.id === id);
+  if (!card) return;
+  pendingDeleteCardId = id;
+  
+  const sub = document.getElementById('remove-card-subtitle');
+  if (sub) {
+    sub.textContent = `${(card.brand || 'CARD').toUpperCase()} •••• ${card.last4} (${card.holder || 'Carta'})`;
+  }
+  
+  const warn = document.getElementById('remove-card-warn-default');
+  if (warn) {
+    if (card.default && list.length > 1) {
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  }
+  
+  const modal = document.getElementById('modal-confirm-remove-card');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeRemoveCardModal() {
+  pendingDeleteCardId = null;
+  const modal = document.getElementById('modal-confirm-remove-card');
+  if (modal) modal.classList.add('hidden');
+}
+
+function executeDeleteCard() {
+  if (!pendingDeleteCardId) return;
+  const id = pendingDeleteCardId;
+  closeRemoveCardModal();
+  
+  let list = getMethods();
+  const wasDefault = list.find(m => m.id === id)?.default;
+  list = list.filter(m => m.id !== id);
+  if (wasDefault && list.length) list[0].default = true;
+  setMethods(list);
+  renderMethods();
+  showToast('Carta rimossa con successo');
+}
+
+function toggleAddCardForm() {
+  const box = document.getElementById('box-add-card-form');
+  if (!box) return;
+  box.style.display = (box.style.display === 'none' || !box.style.display) ? 'block' : 'none';
+}
+
+function saveNewCardFromSettings() {
+  const num = (document.getElementById('new-card-num').value || '').replace(/\s+/g,'');
+  const exp = document.getElementById('new-card-exp').value.trim();
+  const cvv = document.getElementById('new-card-cvv').value.trim();
+  const holder = document.getElementById('new-card-holder').value.trim() || ((typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getUser().displayName : 'Intestatario');
+  if (num.length < 13 || !exp || cvv.length < 3) {
+    showToast('Compila tutti i dati della carta correttamente');
+    return;
+  }
+  const last4 = num.slice(-4);
+  const brand = num.startsWith('4') ? 'visa' : (num.startsWith('5') ? 'mc' : 'other');
+  const list = getMethods();
+  list.push({
+    id: 'pm_' + Date.now(),
+    brand,
+    last4,
+    exp,
+    holder,
+    default: list.length === 0
+  });
+  setMethods(list);
+  renderMethods();
+  toggleAddCardForm();
+  showToast('Nuova carta memorizzata nel portafoglio');
+}
+
+let LIVE_TX = null;
+
+async function loadLiveTransactions() {
+  if (window.VEX_API && typeof window.VEX_API.getToken === 'function' && window.VEX_API.getToken()) {
+    try {
+      const [shipments, topups] = await Promise.allSettled([
+        window.VEX_API.getShipments(),
+        window.VEX_API.listTopups()
+      ]);
+
+      let items = [];
+
+      if (topups.status === 'fulfilled' && Array.isArray(topups.value)) {
+        topups.value.forEach(t => {
+          items.push({
+            tipo: 'ricarica',
+            metodo: (t.method || 'Ricarica').toUpperCase(),
+            desc: `Ricarica credito (${t.status === 'approved' ? 'Accreditata' : t.status === 'pending' ? 'In attesa' : t.status})`,
+            importo: t.amount || 0,
+            data: t.created_at || new Date().toISOString(),
+            status: t.status,
+            id: t._id || t.id
+          });
+        });
+      }
+
+      if (shipments.status === 'fulfilled' && Array.isArray(shipments.value)) {
+        shipments.value.forEach(s => {
+          const cost = typeof s.cost === 'number' ? s.cost : (s.cost?.total || s.cost?.amount || s.cost?.price || 0);
+          const carrier = s.package_details?.carrier || s.carrier_name || s.carrier || 'VEX';
+          const dest = s.recipient?.city || s.destination?.city || 'Italia';
+          items.push({
+            tipo: 'spedizione',
+            corriere: carrier,
+            desc: `Spedizione ${s.tracking_code || s.code || s.id} · ${dest}`,
+            importo: -Math.abs(cost),
+            data: s.created_at || new Date().toISOString(),
+            status: s.status,
+            id: s.id || s._id
+          });
+        });
+      }
+
+      if (items.length > 0) {
+        items.sort((a, b) => new Date(b.data) - new Date(a.data));
+        LIVE_TX = items;
+        renderTransazioni();
+      }
+    } catch(err) {
+      console.warn('Impossibile caricare transazioni live:', err);
+    }
+  }
+}
+
+function getTransazioni() {
+  if (Array.isArray(LIVE_TX) && LIVE_TX.length > 0) {
+    return LIVE_TX;
+  }
+  const raw = safeStorage.get(KEY_TX);
+  if(raw) { try { return JSON.parse(raw); } catch(e) {} }
+  return [];
+}
+
+let currentFilter = 'all';
+let currentDateFilter = 'all';
+let selectedTxIndices = new Set();
+
+function applyDateFilter(list) {
+  if (currentDateFilter === 'all') return list;
+  const now = new Date();
+  let from;
+  if (currentDateFilter === '7d') { from = new Date(); from.setDate(from.getDate()-7); }
+  if (currentDateFilter === '30d') { from = new Date(); from.setDate(from.getDate()-30); }
+  if (currentDateFilter === 'month') { from = new Date(now.getFullYear(), now.getMonth(), 1); }
+  return list.filter(tx => new Date(tx.data) >= from);
+}
+
+function getActiveTxList() {
+  let list = getTransazioni();
+  if(currentFilter !== 'all') list = list.filter(tx => tx.tipo === currentFilter);
+  return applyDateFilter(list);
+}
+
+function handleRowClick(e, idx) {
+  if (e.target.closest('.tx-invoice-btn') || e.target.closest('input[type="checkbox"]')) return;
+  const chk = document.querySelector(`.tx-chk[data-idx="${idx}"]`);
+  if (chk) {
+    chk.checked = !chk.checked;
+    toggleTxSelection(idx, chk.checked);
+  }
+}
+
+function toggleTxSelection(idx, checked) {
+  if (checked) {
+    selectedTxIndices.add(idx);
+  } else {
+    selectedTxIndices.delete(idx);
+  }
+  updateSelectionUI();
+}
+
+function toggleSelectAllTx(checked) {
+  const list = getActiveTxList();
+  if (checked) {
+    list.forEach((_, idx) => selectedTxIndices.add(idx));
+  } else {
+    selectedTxIndices.clear();
+  }
+  updateSelectionUI();
+}
+
+function updateSelectionUI() {
+  const count = selectedTxIndices.size;
+  const countEl = document.getElementById('tx-selected-count');
+  if (countEl) countEl.textContent = count + ' selezionat' + (count === 1 ? 'a' : 'e');
+  
+  const btnText = document.getElementById('btn-export-text');
+  if (btnText) {
+    btnText.textContent = count > 0 ? `Esporta PDF (${count} selezionate)` : 'Esporta PDF Storico';
+  }
+
+  const allChk = document.getElementById('tx-select-all');
+  const list = getActiveTxList();
+  if (allChk) {
+    allChk.checked = list.length > 0 && selectedTxIndices.size === list.length;
+  }
+
+  document.querySelectorAll('.tx-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx, 10);
+    const chk = row.querySelector('.tx-chk');
+    const isSel = selectedTxIndices.has(idx);
+    if (chk) chk.checked = isSel;
+    row.classList.toggle('selected', isSel);
+  });
+}
+
+function renderTransazioni() {
+  const list = getActiveTxList();
+  const el = document.getElementById('tx-list');
+  if(!el) return;
+  if(!list.length) {
+    el.innerHTML = '<p style="padding:32px 0;text-align:center;color:#9CA3AF;font-size:13px">Nessuna transazione nel periodo selezionato</p>';
+    selectedTxIndices.clear();
+    updateSelectionUI();
+    return;
+  }
+  const svgIn = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>';
+  const svgOut = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M12 22V12"/></svg>';
+  const svgInvoice = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>';
+
+  el.innerHTML = list.map((tx, idx) => {
+    const isIn = tx.importo > 0;
+    const meta = isIn ? (tx.metodo||'Carta') : (tx.corriere||'Corriere');
+    const dt = new Date(tx.data);
+    const data = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' + dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+    const isSel = selectedTxIndices.has(idx);
+    const invoiceBtn = isIn ? `<button class="tx-invoice-btn" data-invoice="${idx}" aria-label="Scarica fattura" title="Scarica fattura">${svgInvoice}</button>` : '<div style="width:28px"></div>';
+
+    return `<div class="tx-row ${isSel?'selected':''}" data-idx="${idx}" onclick="handleRowClick(event, ${idx})" style="display:grid!important;grid-template-columns:24px 1fr auto 32px!important;gap:14px!important;align-items:center!important">
+      <input type="checkbox" class="tx-chk w-4 h-4 rounded accent-blue-600 cursor-pointer" data-idx="${idx}" ${isSel?'checked':''} onclick="event.stopPropagation(); toggleTxSelection(${idx}, this.checked)">
+      <div><div class="tx-desc">${tx.desc}</div><div class="tx-meta">${meta}${meta?' · ':''}${data}</div></div>
+      <div class="tx-amt ${isIn?'pos':'neg'}">${isIn?'+':'−'} ${fmtEur(Math.abs(tx.importo))}</div>
+      ${invoiceBtn}
+    </div>`;
+  }).join('');
+
+  updateSelectionUI();
+
+  el.querySelectorAll('[data-invoice]').forEach(b => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showToast('Download fattura avviato');
+    });
+  });
+}
+
+function exportFilteredOrSelectedPDF() {
+  const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFClass) {
+    showToast('Libreria PDF in caricamento, riprova tra un istante');
+    return;
+  }
+  const fullList = getActiveTxList();
+  if (!fullList.length) { showToast('Nessuna transazione da esportare'); return; }
+
+  let exportItems = fullList;
+  if (selectedTxIndices.size > 0) {
+    exportItems = fullList.filter((_, idx) => selectedTxIndices.has(idx));
+  }
+
+  const doc = new jsPDFClass({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+  // Header Brand
+  doc.setFillColor(10, 10, 11);
+  doc.rect(0, 0, 210, 24, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('VEX ONE', 16, 15);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Estratto Conto Transazioni Portafoglio', 45, 15);
+
+  const today = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+  doc.text(`Data estrazione: ${today}`, 155, 15);
+
+  // Info Utente & Riepilogo
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Riepilogo Movimenti Contabili', 16, 36);
+
+  doc.setFontSize(9);
+  const uName = (typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getUser().displayName : 'Utente VEX ONE';
+  doc.text(`Intestatario: ${uName} · Conto Verificato`, 16, 42);
+  doc.text(`Numero movimenti inclusi: ${exportItems.length}`, 16, 47);
+
+  // Totali
+  let totIn = 0, totOut = 0;
+  exportItems.forEach(tx => {
+    if (tx.importo > 0) totIn += tx.importo;
+    else totOut += Math.abs(tx.importo);
+  });
+
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(16, 52, 178, 16, 2, 2, 'F');
+  doc.setFontSize(9);
+  doc.setTextColor(22, 163, 74);
+  doc.text(`Totale Accrediti (+): € ${totIn.toFixed(2)}`, 22, 62);
+  doc.setTextColor(220, 38, 38);
+  doc.text(`Totale Spese (-): € ${totOut.toFixed(2)}`, 85, 62);
+  doc.setTextColor(15, 23, 42);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Differenza: € ${(totIn - totOut).toFixed(2)}`, 145, 62);
+
+  // Tabella transazioni
+  let y = 78;
+  doc.setFillColor(241, 245, 249);
+  doc.rect(16, y - 6, 178, 8, 'F');
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(51, 65, 85);
+  doc.text('DATA & ORA', 18, y);
+  doc.text('TIPO', 55, y);
+  doc.text('DESCRIZIONE & DETTAGLIO', 82, y);
+  doc.text('IMPORTO', 170, y);
+
+  y += 7;
+  doc.setFont('helvetica', 'normal');
+
+  exportItems.forEach((tx) => {
+    if (y > 275) {
+      doc.addPage();
+      y = 20;
+    }
+    const dt = new Date(tx.data);
+    const dateStr = dt.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' }) + ' ' + dt.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+    const isIn = tx.importo > 0;
+    const tipoStr = isIn ? 'RICARICA' : 'SPEDIZIONE';
+    const descStr = tx.desc + (tx.metodo ? ` (${tx.metodo})` : (tx.corriere ? ` (${tx.corriere})` : ''));
+    const amtStr = (isIn ? '+ € ' : '- € ') + Math.abs(tx.importo).toFixed(2);
+
+    doc.setFontSize(8);
+    doc.setTextColor(71, 85, 105);
+    doc.text(dateStr, 18, y);
+    doc.text(tipoStr, 55, y);
+    doc.text(descStr.substring(0, 48), 82, y);
+
+    if (isIn) doc.setTextColor(22, 163, 74);
+    else doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(amtStr, 170, y);
+    doc.setFont('helvetica', 'normal');
+
+    // Separatore linea tenue
+    doc.setDrawColor(241, 245, 249);
+    doc.line(16, y + 2, 194, y + 2);
+    y += 7;
+  });
+
+  // Footer PDF
+  doc.setFontSize(7.5);
+  doc.setTextColor(148, 163, 184);
+  doc.text('Documento generato automaticamente da VEX ONE Platform · www.vexone.it · Conservare ai fini contabili', 16, 288);
+
+  const fname = `VEXONE_EstrattoConto_${new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(fname);
+  showToast(`File "${fname}" scaricato con successo`);
+}
+
+/* ════════════════════════════════════════════════════════
+   SALVATAGGIO IMPOSTAZIONI
+════════════════════════════════════════════════════════ */
+function salvaAutoRicarica() {
+  const th = document.getElementById('auto-threshold').value;
+  const am = document.getElementById('auto-amount').value;
+  safeStorage.set(KEY_AUTORELOAD, JSON.stringify({ threshold: Number(th), amount: Number(am), active: true }));
+  showToast('Auto-ricarica salvata: € ' + am + ' sotto € ' + th);
+}
+
+function salvaLimiteSpesa() {
+  const p = document.getElementById('limit-period').value;
+  const am = document.getElementById('limit-amount').value;
+  safeStorage.set(KEY_SPENDLIMIT, JSON.stringify({ period: p, amount: Number(am), active: true }));
+  showToast('Tetto massimo salvato: € ' + am + ' (' + p + ')');
+}
+
+function salvaAvvisi() {
+  const th = document.getElementById('notify-threshold').value;
+  const em = document.getElementById('notify-email').value;
+  safeStorage.set(KEY_NOTIFY, JSON.stringify({ threshold: Number(th), email: em, active: true }));
+  showToast('Avviso salvato per soglia € ' + th + ' a ' + em);
+}
+
+function salvaDatiFatturazione() {
+  const rag = document.getElementById('bill-ragione').value;
+  const piv = document.getElementById('bill-piva').value;
+  const sdi = document.getElementById('bill-sdi').value;
+  const pec = document.getElementById('bill-pec').value;
+  safeStorage.set(KEY_BILLING, JSON.stringify({ ragione: rag, piva: piv, sdi: sdi, pec: pec }));
+  showToast('Dati fiscali e di fatturazione aggiornati');
+}
+
+function loadSettings() {
+  const rawAuto = safeStorage.get(KEY_AUTORELOAD);
+  if (rawAuto) {
+    try {
+      const v = JSON.parse(rawAuto);
+      if (v.threshold) document.getElementById('auto-threshold').value = v.threshold;
+      if (v.amount) document.getElementById('auto-amount').value = v.amount;
+    } catch(e) {}
+  }
+  const rawLim = safeStorage.get(KEY_SPENDLIMIT);
+  if (rawLim) {
+    try {
+      const v = JSON.parse(rawLim);
+      if (v.period) document.getElementById('limit-period').value = v.period;
+      if (v.amount) document.getElementById('limit-amount').value = v.amount;
+    } catch(e) {}
+  }
+  const rawNot = safeStorage.get(KEY_NOTIFY);
+  if (rawNot) {
+    try {
+      const v = JSON.parse(rawNot);
+      if (v.threshold) document.getElementById('notify-threshold').value = v.threshold;
+      if (v.email) document.getElementById('notify-email').value = v.email;
+    } catch(e) {}
+  }
+  const rawBill = safeStorage.get(KEY_BILLING);
+  if (rawBill) {
+    try {
+      const v = JSON.parse(rawBill);
+      if (v.ragione) document.getElementById('bill-ragione').value = v.ragione;
+      if (v.piva) document.getElementById('bill-piva').value = v.piva;
+      if (v.sdi) document.getElementById('bill-sdi').value = v.sdi;
+      if (v.pec) document.getElementById('bill-pec').value = v.pec;
+    } catch(e) {}
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   INIT GENERALE
+════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderTransazioni();
+  loadLiveTransactions();
+  renderMethods();
+  loadSettings();
+
+  // Filtri tipo
+  document.querySelectorAll('[data-filter]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('on', b===btn));
+      renderTransazioni();
+    })
+  );
+
+  // Filtro data
+  const dFilter = document.getElementById('date-filter');
+  if (dFilter) {
+    dFilter.addEventListener('change', e => {
+      currentDateFilter = e.target.value;
+      renderTransazioni();
+    });
+  }
+
+  // Active pill scroll sync
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash || '#storico';
+    document.querySelectorAll('.subnav-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.getAttribute('href') === hash);
+    });
+  });
+  if (window.location.hash) {
+    const activePill = document.querySelector(`.subnav-pill[href="${window.location.hash}"]`);
+    if (activePill) activePill.classList.add('active');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Spedisci smart. Paga il giusto.</title>
+
+ <!-- SEO -->
+ <meta name="description" content="VEX ONE confronta DHL, UPS, FedEx, BRT, SDA e altri in 2 secondi. Il prezzo più basso, ritiro a domicilio, tracking live. Gratis, senza abbonamento.">
+ <meta name="keywords" content="spedizioni online, confronto corrieri, spedire economico, DHL UPS FedEx, spedizioni Italia">
+ <meta name="author" content="VEX ONE">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://vexone.it/">
+
+ <!-- Open Graph -->
+ <meta property="og:type" content="website">
+ <meta property="og:url" content="https://vexone.it/">
+ <meta property="og:title" content="VEX ONE — Spedisci smart. Paga il giusto.">
+ <meta property="og:description" content="Confronta tutti i corrieri in 2 secondi. Il prezzo più basso, ritiro a domicilio, tracking live. Zero abbonamenti.">
+ <meta property="og:image" content="https://vexone.it/og-image.jpg">
+ <meta property="og:locale" content="it_IT">
+
+ <!-- Twitter Card -->
+ <meta name="twitter:card" content="summary_large_image">
+ <meta name="twitter:title" content="VEX ONE — Spedisci smart. Paga il giusto.">
+ <meta name="twitter:description" content="Confronta tutti i corrieri in 2 secondi. Zero abbonamenti.">
+
+ <!-- Schema.org JSON-LD -->
+ <script type="application/ld+json">
+ {
+ "@context": "https://schema.org",
+ "@type": "SoftwareApplication",
+ "name": "VEX ONE",
+ "url": "https://vexone.it",
+ "description": "Piattaforma di confronto corrieri in tempo reale. Confronta DHL, UPS, FedEx, BRT, SDA e altri in 2 secondi. Ritiro a domicilio, tracking live, zero abbonamenti.",
+ "applicationCategory": "BusinessApplication",
+ "operatingSystem": "Web",
+ "offers": {
+ "@type": "Offer",
+ "price": "0",
+ "priceCurrency": "EUR",
+ "description": "Utilizzo gratuito — paghi solo le spedizioni"
+ },
+ "provider": {
+ "@type": "Organization",
+ "name": "VEX ONE",
+ "url": "https://vexone.it",
+ "foundingDate": "2024",
+ "foundingLocation": "Catania, Italia",
+ "areaServed": "IT"
+ },
+ "featureList": [
+ "Confronto tariffe corrieri in tempo reale",
+ "Ritiro a domicilio",
+ "Tracking spedizioni live",
+ "Stampa etichette A4/A6",
+ "Multi-collo",
+ "Fattura automatica P.IVA"
+ ]
+ }
+ </script>
+
+ <script src="https://cdn.tailwindcss.com"></script>
+ <!-- NOTA PRODUZIONE: sostituire CDN Tailwind con build ottimizzato (npx tailwindcss build) prima del deploy pubblico -->
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/home.css?v=organic_centered_16">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body class="bg-white">
+<!-- ══════════════════════════════════════
+ NAV CONDIVISO
+══════════════════════════════════════ -->
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="page-home" class="page active">
+
+ <!-- HERO WRAPPER WITH BACKGROUND PHOTO -->
+  <div class="hero-wrapper">
+    <div class="hero-bg-photo" style="background-image: url('assets/images/Courier_collecting_package_at_home_202609031237.webp');"></div>
+    <div class="hero-bg-overlay"></div>
+    <header class="relative max-w-7xl mx-auto px-6 pt-16 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center z-10">
+
+ <div class="lg:col-span-5 relative z-10">
+ <div class="inline-flex items-center gap-2 mb-8 bg-vexBlue/5 border border-vexBlue/10 px-4 py-2 rounded-full">
+ <span class="h-1.5 w-1.5 rounded-full bg-vexBlue animate-pulse"></span>
+ <span class="text-vexBlue text-xs font-semibold">Logistica Premium Attiva</span>
+ </div>
+ <h1 class="text-[68px] md:text-[80px] font-bold tracking-tight leading-[0.88] mb-8">
+ Spedisci<br><span class="text-vexBlue">smart.</span><br>Paga il giusto<span style="color:#B8FF00">.</span>
+ </h1>
+ <p class="text-lg text-gray-400 font-medium leading-relaxed mb-8 max-w-sm">
+ L'algoritmo che <span class="text-vexDark font-bold">confronta corrieri online</span> — DHL, UPS, FedEx, BRT e altri — e ti dà il prezzo più basso in 2 secondi.
+ </p>
+ <!-- Esempio risparmio concreto -->
+ <div class="bg-vexLight border border-gray-100 rounded-2xl px-5 py-4 mb-8 max-w-sm">
+ <div class="text-xs font-medium text-gray-500 mb-2">Esempio reale</div>
+ <div class="flex items-center justify-between gap-4">
+ <div class="flex items-center gap-2.5">
+ <img src="carriers/dhl.svg" width="28" height="28" class="carrier-logo-icon flex-shrink-0" alt="DHL">
+ <div>
+ <div class="text-sm font-bold tracking-tight text-vexDark">Milano → Roma · 5 kg</div>
+ <div class="text-[10px] font-bold text-gray-400 mt-0.5">DHL Express · ritiro domani</div>
+ </div>
+ </div>
+ <div class="text-right flex-shrink-0">
+ <div class="text-[11px] font-bold text-gray-300 line-through">€18,90</div>
+ <div class="text-2xl font-bold tracking-tight text-vexBlue leading-none">€8,40</div>
+ </div>
+ </div>
+ <div class="mt-3 h-px bg-gray-100"></div>
+ <div class="mt-3 flex items-center gap-2">
+ <span class="text-green-500 text-xs font-bold">↓ -55%</span>
+ <span class="text-xs text-gray-500 font-normal">rispetto al listino diretto DHL</span>
+ </div>
+ </div>
+ <div class="bg-vexLight border border-gray-100 rounded-full px-5 py-3 inline-flex items-center gap-3 mb-4">
+ <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse flex-shrink-0"></span>
+ <span id="ticker" class="text-xs font-medium text-gray-600" style="transition:opacity .4s">Live: Roma → Parigi (2 kg) prenotato ora</span>
+ </div>
+ <div class="hero-carrier-logos mb-10">
+    <span class="hero-carrier-logo">DHL</span>
+    <span class="hero-carrier-logo">UPS</span>
+    <span class="hero-carrier-logo">FEDEX</span>
+    <span class="hero-carrier-logo">BRT</span>
+    <span class="hero-carrier-logo">SDA</span>
+  </div>
+
+ </div>
+
+ <!-- Form card — desktop -->
+ <div class="lg:col-span-7 relative z-10">
+ <div class="form-full bg-white rounded-2xl p-10 md:p-12" style="box-shadow:0 30px 70px rgba(0,0,0,.09);border:1px solid rgba(0,0,0,.05)">
+
+ <!-- Tipo spedizione -->
+ <div class="hp-switch mb-8" id="hp-switch" data-type="0">
+ <div class="hp-pill" id="hp-pill"></div>
+ <div class="hp-btn on" onclick="setHpType(0,this)"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Pacco</div>
+ <div class="hp-btn" onclick="setHpType(1,this)"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Busta</div>
+ <div class="hp-btn" onclick="setHpType(2,this)"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>Pallet</div>
+ </div>
+
+ <!-- Mittente / Destinatario -->
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+ <div>
+ <span class="lbl"><svg class="icon mr-1 inline text-vexBlue" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Mittente</span>
+ <div class="flex gap-2">
+ <input class="inp" id="m-cap" placeholder="CAP" maxlength="5" style="max-width:85px">
+ <input class="inp" id="m-city" placeholder="Città">
+ </div>
+ </div>
+ <div>
+ <span class="lbl"><svg class="icon mr-1 inline text-vexBlue" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Destinatario</span>
+ <div class="flex gap-2">
+ <input class="inp" id="d-cap" placeholder="CAP" maxlength="5" style="max-width:85px">
+ <input class="inp" id="d-city" placeholder="Città">
+ </div>
+ </div>
+ </div>
+
+ <!-- Quick preset buttons -->
+ <div class="mb-5">
+ <span class="lbl mb-2"> Aggiungi rapido</span>
+ <div class="flex flex-wrap gap-2">
+ <button class="quick-btn" onclick="addColloFromQuick({nome:'Busta',tipo:'busta',peso:0.5,l:32,w:23,h:2})"> Busta</button>
+ <button class="quick-btn" onclick="addColloFromQuick({nome:'Small',tipo:'scatola',peso:2,l:30,w:20,h:15})"> Small</button>
+ <button class="quick-btn" onclick="addColloFromQuick({nome:'Medium',tipo:'scatola',peso:5,l:40,w:30,h:25})"> Medium</button>
+ <button class="quick-btn" onclick="addColloFromQuick({nome:'Large',tipo:'scatola',peso:15,l:60,w:40,h:40})"> Large</button>
+ </div>
+ </div>
+
+ <!-- Colli -->
+ <div class="mb-3">
+ <div class="flex items-center justify-between mb-3">
+ <span class="lbl mb-0"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Colli da spedire</span>
+ <span class="text-xs font-semibold text-gray-500" id="colli-count">1 collo</span>
+ </div>
+ <div id="colli-list" class="space-y-3"></div>
+ <button onclick="addCollo()" class="w-full mt-3 border-2 border-dashed border-gray-200 rounded-xl py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:border-vexBlue hover:text-vexBlue hover:bg-vexBlue/5 ts flex items-center justify-center gap-2">
+ <span class="text-lg leading-none">+</span> Aggiungi collo manuale
+ </button>
+ </div>
+
+ <!-- Preset salvati -->
+ <div class="mb-5 mt-1">
+ <div class="flex items-center justify-between mb-2">
+ <span class="lbl mb-0"> Le mie scatole</span>
+ <div class="flex items-center gap-2">
+ <span class="text-xs font-medium text-gray-400" id="preset-limit-badge"></span>
+ <select class="text-xs font-medium text-gray-500 bg-transparent border-0 outline-none cursor-pointer" id="preset-sort" onchange="renderPresets()">
+ <option value="manual">Manuale</option>
+ <option value="recent">Recenti</option>
+ <option value="usage">Più usati</option>
+ <option value="az">A-Z</option>
+ </select>
+ </div>
+ </div>
+ <!-- Suggeriti -->
+ <div id="suggested-presets" class="mb-2"></div>
+ <!-- Lista completa -->
+ <div class="flex flex-wrap gap-2" id="presets-list"></div>
+ <div class="flex gap-2 mt-2 flex-wrap">
+ <button onclick="openSavePreset()" class="preset-chip hover:border-vexLime hover:text-vexDark hover:bg-vexLime/10" id="btn-new-preset"><svg class="icon mr-1 inline" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Nuovo preset</button>
+ <button onclick="exportPresets()" class="preset-chip hover:border-gray-300" title="Esporta preset"><svg class="icon mr-1 inline" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Esporta</button>
+ <label class="preset-chip hover:border-gray-300 cursor-pointer" title="Importa preset"><svg class="icon mr-1 inline" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importa<input type="file" accept=".json" style="display:none" onchange="importPresets(event)"></label>
+ </div>
+ </div>
+
+ <button onclick="goToComparatore()" class="w-full bg-vexDark text-white font-semibold text-sm tracking-wide py-4 rounded-xl ts shine" style="transition:background .25s,color .25s,transform .25s" onmouseover="this.style.background='#B8FF00';this.style.color='#0A0A0B'" onmouseout="this.style.background='#0A0A0B';this.style.color='#fff'">Confronta Tariffe Ora</button>
+ <p class="text-center text-xs text-gray-500 mt-3 font-normal">Assicurazione opzionale · Ritiro in giornata · Connessione protetta SSL</p>
+ </div>
+
+ <!-- Form compatto — solo mobile -->
+ <div class="form-mobile-cta bg-white rounded-2xl p-8" style="box-shadow:0 20px 50px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)">
+ <div class="text-center mb-6">
+ <div class="text-3xl mb-2 flex justify-center text-vexBlue"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+ <h3 class="text-xl font-bold tracking-tight mb-1">Quanto costa spedire?</h3>
+ <p class="text-gray-400 text-sm font-medium">Inserisci da dove e dove, ti troviamo il prezzo più basso.</p>
+ </div>
+ <div class="space-y-3 mb-5">
+ <div>
+ <span class="lbl"> Da</span>
+ <div class="flex gap-2">
+ <input class="inp" id="m-cap-mob" placeholder="CAP" maxlength="5" style="max-width:90px">
+ <input class="inp" id="m-city-mob" placeholder="Città">
+ </div>
+ </div>
+ <div>
+ <span class="lbl"> A</span>
+ <div class="flex gap-2">
+ <input class="inp" id="d-cap-mob" placeholder="CAP" maxlength="5" style="max-width:90px">
+ <input class="inp" id="d-city-mob" placeholder="Città">
+ </div>
+ </div>
+ </div>
+ <button onclick="goToComparatore(true)" class="w-full bg-vexDark text-white font-semibold text-sm tracking-wide py-4 rounded-xl shine" style="transition:background .25s,color .25s" onmouseover="this.style.background='#B8FF00';this.style.color='#0A0A0B'" onmouseout="this.style.background='#0A0A0B';this.style.color='#fff'">Calcola il prezzo →</button>
+ <p class="text-center text-xs text-gray-500 mt-2 font-normal">Peso, dimensioni e colli li inserisci nel passo successivo</p>
+ </div>
+ </div>
+ </header>
+  </div>
+
+ <!-- Modal Demo Business -->
+ <div class="modal-overlay" id="modal-demo">
+ <div class="modal-box" style="max-width:440px">
+ <div class="flex justify-between items-center mb-2">
+ <div>
+ <h3 class="text-2xl font-bold tracking-tight">Parliamo di business<span style="color:#B8FF00">.</span></h3>
+ <p class="text-gray-400 text-sm font-medium mt-1">Ti ricontattiamo entro 24 ore.</p>
+ </div>
+ <button onclick="closeModal('modal-demo')" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 ts text-lg flex items-center justify-center flex-shrink-0">×</button>
+ </div>
+ <div class="h-px bg-gray-100 my-5"></div>
+ <div class="space-y-4" id="demo-form-fields">
+ <div><span class="lbl">Nome e cognome</span><input class="inp" id="demo-name" placeholder="Es. Mario Rossi"></div>
+ <div><span class="lbl">Email aziendale</span><input class="inp" id="demo-email" type="email" placeholder="mario@azienda.it"></div>
+ <div><span class="lbl">Azienda</span><input class="inp" id="demo-company" placeholder="Nome azienda o P.IVA"></div>
+ <div>
+ <span class="lbl">Spedizioni mensili (circa)</span>
+ <div class="grid grid-cols-3 gap-2 mt-1">
+ <div class="tipo-btn" onclick="selectVolume(this)"><div class="ti"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><div class="tl">20–100</div></div>
+ <div class="tipo-btn" onclick="selectVolume(this)"><div class="ti"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></div><div class="tl">100–500</div></div>
+ <div class="tipo-btn on" onclick="selectVolume(this)"><div class="ti"><svg class="icon inline" viewBox="0 0 24 24"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-5H9L2 8Z"/><path d="M13 18h4"/><path d="M13 14h4"/><path d="M7 18h2"/><path d="M7 14h2"/></svg></div><div class="tl">500+</div></div>
+ </div>
+ </div>
+ <div><span class="lbl">Note (opzionale)</span><textarea class="inp" id="demo-notes" rows="2" placeholder="Integrazioni, esigenze particolari…" style="resize:none"></textarea></div>
+ <button onclick="submitDemo()" class="btn-dark w-full" style="display:block;text-align:center;padding:14px 0;margin-top:8px" onmouseover="this.style.background='#B8FF00';this.style.color='#0A0A0B'" onmouseout="this.style.background='#0A0A0B';this.style.color='#fff'">Invia richiesta demo →</button>
+ <p class="text-center text-xs text-gray-500 font-normal mt-2">Risposta garantita entro 24h · Nessuno spam</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Modal salva preset -->
+ <div class="modal-overlay" id="modal-preset">
+ <div class="modal-box" style="max-width:400px">
+ <div class="flex justify-between items-center mb-6">
+ <div>
+ <h3 class="text-xl font-bold tracking-tight" id="modal-preset-title">Nuova scatola</h3>
+ <p class="text-gray-400 text-xs font-medium mt-0.5">I dati vengono condivisi col comparatore</p>
+ </div>
+ <button onclick="closeModal('modal-preset')" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 ts text-lg flex items-center justify-center">×</button>
+ </div>
+ <input type="hidden" id="preset-edit-idx" value="">
+ <div class="space-y-4">
+ <div>
+ <span class="lbl">Nome preset</span>
+ <input class="inp" id="preset-name" placeholder="Es. BottiglieVino, Shoebox…" maxlength="40">
+ </div>
+ <div>
+ <span class="lbl">Tipo</span>
+ <div class="flex gap-2">
+ <button class="tipo-btn on" id="tipo-scatola" onclick="selectTipoPreset('scatola',this)"><div class="ti"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><div class="tl">Scatola</div></button>
+ <button class="tipo-btn" id="tipo-busta" onclick="selectTipoPreset('busta',this)"><div class="ti"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div><div class="tl">Busta</div></button>
+ <button class="tipo-btn" id="tipo-pallet" onclick="selectTipoPreset('pallet',this)"><div class="ti"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></div><div class="tl">Pallet</div></button>
+ </div>
+ </div>
+ <div>
+ <span class="lbl">Peso (kg)</span>
+ <input class="inp" id="preset-weight" placeholder="Es. 2.5" type="number" step=".1" min=".1">
+ </div>
+ <div>
+ <span class="lbl">Dimensioni (L × W × H in cm)</span>
+ <div class="flex gap-2">
+ <input class="inp dim-preset" placeholder="L" type="number" min="1">
+ <input class="inp dim-preset" placeholder="W" type="number" min="1">
+ <input class="inp dim-preset" placeholder="H" type="number" min="1">
+ </div>
+ </div>
+ <button onclick="savePreset()" class="btn-dark w-full" style="display:block;text-align:center;padding:14px 0"> Salva scatola</button>
+ </div>
+ </div>
+ </div>
+
+ <!-- Strip corrieri (Stile Originale Online) -->
+ <div class="carrier-strip-wrap">
+  <div class="carrier-strip" style="display:flex;align-items:center;gap:60px;width:max-content">
+    <!-- Set 1 -->
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/inpost.png" width="32" height="32" alt="InPost" class="carrier-logo-icon"><span class="carrier-name">InPost</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/poste.png" width="32" height="32" alt="Poste" class="carrier-logo-icon"><span class="carrier-name">Poste</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/sda.png" width="32" height="32" alt="SDA" class="carrier-logo-icon"><span class="carrier-name">SDA</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/tnt.png" width="32" height="32" alt="TNT" class="carrier-logo-icon"><span class="carrier-name">TNT</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/ups.png" width="32" height="32" alt="UPS" class="carrier-logo-icon"><span class="carrier-name">UPS</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/brt.png" width="32" height="32" alt="BRT" class="carrier-logo-icon"><span class="carrier-name">BRT</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dhl.png" width="32" height="32" alt="DHL" class="carrier-logo-icon"><span class="carrier-name">DHL</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dva.png" width="32" height="32" alt="VEX" class="carrier-logo-icon"><span class="carrier-name">VEX</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dvalm.png" width="32" height="32" alt="Vex Last Minute" class="carrier-logo-icon"><span class="carrier-name">Vex Last Minute</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/gls.png" width="32" height="32" alt="GLS" class="carrier-logo-icon"><span class="carrier-name">GLS</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/fedex.png" width="32" height="32" alt="FedEx" class="carrier-logo-icon"><span class="carrier-name">FedEx</span></span>
+
+    <!-- Set 2 (loop continuo) -->
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/inpost.png" width="32" height="32" alt="InPost" class="carrier-logo-icon"><span class="carrier-name">InPost</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/poste.png" width="32" height="32" alt="Poste" class="carrier-logo-icon"><span class="carrier-name">Poste</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/sda.png" width="32" height="32" alt="SDA" class="carrier-logo-icon"><span class="carrier-name">SDA</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/tnt.png" width="32" height="32" alt="TNT" class="carrier-logo-icon"><span class="carrier-name">TNT</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/ups.png" width="32" height="32" alt="UPS" class="carrier-logo-icon"><span class="carrier-name">UPS</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/brt.png" width="32" height="32" alt="BRT" class="carrier-logo-icon"><span class="carrier-name">BRT</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dhl.png" width="32" height="32" alt="DHL" class="carrier-logo-icon"><span class="carrier-name">DHL</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dva.png" width="32" height="32" alt="VEX" class="carrier-logo-icon"><span class="carrier-name">VEX</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/dvalm.png" width="32" height="32" alt="Vex Last Minute" class="carrier-logo-icon"><span class="carrier-name">Vex Last Minute</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/gls.png" width="32" height="32" alt="GLS" class="carrier-logo-icon"><span class="carrier-name">GLS</span></span>
+    <span class="carrier-strip-item" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap"><img src="carriers/fedex.png" width="32" height="32" alt="FedEx" class="carrier-logo-icon"><span class="carrier-name">FedEx</span></span>
+  </div>
+ </div>
+
+ <!-- Live Stats Bar -->
+ <section class="max-w-7xl mx-auto px-6 py-14">
+ <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+ <div class="bg-vexLight rounded-2xl p-7 text-center border border-gray-100 hover:border-vexBlue/20 hover:shadow-lg ts">
+ <div class="text-[42px] font-bold tracking-tight leading-none text-vexDark mb-1">8+</div>
+ <div class="text-xs font-semibold text-gray-600">Corrieri integrati</div>
+ </div>
+ <div class="bg-vexLight rounded-2xl p-7 text-center border border-gray-100 hover:border-vexLime/40 hover:shadow-lg ts">
+ <div class="text-[42px] font-bold tracking-tight leading-none text-vexDark mb-1">2s</div>
+ <div class="text-xs font-semibold text-gray-600">Confronto in tempo reale</div>
+ </div>
+ <div class="bg-vexLight rounded-2xl p-7 text-center border border-gray-100 hover:border-vexBlue/20 hover:shadow-lg ts">
+ <div class="text-[42px] font-bold tracking-tight leading-none text-vexDark mb-1">€0</div>
+ <div class="text-xs font-semibold text-gray-600">Abbonamento mensile</div>
+ </div>
+ <div class="bg-vexBlue rounded-2xl p-7 text-center hover:shadow-xl hover:shadow-blue-200 ts">
+ <div class="text-[42px] font-bold tracking-tight leading-none text-white mb-1">50+</div>
+ <div class="text-xs font-semibold text-blue-100">Aziende in beta</div>
+ </div>
+ </div>
+ </section>
+
+  <!-- Calcolatore risparmio -->
+ <section id="tariffe" class="max-w-7xl mx-auto px-6 pb-16">
+ <div class="bg-vexDark rounded-2xl p-10 md:p-14 relative overflow-hidden">
+ <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+ <div>
+ <div class="inline-flex items-center gap-2 mb-5 bg-vexLime/10 border border-vexLime/20 px-4 py-2 rounded-full">
+ <span class="h-1.5 w-1.5 rounded-full bg-vexLime animate-pulse"></span>
+ <span class="text-vexLime text-xs font-semibold">Calcola il tuo risparmio</span>
+ </div>
+ <h2 class="text-4xl font-bold tracking-tight leading-[0.92] text-white mb-4">Quanto risparmi<br>con VEX ONE<span style="color:#B8FF00">?</span></h2>
+ <p class="text-gray-400 font-medium text-sm leading-relaxed mb-8">Muovi lo slider e scopri quanto potresti risparmiare ogni anno rispetto alle tariffe standard dei corrieri.</p>
+ <div class="mb-6">
+ <div class="flex justify-between items-center mb-3">
+ <span class="text-xs font-medium text-gray-400">Spedizioni al mese</span>
+ <span class="text-white font-bold text-lg" id="calc-n">20</span>
+ </div>
+ <input type="range" class="calc-slider" id="calc-slider" min="5" max="500" value="20" oninput="updateCalc(this.value)">
+ <div class="flex justify-between text-xs font-medium text-gray-400 mt-2">
+ <span>5/mese</span><span>500/mese</span>
+ </div>
+ </div>
+ </div>
+ <div class="flex flex-col gap-4">
+ <div class="bg-white/5 border border-white/8 rounded-2xl p-7">
+ <div class="text-xs font-medium text-gray-400 mb-1">Risparmio annuo stimato</div>
+ <div class="text-5xl font-bold tracking-tight text-vexLime" id="calc-saving">€2.016</div>
+ <div class="text-xs font-normal text-gray-400 mt-1">rispetto al listino diretto dei corrieri</div>
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div class="bg-white/5 border border-white/8 rounded-2xl p-5">
+ <div class="text-xs font-medium text-gray-400 mb-1">Costo medio attuale</div>
+ <div class="text-2xl font-bold tracking-tight text-white line-through opacity-50" id="calc-old">€420</div>
+ <div class="text-xs text-gray-400 font-normal">a spedizione media</div>
+ </div>
+ <div class="bg-vexBlue/20 border border-vexBlue/30 rounded-2xl p-5">
+ <div class="text-xs font-medium text-blue-200 mb-1">Con VEX ONE</div>
+ <div class="text-2xl font-bold tracking-tight text-white" id="calc-new">€252</div>
+ <div class="text-xs text-blue-200 font-normal">a spedizione media</div>
+ </div>
+ </div>
+ <button onclick="window.location.href='comparatore.html'" class="btn-lime shine w-full" style="display:block;text-align:center;padding:14px 0">Prova gratis, senza registrazione →</button>
+ </div>
+ </div>
+ </div>
+ </section>
+
+  <!-- Features -->
+ <section id="servizi" class="max-w-7xl mx-auto px-6 py-28">
+ <div class="text-center mb-16">
+ <p class="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">Perché sceglierci</p>
+ <h2 class="text-[52px] font-bold tracking-tight leading-none mb-6">Confronto corrieri online.<br>Spedizioni economiche, sempre.</h2>
+ <p class="text-gray-400 font-medium text-lg max-w-md mx-auto leading-relaxed">Tecnologia, risparmio e controllo totale in un'unica piattaforma. DHL, UPS, FedEx, BRT e altri a confronto in tempo reale.</p>
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+ <div class="feat-card c-b group"><div class="w-12 h-12 rounded-xl bg-vexBlue/10 text-vexBlue flex items-center justify-center mb-6"><svg class="icon icon-lg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="ft text-2xl font-bold tracking-tight mb-3 ts">Confronto in 2 secondi</div><div class="fb text-gray-500 font-medium text-sm leading-relaxed ts">Confrontiamo DHL, UPS, FedEx, BRT, SDA e altri: il prezzo più basso senza aprire 10 siti diversi.</div><div class="mt-8"><span class="text-xs font-semibold text-vexBlue group-hover:text-white ts cursor-pointer" onclick="window.location.href='comparatore.html'">Confronta ora →</span></div></div>
+ <div class="feat-card c-l group"><div class="w-12 h-12 rounded-xl bg-vexLime/20 text-vexDark flex items-center justify-center mb-6"><svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div><div class="ft text-2xl font-bold tracking-tight mb-3 ts">Tracking HD in tempo reale</div><div class="fb text-gray-500 font-medium text-sm leading-relaxed ts">Un unico link per seguire la spedizione su qualsiasi corriere. Notifiche SMS ed email ad ogni aggiornamento.</div><div class="mt-8"><span class="text-xs font-semibold text-vexBlue group-hover:text-vexDark ts cursor-pointer" onclick="window.location.href='tracking.html'">Traccia ora →</span></div></div>
+ <div class="feat-card c-w group"><div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-800 flex items-center justify-center mb-6"><svg class="icon icon-lg" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ft text-2xl font-bold tracking-tight mb-3 ts">100% Digitale</div><div class="fb text-gray-500 font-medium text-sm leading-relaxed ts">Paga, scarica l'etichetta e prenota il ritiro online. Fattura automatica in due click.</div><div class="mt-8"><span class="text-xs font-semibold text-vexBlue ts cursor-pointer" onclick="window.location.href='dashboard.html'">Dashboard →</span></div></div>
+ </div>
+ </section>
+
+  <!-- ══ BANNER A TUTTO SCHERMO: CURA & TRACCIAMENTO LASER (Photo 2) ══ -->
+  <section class="author-banner-fullscreen py-24 sm:py-32 my-12" style="background-image: url('assets/images/Courier_delivering_inside_van_2K_202609031239.webp');">
+    <div class="author-banner-fullscreen-overlay"></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md border border-blue-400/30 text-blue-200 text-xs font-bold uppercase tracking-wider mb-5">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          <span>Cura del Collo &amp; Tracciamento Laser</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.08] mb-6">
+          Furgoni dedicati.<br>
+          <span class="text-vexBlue">Monitoraggio continuo ad ogni snodo.</span>
+        </h2>
+        <p class="text-gray-300 text-base sm:text-lg font-medium leading-relaxed mb-8">
+          Scansione laser barcode ad ogni passaggio logistico e pacchi assicurati all'interno dei van. Sai sempre con certezza matematica quando il tuo collo è in transito, in consegna o recapitato.
+        </p>
+        <div class="flex flex-wrap items-center gap-4">
+          <a href="tracking.html" class="nav-btn-primary shine px-7 py-3.5 rounded-xl font-bold text-sm shadow-xl inline-flex items-center gap-2">
+            Traccia spedizione in tempo reale →
+          </a>
+          <span class="text-xs text-gray-400 font-medium">Aggiornamenti continui via SMS ed Email</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Come funziona / Come imballare -->
+ <section class="bg-vexLight py-28">
+ <div class="max-w-7xl mx-auto px-6">
+
+ <div class="text-center mb-12">
+ <p class="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">Il processo</p>
+ <h2 class="text-[52px] font-bold tracking-tight leading-none mb-10">Come spedire un pacco<br>con VEX ONE.</h2>
+ <!-- Tab switch -->
+ <div class="proc-tabs">
+ <div class="proc-tab on" onclick="switchProc(0,this)"> Come spedire</div>
+ <div class="proc-tab" onclick="switchProc(1,this)"> Come imballare</div>
+ </div>
+ </div>
+
+ <!-- PANEL 0 — Come spedire -->
+ <div class="proc-panel on" id="proc-0">
+ <div class="steps-grid">
+
+ <div class="step-item">
+ <!-- Mockup: form inserimento dati -->
+ <div class="step-mockup mb-6">
+ <div class="mock-bar"><span></span><span></span><span></span></div>
+ <div class="mock-body">
+ <div class="mock-label"> Da</div>
+ <div class="mock-inp">Milano, 20100</div>
+ <div class="mock-label mt-2"> A</div>
+ <div class="mock-inp">Roma, 00100</div>
+ <div class="mock-label mt-2"> Peso</div>
+ <div class="mock-inp">5 kg</div>
+ </div>
+ </div>
+ <div class="text-xs font-bold uppercase tracking-wider text-vexBlue mb-2">Step 01</div>
+ <h3 class="text-xl font-bold tracking-tight mb-3">Inserisci i dati</h3>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">CAP mittente e destinatario, peso e dimensioni del pacco. Bastano 30 secondi.</p>
+ </div>
+
+ <div class="step-item">
+ <!-- Mockup: lista risultati comparatore -->
+ <div class="step-mockup mb-6">
+ <div class="mock-bar"><span></span><span></span><span></span></div>
+ <div class="mock-body">
+ <div class="mock-result best">
+ <img src="carriers/dhl.svg" width="30" height="30" class="carrier-logo-icon flex-shrink-0" alt="DHL">
+ <div style="flex:1"><div class="mock-carrier-name">DHL Express</div><div class="mock-del">Domani 12:00</div></div>
+ <div class="mock-price">€8,40</div>
+ </div>
+ <div class="mock-result">
+ <img src="carriers/ups.svg" width="30" height="30" class="carrier-logo-icon flex-shrink-0" alt="UPS">
+ <div style="flex:1"><div class="mock-carrier-name">UPS Standard</div><div class="mock-del">2 giorni</div></div>
+ <div class="mock-price">€9,80</div>
+ </div>
+ <div class="mock-result">
+ <img src="carriers/brt.svg" width="30" height="30" class="carrier-logo-icon flex-shrink-0" alt="BRT">
+ <div style="flex:1"><div class="mock-carrier-name">BRT Express</div><div class="mock-del">Domani</div></div>
+ <div class="mock-price">€11,20</div>
+ </div>
+ </div>
+ </div>
+ <div class="text-xs font-bold uppercase tracking-wider text-green-600 mb-2">Step 02</div>
+ <h3 class="text-xl font-bold tracking-tight mb-3">Compara le offerte</h3>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Tariffe in tempo reale da tutti i corrieri, ordinate per prezzo o velocità di consegna.</p>
+ </div>
+
+ <div class="step-item">
+ <!-- Mockup: checkout pagamento -->
+ <div class="step-mockup mb-6">
+ <div class="mock-bar"><span></span><span></span><span></span></div>
+ <div class="mock-body">
+ <div class="mock-label"> Pagamento</div>
+ <div class="mock-inp" style="display:flex;align-items:center;gap:6px">
+ <span style="font-size:14px"></span>
+ <span style="color:#9CA3AF;font-size:11px;">•••• •••• •••• 4242</span>
+ </div>
+ <div style="margin-top:10px;background:#0078FF;color:#fff;border-radius:8px;padding:7px;text-align:center;font-size:11px;font-weight:700;letter-spacing:0.04em;">PAGA €8,40 →</div>
+ <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:8px">
+ <span style="font-size:11px;"></span>
+ <span style="font-size:11px;color:#9CA3AF;font-weight:700">SSL · Pagamento sicuro</span>
+ </div>
+ </div>
+ </div>
+ <div class="text-xs font-bold uppercase tracking-wider text-purple-600 mb-2">Step 03</div>
+ <h3 class="text-xl font-bold tracking-tight mb-3">Paga e stampa</h3>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Carta, PayPal o Apple Pay. L'etichetta è pronta in formato A4 o A6 termica.</p>
+ </div>
+
+ <div class="step-item">
+ <!-- Mockup: tracking live -->
+ <div class="step-mockup mb-6">
+ <div class="mock-bar"><span></span><span></span><span></span></div>
+ <div class="mock-body">
+ <div class="mock-label"> Tracking live</div>
+ <div style="margin-top:6px">
+ <div class="mock-track-row done"> <span>Pacco ritirato</span><span class="mock-time">09:14</span></div>
+ <div class="mock-track-row done"> <span>In transito</span><span class="mock-time">11:30</span></div>
+ <div class="mock-track-row active">⟳ <span>In consegna</span><span class="mock-time">ora</span></div>
+ <div class="mock-track-row">○ <span>Consegnato</span><span class="mock-time">—</span></div>
+ </div>
+ </div>
+ </div>
+ <div class="text-xs font-bold uppercase tracking-wider text-orange-500 mb-2">Step 04</div>
+ <h3 class="text-xl font-bold tracking-tight mb-3">Ritiro e tracking live</h3>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Il corriere passa a domicilio. Tracking live dal tuo account ad ogni aggiornamento.</p>
+ </div>
+
+ </div>
+      </div>
+<!-- PANEL 1 — Come imballare -->
+ <div class="proc-panel" id="proc-1">
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+
+ <div class="tip-card">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+ <div>
+ <div class="tip-num text-vexBlue mb-1">01 — Scatola giusta</div>
+ <h4 class="text-base font-bold tracking-tight mb-2">Scegli la dimensione corretta</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Lascia almeno <strong>5 cm di margine</strong> su ogni lato tra il contenuto e la scatola. Troppo spazio = oggetto che si muove. Troppo stretto = scatola deformata.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="tip-card">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center flex-shrink-0"><svg class="icon text-yellow-600" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+ <div>
+ <div class="tip-num text-yellow-600 mb-1">02 — Imbottisci bene</div>
+ <h4 class="text-base font-bold tracking-tight mb-2">Niente vuoti interni</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Pluriball, carta kraft o riempitivo in carta. I vuoti interni causano il 70% dei danni durante il trasporto. Riempi ogni spazio libero.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="tip-card">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0"><svg class="icon text-green-600" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></div>
+ <div>
+ <div class="tip-num text-green-600 mb-1">03 — Misura l'esterno</div>
+ <h4 class="text-base font-bold tracking-tight mb-2">Dimensioni esterne sempre</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">I corrieri misurano <strong>l'esterno della scatola chiusa</strong>. Misura dopo aver imballato, non prima. Usa un metro rigido, non il nastro.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="tip-card">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0"><svg class="icon text-red-500" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+ <div>
+ <div class="tip-num text-red-500 mb-1">04 — Pesa da chiuso</div>
+ <h4 class="text-base font-bold tracking-tight mb-2">Pesa il pacco finito</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Pesa sempre il pacco <strong>completamente chiuso e sigillato</strong>, nastro incluso. Inserire un peso sbagliato può generare costi aggiuntivi alla consegna.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="tip-card">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0"><svg class="icon text-orange-500" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+ <div>
+ <div class="tip-num text-orange-500 mb-1">05 — Solo l'etichetta VEX</div>
+ <h4 class="text-base font-bold tracking-tight mb-2">Niente scritte sul pacco</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Non scrivere indirizzi o frecce sul pacco. L'etichetta VEX ONE contiene tutto il necessario. Rimuovi o copri eventuali etichette vecchie.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="tip-card bg-vexDark border-vexDark">
+ <div class="flex items-start gap-4">
+ <div class="w-12 h-12 rounded-xl bg-vexLime/15 flex items-center justify-center flex-shrink-0"><svg class="icon text-vexLime" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+ <div>
+ <div class="tip-num text-vexLime mb-1">Pro tip — Nastro giusto</div>
+ <h4 class="text-base font-bold tracking-tight mb-2 text-white">Sigilla tutte le giunture</h4>
+ <p class="text-gray-400 text-sm font-medium leading-relaxed">Usa nastro da imballaggio da almeno <strong>50 mm</strong>. Sigilla tutte e 6 le chiusure (alto, basso, 4 lati). Un giro solo non basta.</p>
+ </div>
+ </div>
+ </div>
+
+ </div>
+
+ <!-- CTA imballaggio -->
+ <div class="text-center mt-4">
+ <p class="text-gray-400 text-sm font-medium mb-4">Dubbi su come imballare un oggetto specifico?</p>
+ <button class="btn-ghost" onclick="window.location.href='#'">Leggi la guida completa →</button>
+ </div>
+ </div>
+
+ </div>
+ </section>
+
+  <!-- ════════════════════ CINEMATIC FULL SCREEN SCROLL-DRIVEN VIDEO WITH PROGRESS SLIDER ════════════════════ -->
+  <section id="delivery-cinematic-section" class="cinematic-video-section">
+    <div class="cinematic-sticky-viewport">
+      
+      <!-- Video Container con sfumatura ovale naturale su sfondo chiaro -->
+      <div class="cinematic-video-container">
+        <video 
+          id="delivery-scroll-video" 
+          src="assets/video/Animazione_consegna_ordine_sito_web_202609031216.mp4" 
+          muted 
+          playsinline 
+          preload="auto"
+        ></video>
+        <div class="cinematic-oval-vignette" aria-hidden="true"></div>
+      </div>
+
+    </div>
+  </section>
+
+    <!-- ══ BANNER A TUTTO SCHERMO: B2B, PALLET & CARICHI PESANTI (Photo 3) ══ -->
+  <section class="author-banner-fullscreen py-24 sm:py-32 my-12" style="background-image: url('assets/images/Courier_loading_pallet_into_truck_202609031238.webp');">
+    <div class="author-banner-fullscreen-overlay"></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/30 text-amber-200 text-xs font-bold uppercase tracking-wider mb-5">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span>Logistica Pesante &amp; Soluzioni B2B</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.08] mb-6">
+          Dalla busta urgente<br>
+          <span class="text-vexLime">al bancale da 1.000 kg.</span>
+        </h2>
+        <p class="text-gray-300 text-base sm:text-lg font-medium leading-relaxed mb-8">
+          Tariffe convenzionate per bancali EUR, merci ingombranti e carichi industriali. Sponda idraulica inclusa, transpallet a bordo e preavviso telefonico di consegna per aziende e professionisti.
+        </p>
+        <div class="flex flex-wrap items-center gap-4">
+          <a href="comparatore.html" class="nav-btn-primary shine px-7 py-3.5 rounded-xl font-bold text-sm shadow-xl inline-flex items-center gap-2" style="background:#B8FF00;color:#0A0A0B">
+            Preventivo B2B &amp; Pallet →
+          </a>
+          <span class="text-xs text-gray-400 font-medium">Fatturazione automatica e listini riservati P.IVA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business dark -->
+ <section class="max-w-7xl mx-auto px-6 py-28">
+ <div class="biz-sec bg-vexDark rounded-2xl p-14 md:p-20 relative overflow-hidden cursor-default">
+ <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+ <div>
+ <div class="inline-flex items-center gap-2 mb-8 bg-white/10 border border-white/10 px-4 py-2 rounded-full"><span class="h-1.5 w-1.5 rounded-full bg-vexLime animate-pulse"></span><span class="text-vexLime text-xs font-semibold">VEX Business</span></div>
+ <h2 class="text-5xl md:text-6xl font-bold tracking-tight leading-[0.9] text-white mb-8">Tariffe su misura<br>per la tua azienda.</h2>
+ <p class="text-gray-400 font-medium text-lg leading-relaxed mb-10 max-w-md">Volume elevato? Markup ridotto, fatturazione mensile, account manager dedicato e API per e-commerce/ERP.</p>
+ <div class="flex gap-4 flex-wrap">
+ <button class="btn-lime shine" onclick="openDemoModal()">Richiedi Demo</button>
+ <button class="btn-ghost" style="border-color:rgba(255,255,255,.15);color:#fff" onclick="openDemoModal()">Vedi una demo →</button>
+ </div>
+ </div>
+ <div class="grid grid-cols-2 gap-6">
+ <div class="bg-white/5 border border-white/5 rounded-2xl p-8"><div class="text-4xl font-bold tracking-tight text-vexLime mb-2">+40%</div><div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Risparmio medio rispetto al listino</div></div>
+ <div class="bg-white/5 border border-white/5 rounded-2xl p-8"><div class="text-4xl font-bold tracking-tight text-white mb-2">8+</div><div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Corrieri integrati in tempo reale</div></div>
+ <div class="bg-white/5 border border-white/5 rounded-2xl p-8"><div class="text-4xl font-bold tracking-tight text-vexBlue mb-2">API</div><div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Integrazione diretta e-commerce/ERP</div></div>
+ <div class="bg-white/5 border border-white/5 rounded-2xl p-8"><div class="text-4xl font-bold tracking-tight text-white mb-2">24h</div><div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Attivazione account business</div></div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+  <!-- Social proof + Email capture -->
+ <section class="bg-vexLight py-28">
+ <div class="max-w-7xl mx-auto px-6">
+
+ <!-- Honest beta badge -->
+ <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+ <div>
+ <div class="inline-flex items-center gap-2 mb-4 bg-vexLime/15 border border-vexLime/30 px-4 py-2 rounded-full">
+ <span class="h-1.5 w-1.5 rounded-full bg-vexLime animate-pulse"></span>
+ <span class="text-xs font-semibold text-gray-800">Beta — primi utenti</span>
+ </div>
+ <h2 class="text-[52px] font-bold tracking-tight leading-none">Chi sta già<br>spedendo con noi.</h2>
+ </div>
+ <div class="text-right">
+ <div class="text-5xl font-bold tracking-tight">50+</div>
+ <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Aziende in beta privata</div>
+ </div>
+ </div>
+
+ <!-- Cards oneste -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+ <div class="bg-white rounded-2xl p-8" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)">
+ <div class="mb-3 text-vexBlue"><svg class="icon" style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/></svg></div>
+ <h4 class="text-lg font-bold tracking-tight mb-2">E-commerce</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Negozi online che spediscono 20–200 pacchi al mese. Risparmio medio del 35% rispetto al listino diretto dei corrieri.</p>
+ </div>
+ <div class="bg-vexDark rounded-2xl p-8">
+ <div class="mb-3 text-vexBlue"><svg class="icon" style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/></svg></div>
+ <h4 class="text-lg font-bold tracking-tight mb-2 text-white">PMI e artigiani</h4>
+ <p class="text-gray-400 text-sm font-medium leading-relaxed">Piccole imprese che spediscono prodotti ai clienti senza un account corriere dedicato. Fattura automatica inclusa.</p>
+ </div>
+ <div class="bg-white rounded-2xl p-8" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)">
+ <div class="mb-3 text-vexBlue"><svg class="icon" style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 0 4-2 6-4 6"/></svg></div>
+ <h4 class="text-lg font-bold tracking-tight mb-2">Privati frequenti</h4>
+ <p class="text-gray-500 text-sm font-medium leading-relaxed">Chi vende su eBay, Vinted, Subito.it o spedisce spesso per lavoro. Nessun abbonamento, paghi solo quando spedisci.</p>
+ </div>
+ </div>
+
+ <!-- Email capture -->
+ <div class="bg-vexDark rounded-2xl p-10 md:p-14 relative overflow-hidden">
+ <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+ <div class="max-w-md">
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:48px;width:auto;display:block" class="mb-5">
+ <div class="inline-flex items-center gap-2 mb-4 bg-vexLime/10 border border-vexLime/20 px-4 py-2 rounded-full">
+ <span class="h-1.5 w-1.5 rounded-full bg-vexLime"></span>
+ <span class="text-vexLime text-xs font-semibold">Accesso anticipato</span>
+ </div>
+ <h3 class="text-3xl md:text-4xl font-bold tracking-tight leading-[0.92] text-white mb-3">Entra in lista.<br>Spedisci prima degli altri.</h3>
+ <p class="text-gray-400 text-sm font-medium leading-relaxed">Ricevi le tariffe più basse della settimana e l'accesso prioritario alle nuove funzionalità.</p>
+ </div>
+ <div class="w-full md:w-auto md:min-w-[340px]" id="email-form-wrap">
+ <div class="flex flex-col gap-3">
+ <input class="inp" id="email-capture" type="email" placeholder="La tua email" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:#fff;font-size:13px;padding:14px 16px">
+ <button onclick="submitEmail()" class="btn-lime shine w-full" style="display:block;text-align:center;padding:14px 0;font-size:11px">Iscriviti gratis →</button>
+ </div>
+ <p class="text-gray-400 text-xs font-normal mt-3 text-center">Nessuno spam. Disiscrizione in un click.</p>
+ </div>
+ </div>
+ </div>
+
+ </div>
+ </section>
+
+  <!-- Chi siamo -->
+ <section id="chi-siamo" class="max-w-7xl mx-auto px-6 py-28">
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+ <div>
+ <p class="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">Chi siamo</p>
+ <h2 class="text-[52px] font-bold tracking-tight leading-none mb-8">Nati per rompere<br>il monopolio<br><span class="text-vexBlue">dei corrieri.</span></h2>
+ <p class="text-gray-500 font-medium text-lg leading-relaxed mb-6">VEX ONE nasce a Catania nel 2024 con una missione scomoda: basta pagare il doppio solo perché non sai che esistono alternative. I grandi e-commerce negoziano tariffe private con i corrieri. Noi le portiamo a chiunque.</p>
+ <p class="text-gray-500 font-medium text-sm leading-relaxed mb-10">Non siamo un corriere. Siamo il layer intelligente tra te e tutti i corrieri — confrontiamo, negoziamo e ti restituiamo il controllo in 2 secondi.</p>
+   <div class="flex flex-wrap gap-3">
+  <div class="inline-flex items-center gap-2 bg-vexBlue/5 border border-vexBlue/10 px-4 py-2 rounded-full"><span class="h-1.5 w-1.5 rounded-full bg-vexBlue"></span><span class="text-vexBlue text-xs font-medium">Team italiano</span></div>
+  <div class="inline-flex items-center gap-2 bg-green-50 border border-green-100 px-4 py-2 rounded-full"><span class="h-1.5 w-1.5 rounded-full bg-green-500"></span><span class="text-green-700 text-xs font-medium">Fondato nel 2024</span></div>
+  <div class="inline-flex items-center gap-2 bg-vexLime/10 border border-vexLime/30 px-4 py-2 rounded-full"><span class="h-1.5 w-1.5 rounded-full bg-vexLime"></span><span class="text-vexDark text-xs font-medium">100% cloud-native</span></div>
+  </div>
+  </div>
+  <div class="grid grid-cols-2 gap-5">
+    <div class="relative overflow-hidden rounded-2xl p-8 col-span-2 border border-blue-500/20 shadow-xl group">
+      <img src="assets/images/Courier_delivering_inside_van_2K_202609031239.webp" alt="Logistica VEX ONE" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+      <div class="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/85 to-blue-900/50"></div>
+      <div class="relative z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-vexLime text-[11px] font-bold uppercase tracking-widest mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-vexLime"></span>
+          <span>La nostra missione</span>
+        </div>
+        <p class="text-white font-semibold text-lg leading-relaxed mb-3">"Rendere accessibile a ogni azienda e privato la stessa tecnologia logistica che usano i grandi e-commerce."</p>
+        <p class="text-blue-100/70 text-xs font-normal">Trasparenza totale, confronto in 2 secondi e tariffe negoziate per tutti.</p>
+      </div>
+    </div>
+    <div class="bg-vexLight border border-gray-100 rounded-2xl p-7">
+      <div class="text-3xl font-bold tracking-tight text-vexBlue mb-2">Sicily</div>
+      <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">HQ Catania, IT</div>
+    </div>
+    <div class="bg-vexLight border border-gray-100 rounded-2xl p-7">
+      <div class="text-3xl font-bold tracking-tight text-vexDark mb-2">2024</div>
+      <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Anno di fondazione</div>
+    </div>
+  </div>
+ </div>
+ </section>
+
+  <!-- Prezzi trasparenti -->
+ <section class="bg-vexLight py-20">
+ <div class="max-w-7xl mx-auto px-6">
+ <div class="bg-vexDark rounded-2xl p-12 md:p-16 relative overflow-hidden">
+ <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+ <div class="max-w-lg">
+ <div class="inline-flex items-center gap-2 mb-6 bg-vexLime/10 border border-vexLime/20 px-4 py-2 rounded-full">
+ <span class="h-1.5 w-1.5 rounded-full bg-vexLime"></span>
+ <span class="text-vexLime text-xs font-semibold">Prezzi trasparenti</span>
+ </div>
+ <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-[0.92] text-white mb-6">Zero abbonamenti.<br>Paghi <span class="text-vexLime">solo ciò che spedisci.</span></h2>
+ <p class="text-gray-400 font-medium text-base leading-relaxed">Nessun canone mensile, nessun costo nascosto. Il prezzo che vedi è quello che paghi, tutto incluso — etichetta, ritiro e tracking.</p>
+ </div>
+ <div class="flex flex-col gap-4 min-w-[260px]">
+ <div class="flex items-center gap-4 bg-white/5 border border-white/8 rounded-2xl p-5">
+ <div class="w-10 h-10 rounded-xl bg-vexLime/15 flex items-center justify-center text-vexLime"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+ <div><div class="text-white text-sm font-bold">Registrazione gratuita</div><div class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Nessuna carta richiesta</div></div>
+ </div>
+ <div class="flex items-center gap-4 bg-white/5 border border-white/8 rounded-2xl p-5">
+ <div class="w-10 h-10 rounded-xl bg-vexBlue/20 flex items-center justify-center text-vexBlue"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+ <div><div class="text-white text-sm font-bold">Confronto sempre gratis</div><div class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Paga solo se spedisci</div></div>
+ </div>
+ <div class="flex items-center gap-4 bg-white/5 border border-white/8 rounded-2xl p-5">
+ <div class="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center text-green-400"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+ <div><div class="text-white text-sm font-bold">Fattura automatica</div><div class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">P.IVA inclusa al checkout</div></div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+  <!-- FAQ -->
+ <section class="max-w-4xl mx-auto px-6 py-28">
+ <div class="text-center mb-16"><p class="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">FAQ</p><h2 class="text-[52px] font-bold tracking-tight leading-none">Domande frequenti.</h2></div>
+ <div class="space-y-4">
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Quanto costa spedire con VEX ONE?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Il costo dipende da peso, dimensioni, destinazione e corriere. Il calcolatore mostra il prezzo finale inclusivo. Nessun costo nascosto, nessun abbonamento obbligatorio.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Come funziona il ritiro a domicilio?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Dopo il pagamento prenoti il ritiro selezionando la fascia oraria. Il corriere passa a domicilio o puoi portare il pacco in un punto deposito convenzionato.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Posso spedire all'estero?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Sì. Per destinazioni extra-UE viene generata automaticamente la documentazione doganale.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Posso avere la fattura con P.IVA?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Assolutamente sì. Inserisci i dati di fatturazione al checkout e la fattura viene emessa e inviata automaticamente via email.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Cosa succede se il pacco viene perso o danneggiato?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Ogni spedizione include una copertura base del corriere. Puoi aggiungere un'assicurazione opzionale al checkout per una protezione estesa sul valore del contenuto. In caso di sinistro apri un ticket dal tuo account e ti seguiamo noi nell'iter con il corriere.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Posso modificare o annullare una spedizione dopo il pagamento?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">Puoi annullare una spedizione dalla dashboard fino a quando il corriere non ha ritirato il pacco. Il rimborso viene elaborato entro 3–5 giorni lavorativi sul metodo di pagamento originale. Dopo il ritiro l'annullamento non è più possibile.</p></div></div>
+ <div class="faq-item bg-white rounded-2xl px-8 py-6 cursor-pointer" style="box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05)" onclick="this.classList.toggle('open')"><div class="flex justify-between items-center"><span class="font-bold text-base">Quanto tempo ci vuole per ricevere un rimborso?</span><span class="faq-arr text-gray-400 text-xl">↓</span></div><div class="faq-body"><p class="text-gray-500 text-sm font-medium leading-relaxed pt-4 border-t border-gray-100 mt-4">I rimborsi per annullamento vengono processati entro 3–5 giorni lavorativi. Per rimborsi legati a sinistri (pacco perso o danneggiato) i tempi dipendono dall'iter con il corriere, ma ti aggiorniamo ad ogni step via email.</p></div></div>
+ </div>
+ </section>
+
+  <!-- CTA finale -->
+ <section class="max-w-7xl mx-auto px-6 pb-28">
+ <div class="bg-vexBlue rounded-2xl p-16 md:p-24 text-center relative overflow-hidden">
+ <div class="relative z-10">
+ <h2 class="text-5xl md:text-6xl font-bold tracking-tight leading-[0.9] text-white mb-8">Pronto a spedire<br>al prezzo giusto?</h2>
+ <p class="text-blue-200 font-medium text-lg mb-12 max-w-md mx-auto">Nessun abbonamento. Nessuna carta di credito. Calcola il tuo primo preventivo in 30 secondi.</p>
+ <div class="flex gap-4 justify-center flex-wrap">
+ <button class="btn-lime shine" onclick="window.location.href='comparatore.html'">Calcola il tuo preventivo gratis →</button>
+ <button onclick="window.location.href='comparatore.html'" class="bg-white/15 border border-white/20 text-white text-[11px] font-bold px-10 py-[14px] rounded-full uppercase tracking-widest hover:bg-white/25 ts">Vedi tutti i corrieri</button>
+ </div>
+ </div>
+ </div>
+ </section>
+
+  <!-- Integrazioni -->
+ <section class="max-w-7xl mx-auto px-6 py-20">
+ <div class="text-center mb-10">
+ <p class="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">Integrazioni</p>
+ <h2 class="text-3xl font-bold tracking-tight">Si connette al tuo e-commerce.</h2>
+ <p class="text-gray-400 font-medium text-base mt-3 max-w-sm mx-auto">API REST disponibile. Plugin in sviluppo per le piattaforme più usate.</p>
+ </div>
+<div class="flex flex-wrap justify-center gap-3">
+ <div class="int-chip"><span style="font-size:16px"></span> Shopify</div>
+ <div class="int-chip"><span style="font-size:16px"></span> WooCommerce</div>
+ <div class="int-chip"><span style="font-size:16px"></span> PrestaShop</div>
+ <div class="int-chip"><span style="font-size:16px"></span> Magento</div>
+ <div class="int-chip"><span style="font-size:16px"></span> Subito.it</div>
+ <div class="int-chip"><span style="font-size:16px"></span> eBay</div>
+ <div class="int-chip"><span style="font-size:16px"></span> API REST</div>
+ <div class="int-chip" onclick="openDemoModal()" style="cursor:pointer;border-style:dashed;color:#9CA3AF">+ Il tuo sistema →</div>
+ </div>
+ </section>
+
+  <!-- Footer -->
+  <footer class="bg-vexDark border-t border-white/10 pt-16 pb-10">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
+        <div class="md:col-span-2">
+          <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:34px;width:auto;display:block" class="mb-6">
+          <p class="text-gray-400 font-medium text-sm leading-relaxed max-w-xs mb-8">La piattaforma che confronta i migliori corrieri e ti dà il prezzo più basso in tempo reale.</p>
+          <div class="flex gap-6"><a href="#" class="footer-link hover:text-white">Instagram</a><a href="#" class="footer-link hover:text-white">LinkedIn</a><a href="#" class="footer-link hover:text-white">Trustpilot</a></div>
+        </div>
+        <div><h5 class="text-xs font-semibold uppercase tracking-wider text-white mb-5">Piattaforma</h5><ul class="space-y-3"><li><span class="footer-link hover:text-white cursor-pointer" onclick="window.location.href='comparatore.html'">Calcola Tariffa</span></li><li><span class="footer-link hover:text-white cursor-pointer" onclick="window.location.href='tracking.html'">Traccia Spedizione</span></li><li><span class="footer-link hover:text-white cursor-pointer" onclick="window.location.href='dashboard.html'">Dashboard</span></li></ul></div>
+        <div><h5 class="text-xs font-semibold uppercase tracking-wider text-white mb-5">Supporto</h5><ul class="space-y-3"><li><a href="assistenza.html" class="footer-link hover:text-white">Centro Assistenza</a></li><li><a href="assistenza.html#form" class="footer-link hover:text-white">Contatta il Team</a></li><li><a href="assistenza.html" class="footer-link hover:text-white">Come Imballare</a></li></ul></div>
+        <div><h5 class="text-xs font-semibold uppercase tracking-wider text-white mb-5">Legale</h5><ul class="space-y-3"><li><a href="privacy.html" class="footer-link hover:text-white">Privacy Policy</a></li><li><a href="termini.html" class="footer-link hover:text-white">Termini & Condizioni</a></li><li><a href="cookie.html" class="footer-link hover:text-white">Cookie Policy</a></li></ul></div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-normal text-gray-500">
+        <p>© 2026 VEX ONE — Tutti i diritti riservati</p>
+        <p>Powered by DVA Express Network</p>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /page-home -->
+
+<!-- ── COOKIE BANNER GDPR ── -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9998;width:min(700px,calc(100vw - 32px));background:#fff;border-radius:var(--radius-lg);padding:20px 24px;box-shadow:0 20px 60px rgba(0,0,0,.15);border:1px solid rgba(0,0,0,.06);flex-wrap:wrap;align-items:center;gap:12px">
+ <div style="flex:1;min-width:200px">
+ <p style="font-size:12px;font-weight:700;color:#374151;margin:0;line-height:1.5"> Usiamo cookie tecnici per far funzionare il sito e, con il tuo consenso, cookie analitici per migliorare l'esperienza. <a href="cookie.html" style="color:#0078FF;text-decoration:none;font-weight:700">Cookie Policy</a></p>
+ </div>
+ <div style="display:flex;gap:8px;flex-shrink:0">
+ <button onclick="setCookies(false)" style="background:#F3F4F6;color:#6B7280;border:none;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:10px 16px;border-radius:var(--radius-lg);cursor:pointer">Solo necessari</button>
+ <button onclick="setCookies(true)" style="background:#0A0A0B;color:#fff;border:none;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:10px 16px;border-radius:var(--radius-lg);cursor:pointer" onmouseover="this.style.background='#B8FF00';this.style.color='#0A0A0B'" onmouseout="this.style.background='#0A0A0B';this.style.color='#fff'">Accetta tutti</button>
+ </div>
+</div>
+
+<div class="toast" id="toast"><div style="width:8px;height:8px;border-radius:50%;background:#B8FF00;flex-shrink:0"></div><span id="toast-msg">Operazione completata</span></div>
+
+<!-- Exit Intent Toast -->
+<div id="exit-toast" style="position:fixed;bottom:30px;left:30px;z-index:9998;background:#fff;border-radius:var(--radius-lg);padding:18px 22px;box-shadow:0 20px 50px rgba(0,0,0,.15);border:1.5px solid #F0F0F0;max-width:320px;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.23,1,.32,1);pointer-events:none">
+ <div style="display:flex;align-items:flex-start;gap:12px">
+ <div style="font-size:24px;flex-shrink:0"></div>
+ <div>
+ <div style="font-size:12px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px">Prima di andare...</div>
+ <p style="font-size:11px;font-weight:600;color:#6B7280;line-height:1.5;margin:0 0 12px">Hai visto quanto potresti risparmiare sulla tua prossima spedizione?</p>
+ <div style="display:flex;gap:8px">
+ <button onclick="window.location.href='comparatore.html'" style="background:#0A0A0B;color:#fff;border:none;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:8px 14px;border-radius:var(--radius-lg);cursor:pointer;flex:1" onmouseover="this.style.background='#B8FF00';this.style.color='#0A0A0B'" onmouseout="this.style.background='#0A0A0B';this.style.color='#fff'">Calcola gratis →</button>
+ <button onclick="document.getElementById('exit-toast').classList.remove('show')" style="background:#F3F4F6;color:#9CA3AF;border:none;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:8px 12px;border-radius:var(--radius-lg);cursor:pointer">No grazie</button>
+ </div>
+ </div>
+ </div>
+</div>
+
+<script>
+ // ── MOBILE DRAWER ──
+ function toggleDrawer() {
+ const d = document.getElementById('mob-drawer');
+ const h = document.getElementById('ham-btn');
+ d.classList.toggle('open');
+ h.classList.toggle('open');
+ document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+ }
+ function closeDrawerGo(url) { toggleDrawer(); setTimeout(() => window.location.href = url, 300); }
+ function closeDrawerScroll(id) {
+ toggleDrawer();
+ setTimeout(() => { const el = document.getElementById(id); if (el) el.scrollIntoView({behavior:'smooth'}); }, 350);
+ }
+
+ // ── COOKIE BANNER ──
+ function initCookies() {
+ if (!safeStorage.get('vex_cookies')) {
+ const banner = document.getElementById('cookie-banner');
+ if (banner) { banner.style.display = 'flex'; }
+ }
+ }
+ function setCookies(all) {
+ safeStorage.set('vex_cookies', all ? 'all' : 'minimal');
+ const banner = document.getElementById('cookie-banner');
+ if (banner) { banner.style.opacity = '0'; banner.style.transition = 'opacity .3s'; setTimeout(() => banner.style.display = 'none', 300); }
+ if (all) showToast(' Preferenze cookie salvate');
+ }
+
+ // ── EMAIL CAPTURE ──
+ function submitEmail() {
+ const input = document.getElementById('email-capture');
+ if (!input) return;
+ const email = input.value.trim();
+ if (!email || !email.includes('@')) { showToast('Inserisci un indirizzo email valido'); return; }
+ // Qui andrà la chiamata API reale (es. Mailchimp, Brevo, etc.)
+ const wrap = document.getElementById('email-form-wrap');
+ if (wrap) {
+ wrap.innerHTML = `<div style="text-align:center;padding:20px 0">
+ <div style="font-size:2rem;margin-bottom:8px"></div>
+ <p style="color:#fff;font-weight:700;font-size:15px;margin-bottom:4px">Sei in lista!</p>
+ <p style="color:rgba(255,255,255,.5);font-size:11px;font-weight:600">Ti contatteremo presto a <strong style="color:#B8FF00">${email}</strong></p>
+ </div>`;
+ }
+ }
+
+ // ── TAB PROCESSO ──
+ function switchProc(idx, el) {
+ document.querySelectorAll('.proc-tab').forEach(t => t.classList.remove('on'));
+ document.querySelectorAll('.proc-panel').forEach(p => p.classList.remove('on'));
+ el.classList.add('on');
+ const panel = document.getElementById('proc-' + idx);
+ if (panel) panel.classList.add('on');
+ }
+
+ 
+
+ // ── SAFE LOCALSTORAGE ──
+ const safeStorage = {
+ get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } },
+ set(k, v) { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } },
+ remove(k) { try { localStorage.removeItem(k); } catch(e) {} }
+ };
+
+ // ── COSTANTI ──
+ const PRESET_KEY = 'vexone:presets:v1';
+ const MAX_PRESETS = 30;
+ const TIPO_LABELS = { scatola:'', busta:'', pallet:'' };
+ let currentTipoPreset = 'scatola';
+
+ // ── STATO COLLI ──
+ // Schema: { id, tipo, peso, l, w, h, q, nomePreset }
+ let colli = [];
+ let colloSeq = 0;
+
+ function makeId() { return 'c' + (++colloSeq) + '_' + Math.random().toString(36).slice(2,6); }
+
+ function getCurrentTipo() {
+ const sw = document.getElementById('hp-switch');
+ const idx = parseInt(sw?.getAttribute('data-type') || '0');
+ return ['scatola','busta','pallet'][idx] || 'scatola';
+ }
+
+ function addCollo(preset) {
+ const tipo = preset?.tipo || getCurrentTipo();
+ const collo = {
+ id: makeId(),
+ tipo,
+ peso: preset?.peso || '',
+ l: preset?.l || '', w: preset?.w || '', h: preset?.h || '',
+ q: preset?.q || 1,
+ nomePreset: preset?.nome || null
+ };
+ colli.push(collo);
+ renderColli();
+ }
+
+ function addColloFromQuick(preset) {
+ addCollo(preset);
+ showToast(` ${preset.nome} aggiunto`);
+ }
+
+ function removeColloById(id) {
+ const idx = colli.findIndex(c => c.id === id);
+ if (idx === -1) return;
+ const el = document.getElementById('collo-el-' + id);
+ if (el) { el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='all .2s'; }
+ setTimeout(() => { colli.splice(idx, 1); renderColli(); }, 200);
+ }
+
+ function updateColloField(id, field, value) {
+ const c = colli.find(c => c.id === id);
+ if (c) c[field] = field === 'q' ? Math.max(1, parseInt(value)||1) : value;
+ }
+
+ function renderColli() {
+ const list = document.getElementById('colli-list');
+ if (!list) return;
+ list.innerHTML = '';
+ colli.forEach((c, i) => {
+ const div = document.createElement('div');
+ div.className = 'collo-card';
+ div.id = 'collo-el-' + c.id;
+ const isBusta = c.tipo === 'busta';
+ div.innerHTML = `
+ <div class="flex items-center justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="text-base">${TIPO_LABELS[c.tipo]||''}</span>
+ <span class="text-xs font-medium text-gray-600">Collo ${i+1}${c.nomePreset ? ' · '+c.nomePreset : ''}</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <button class="collo-remove" onclick="removeColloById('${c.id}')" title="Rimuovi">×</button>
+ </div>
+ </div>
+ <div class="grid grid-cols-2 gap-2">
+ <div>
+ <span class="lbl"> Peso (kg)</span>
+ <input class="inp" type="number" placeholder="Es. 2.5" step=".1" min=".1" value="${c.peso}"
+ oninput="updateColloField('${c.id}','peso',this.value)">
+ </div>
+ <div>
+ <span class="lbl"> L × W${isBusta?'':' × H'} (cm)</span>
+ <div class="flex gap-1">
+ <input class="inp" placeholder="L" type="number" min="1" value="${c.l}" oninput="updateColloField('${c.id}','l',this.value)">
+ <input class="inp" placeholder="W" type="number" min="1" value="${c.w}" oninput="updateColloField('${c.id}','w',this.value)">
+ ${isBusta ? '' : `<input class="inp" placeholder="H" type="number" min="1" value="${c.h}" oninput="updateColloField('${c.id}','h',this.value)">`}
+ </div>
+ </div>
+ <div>
+ <span class="lbl"> Quantità</span>
+ <div class="flex items-center gap-2">
+ <button onclick="changeQ('${c.id}',-1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">−</button>
+ <span class="font-bold text-base min-w-[20px] text-center" id="q-${c.id}">${c.q}</span>
+ <button onclick="changeQ('${c.id}',1)" class="w-7 h-7 rounded-full bg-gray-100 font-bold text-sm hover:bg-gray-200 ts flex items-center justify-center">+</button>
+ </div>
+ </div>
+ </div>`;
+ list.appendChild(div);
+ });
+ const el = document.getElementById('colli-count');
+ const tot = colli.reduce((s,c) => s + (parseInt(c.q)||1), 0);
+ if (el) el.textContent = tot === 1 ? '1 collo' : `${tot} colli`;
+ }
+
+ function changeQ(id, delta) {
+ const c = colli.find(c => c.id === id);
+ if (!c) return;
+ c.q = Math.max(1, (parseInt(c.q)||1) + delta);
+ const el = document.getElementById('q-' + id);
+ if (el) el.textContent = c.q;
+ const tot = colli.reduce((s,c) => s + (parseInt(c.q)||1), 0);
+ const cnt = document.getElementById('colli-count');
+ if (cnt) cnt.textContent = tot === 1 ? '1 collo' : `${tot} colli`;
+ }
+
+ // ── PRESET ──
+ // Schema: { nome, tipo, peso, l, w, h, usageCount, lastUsed, createdAt }
+ let presets = [];
+
+ function loadPresets() {
+ try { presets = JSON.parse(safeStorage.get(PRESET_KEY) || '[]'); } catch(e) { presets = []; }
+ }
+
+ function savePresetsToStorage() {
+ safeStorage.set(PRESET_KEY, JSON.stringify(presets));
+ }
+
+ function getSortedPresets() {
+ const sort = document.getElementById('preset-sort')?.value || 'manual';
+ const copy = [...presets];
+ if (sort === 'recent') copy.sort((a,b) => (b.lastUsed||0)-(a.lastUsed||0));
+ else if (sort === 'usage') copy.sort((a,b) => (b.usageCount||0)-(a.usageCount||0));
+ else if (sort === 'az') copy.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
+ return copy;
+ }
+
+ function getSuggestedPresets() {
+ const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+ return [...presets]
+ .filter(p => (p.lastUsed||0) > cutoff)
+ .sort((a,b) => (b.usageCount||0)-(a.usageCount||0))
+ .slice(0,3);
+ }
+
+ function renderPresets() {
+ const list = document.getElementById('presets-list');
+ const suggestEl = document.getElementById('suggested-presets');
+ const badge = document.getElementById('preset-limit-badge');
+ const btnNew = document.getElementById('btn-new-preset');
+ if (!list) return;
+
+ // Limite
+ const atLimit = presets.length >= MAX_PRESETS;
+ if (badge) badge.textContent = atLimit ? `${presets.length}/${MAX_PRESETS} · limite` : `${presets.length}/${MAX_PRESETS}`;
+ if (badge) badge.style.color = atLimit ? '#dc2626' : '';
+ if (btnNew) btnNew.style.opacity = atLimit ? '.4' : '1';
+ if (btnNew) btnNew.style.pointerEvents = atLimit ? 'none' : '';
+
+ // Suggeriti
+ if (suggestEl) {
+ const sugg = getSuggestedPresets();
+ if (sugg.length > 0) {
+ suggestEl.innerHTML = `<div class="text-xs font-semibold text-gray-500 mb-1">Suggeriti</div><div class="flex flex-wrap gap-1 mb-2">${sugg.map(p => `<button class="preset-chip" style="border-color:#0078FF20;color:#0078FF" onclick="applyPreset('${escHtml(p.nome)}')">${TIPO_LABELS[p.tipo]||''} ${escHtml(p.nome)} <span style="font-size:11px;opacity:.5">${p.usageCount||0}×</span></button>`).join('')}</div>`;
+ } else { suggestEl.innerHTML = ''; }
+ }
+
+ // Lista completa
+ list.innerHTML = '';
+ getSortedPresets().forEach(p => {
+ const origIdx = presets.findIndex(x => x.nome === p.nome);
+ const chip = document.createElement('div');
+ chip.className = 'preset-chip group relative flex items-center gap-1';
+ chip.style.paddingRight = '6px';
+ chip.innerHTML = `<span onclick="applyPreset('${escHtml(p.nome)}')" style="cursor:pointer">${TIPO_LABELS[p.tipo]||''} ${escHtml(p.nome)} <span style="font-size:11px;color:#9CA3AF">${p.l}×${p.w}×${p.h}·${p.peso}kg</span></span>
+ <button onclick="openEditPreset(${origIdx})" style="opacity:.4;hover:opacity:1;background:none;border:none;cursor:pointer;font-size:10px;padding:0 2px" title="Rinomina"></button>
+ <button onclick="deletePreset(${origIdx})" style="opacity:.4;background:none;border:none;cursor:pointer;font-size:11px;color:#dc2626;padding:0 2px" title="Elimina">×</button>`;
+ list.appendChild(chip);
+ });
+ }
+
+ function escHtml(s) { return String(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
+
+ function applyPreset(nome) {
+ const p = presets.find(x => x.nome === nome);
+ if (!p) return;
+ // Aggiorna stats
+ p.usageCount = (p.usageCount||0) + 1;
+ p.lastUsed = Date.now();
+ savePresetsToStorage();
+ renderPresets();
+ // Aggiungi come nuovo collo
+ addCollo({ tipo: p.tipo, peso: p.peso, l: p.l, w: p.w, h: p.h, q: 1, nome: p.nome });
+ showToast(` ${p.nome} aggiunto`);
+ }
+
+ function selectTipoPreset(tipo, el) {
+ currentTipoPreset = tipo;
+ document.querySelectorAll('#modal-preset .tipo-btn').forEach(b => b.classList.remove('on'));
+ el.classList.add('on');
+ }
+
+ function openSavePreset() {
+ if (presets.length >= MAX_PRESETS) { showToast(`Limite ${MAX_PRESETS} preset raggiunto`); return; }
+ document.getElementById('modal-preset-title').textContent = 'Nuova scatola';
+ document.getElementById('preset-edit-idx').value = '';
+ document.getElementById('preset-name').value = '';
+ document.getElementById('preset-weight').value = '';
+ document.querySelectorAll('.dim-preset').forEach(d => d.value = '');
+ currentTipoPreset = 'scatola';
+ document.querySelectorAll('#modal-preset .tipo-btn').forEach(b => b.classList.remove('on'));
+ document.getElementById('tipo-scatola')?.classList.add('on');
+ document.getElementById('modal-preset').classList.add('open');
+ document.getElementById('preset-name').focus();
+ }
+
+ function openEditPreset(idx) {
+ const p = presets[idx];
+ if (!p) return;
+ document.getElementById('modal-preset-title').textContent = 'Modifica scatola';
+ document.getElementById('preset-edit-idx').value = idx;
+ document.getElementById('preset-name').value = p.nome;
+ document.getElementById('preset-weight').value = p.peso;
+ const dims = document.querySelectorAll('.dim-preset');
+ if (dims[0]) dims[0].value = p.l;
+ if (dims[1]) dims[1].value = p.w;
+ if (dims[2]) dims[2].value = p.h;
+ currentTipoPreset = p.tipo || 'scatola';
+ document.querySelectorAll('#modal-preset .tipo-btn').forEach(b => b.classList.remove('on'));
+ document.getElementById('tipo-' + currentTipoPreset)?.classList.add('on');
+ document.getElementById('modal-preset').classList.add('open');
+ }
+
+ function savePreset() {
+ const nome = document.getElementById('preset-name').value.trim();
+ const peso = parseFloat(document.getElementById('preset-weight').value);
+ const dims = document.querySelectorAll('.dim-preset');
+ const l = parseFloat(dims[0]?.value), w = parseFloat(dims[1]?.value), h = parseFloat(dims[2]?.value);
+ if (!nome) { showToast('Inserisci un nome'); return; }
+ if (!peso || peso <= 0) { showToast('Inserisci un peso valido'); return; }
+ if (!l || !w || !h) { showToast('Inserisci tutte le dimensioni'); return; }
+ const editIdx = document.getElementById('preset-edit-idx').value;
+ if (editIdx === '') {
+ // Nuovo — controlla duplicati
+ if (presets.some(p => p.nome.toLowerCase() === nome.toLowerCase())) { showToast('Nome già esistente'); return; }
+ presets.push({ nome, tipo: currentTipoPreset, peso, l, w, h, usageCount:0, lastUsed:0, createdAt:Date.now() });
+ } else {
+ const p = presets[parseInt(editIdx)];
+ if (p) { p.nome = nome; p.tipo = currentTipoPreset; p.peso = peso; p.l = l; p.w = w; p.h = h; }
+ }
+ savePresetsToStorage();
+ renderPresets();
+ closeModal('modal-preset');
+ showToast(editIdx === '' ? ' Scatola salvata!' : ' Scatola aggiornata!');
+ }
+
+ function deletePreset(idx) {
+ presets.splice(idx, 1);
+ savePresetsToStorage();
+ renderPresets();
+ showToast('Scatola rimossa');
+ }
+
+ function exportPresets() {
+ const data = JSON.stringify(presets, null, 2);
+ const a = document.createElement('a');
+ a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(data);
+ a.download = 'vexone-presets.json';
+ a.click();
+ }
+
+ function importPresets(e) {
+ const file = e.target.files?.[0];
+ if (!file) return;
+ const reader = new FileReader();
+ reader.onload = ev => {
+ try {
+ const data = JSON.parse(ev.target.result);
+ if (!Array.isArray(data)) throw new Error();
+ let added = 0;
+ data.forEach(p => {
+ if (!p.nome || !p.peso || !p.l || !p.w) return;
+ if (presets.length >= MAX_PRESETS) return;
+ if (presets.some(x => x.nome.toLowerCase() === p.nome.toLowerCase())) return;
+ presets.push({ nome:p.nome, tipo:p.tipo||'scatola', peso:p.peso, l:p.l, w:p.w, h:p.h||p.w, usageCount:0, lastUsed:0, createdAt:Date.now() });
+ added++;
+ });
+ savePresetsToStorage();
+ renderPresets();
+ showToast(` ${added} preset importati`);
+ } catch { showToast('File non valido'); }
+ };
+ reader.readAsText(file);
+ e.target.value = '';
+ }
+
+ // ── URL BUILDER → COMPARATORE ──
+ function buildComparatoreURL(mobile) {
+ const mCap = mobile ? document.getElementById('m-cap-mob')?.value.trim() : document.getElementById('m-cap')?.value.trim();
+ const mCity = mobile ? document.getElementById('m-city-mob')?.value.trim() : document.getElementById('m-city')?.value.trim();
+ const dCap = mobile ? document.getElementById('d-cap-mob')?.value.trim() : document.getElementById('d-cap')?.value.trim();
+ const dCity = mobile ? document.getElementById('d-city-mob')?.value.trim() : document.getElementById('d-city')?.value.trim();
+ const params = new URLSearchParams();
+ if (mCap) params.set('m-cap', mCap);
+ if (mCity) params.set('m-city', mCity);
+ if (dCap) params.set('d-cap', dCap);
+ if (dCity) params.set('d-city', dCity);
+ // Colli con dati completi
+ const colliDaPassare = mobile
+ ? [{ id:makeId(), tipo:getCurrentTipo(), peso:'', l:'', w:'', h:'', q:1, nomePreset:null }]
+ : colli.filter(c => c.peso || c.l);
+ if (colliDaPassare.length > 0) {
+ params.set('colli', encodeURIComponent(JSON.stringify(colliDaPassare)));
+ }
+ // Mode: biz se ha P.IVA (futuro), per ora sempre priv
+ params.set('mode', 'priv');
+ params.set('ritiro', 'domicilio');
+ return 'comparatore.html?' + params.toString();
+ }
+
+ function goToComparatore(mobile) {
+ const dCap = mobile
+ ? document.getElementById('d-cap-mob')?.value.trim()
+ : document.getElementById('d-cap')?.value.trim();
+ if (!dCap) {
+ showToast(' Inserisci il CAP di destinazione');
+ const field = document.getElementById(mobile ? 'd-cap-mob' : 'd-cap');
+ if (field) { field.style.borderColor='#EF4444'; field.focus(); setTimeout(()=>field.style.borderColor='',2000); }
+ return;
+ }
+ window.location.href = buildComparatoreURL(mobile);
+ }
+
+ function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
+
+ // ── TOAST ──
+ function showToast(msg) {
+ const t = document.getElementById('toast'), m = document.getElementById('toast-msg');
+ if (!t||!m) return; m.textContent = msg; t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 2500);
+ }
+
+ // ── INIT ──
+ document.addEventListener('DOMContentLoaded', () => {
+ const pill = document.getElementById('hp-pill');
+ if (pill) { const btns = document.querySelectorAll('.hp-btn'); pill.style.width = `calc(${100/btns.length}% - 3px)`; }
+ loadPresets(); renderPresets();
+ addCollo();
+ updateCalc(20);
+ initCookies();
+ const tlSection = document.getElementById('tl-track');
+ if (tlSection) {
+ const tlObs = new IntersectionObserver(entries => {
+ if (entries[0].isIntersecting) {
+      tlObs.disconnect();
+    }
+  }, { threshold: 0.4 });
+ tlObs.observe(tlSection);
+ }
+ // timeline removed
+ animateCounters();
+ startTicker();
+ const fadeObs = new IntersectionObserver(entries => {
+ entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+ }, { threshold: 0.06 });
+ document.querySelectorAll('section').forEach(el => { el.classList.add('fade-in'); fadeObs.observe(el); });
+ document.querySelectorAll('.modal-overlay').forEach(o => {
+ o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+ });
+ });
+ function updateCalc(n) {
+ n = parseInt(n);
+ document.getElementById('calc-n').textContent = n;
+ const avgOld = 18.50; // prezzo medio corriere al banco
+ const avgNew = avgOld * 0.60; // risparmio medio 40%
+ const annualSaving = Math.round((avgOld - avgNew) * n * 12);
+ const monthlyOld = Math.round(avgOld * n);
+ const monthlyNew = Math.round(avgNew * n);
+ document.getElementById('calc-saving').textContent = '€' + annualSaving.toLocaleString('it-IT');
+ document.getElementById('calc-old').textContent = '€' + monthlyOld.toLocaleString('it-IT');
+ document.getElementById('calc-new').textContent = '€' + monthlyNew.toLocaleString('it-IT');
+ // Aggiorna gradiente slider
+ const slider = document.getElementById('calc-slider');
+ if (slider) {
+ const pct = ((n - 5) / (500 - 5)) * 100;
+ slider.style.background = `linear-gradient(to right,#0078FF ${pct}%,#374151 ${pct}%)`;
+ }
+ }
+
+ // ── EXIT INTENT ──
+ let exitShown = false;
+ document.addEventListener('mouseleave', (e) => {
+ if (e.clientY <= 0 && !exitShown && !safeStorage.get('vex_exit_shown')) {
+ exitShown = true;
+ safeStorage.set('vex_exit_shown', '1');
+ const toast = document.getElementById('exit-toast');
+ if (toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 6000); }
+ }
+ });
+ function openDemoModal() { document.getElementById('modal-demo').classList.add('open'); }
+ function selectVolume(el) {
+ document.querySelectorAll('#modal-demo .tipo-btn').forEach(b => b.classList.remove('on'));
+ el.classList.add('on');
+ }
+ function submitDemo() {
+ const name = document.getElementById('demo-name').value.trim();
+ const email = document.getElementById('demo-email').value.trim();
+ const company = document.getElementById('demo-company').value.trim();
+ if (!name || !email || !company) { showToast('Compila tutti i campi obbligatori'); return; }
+ if (!email.includes('@')) { showToast('Email non valida'); return; }
+ // Qui andrà l'integrazione reale (CRM, email, webhook)
+ const fields = document.getElementById('demo-form-fields');
+ if (fields) fields.innerHTML = `
+ <div style="text-align:center;padding:32px 0">
+ <div style="font-size:3rem;margin-bottom:12px"></div>
+ <h4 style="font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Richiesta inviata!</h4>
+ <p style="color:#6B7280;font-size:13px;font-weight:600;line-height:1.6">Ti contatteremo a <strong style="color:#0078FF">${email}</strong><br>entro le prossime 24 ore lavorative.</p>
+ <button onclick="closeModal('modal-demo')" style="margin-top:24px;background:#0A0A0B;color:#fff;border:none;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:12px 26px;border-radius:var(--radius-lg);cursor:pointer">Chiudi</button>
+ </div>`;
+ }
+
+ // ── COUNTER ANIMATI (rimosso — ora usiamo metriche statiche verificabili) ──
+ function animateCounters() {} // mantenuta per compatibilità, non fa nulla
+
+ // ── TICKER ──
+ const tickerMsgs = [
+ 'Live: Roma → Parigi (2 kg) prenotato ora','Live: Milano → Berlino (5 kg) confrontato ora',
+ 'Live: Catania → Roma (1.2 kg) spedito con DHL','Live: Napoli → Londra (3 kg) -42% vs listino',
+ 'Live: Torino → Madrid (8 kg) prenotato ora','Live: Bologna → Amsterdam (0.5 kg) con UPS',
+ ];
+ let tickerIdx = 0;
+ function startTicker() {
+ const el = document.getElementById('ticker'); if (!el) return;
+ setInterval(() => {
+ el.style.opacity = '0';
+ setTimeout(() => { tickerIdx = (tickerIdx + 1) % tickerMsgs.length; el.textContent = tickerMsgs[tickerIdx]; el.style.opacity = '1'; }, 400);
+ }, 3000);
+ }
+</script>
+
+<script src="assets/js/carrier-logos.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/nav-user.js"></script>
+
+<script>
+  /* ════ CINEMATIC FULL SCREEN SCROLL-DRIVEN VIDEO SCRUBBING ════ */
+  (function initCinematicScrollVideo() {
+    const section = document.getElementById('delivery-cinematic-section');
+    const video = document.getElementById('delivery-scroll-video');
+    if (!section || !video) return;
+
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let isSeeking = false;
+
+    video.muted = true;
+    video.playsInline = true;
+
+    function wakeVideo() {
+      video.play().then(() => {
+        video.pause();
+        video.currentTime = 0.001;
+      }).catch(() => {
+        video.currentTime = 0.001;
+      });
+    }
+
+    if (video.readyState >= 2) {
+      wakeVideo();
+    } else {
+      video.addEventListener('loadeddata', wakeVideo, { once: true });
+    }
+
+    const fillEl = document.getElementById('cinematic-slider-fill');
+    const thumbEl = document.getElementById('cinematic-slider-thumb');
+    const dotTransit = document.getElementById('dot-transit');
+    const dotDelivered = document.getElementById('dot-delivered');
+    const stepTransit = document.getElementById('slider-step-transit');
+    const stepDelivered = document.getElementById('slider-step-delivered');
+    const rail = document.getElementById('cinematic-slider-rail');
+
+    function updateVideoProgress() {
+      const rect = section.getBoundingClientRect();
+      const winH = window.innerHeight;
+      const totalScrollable = rect.height - winH;
+
+      if (totalScrollable <= 0) return;
+
+      // Avanzamento: da quando la cima della sezione tocca la cima del viewport a quando esce in alto
+      const scrolled = -rect.top;
+      let p = scrolled / totalScrollable;
+      p = Math.max(0, Math.min(1, p));
+      targetProgress = p;
+
+      // Aggiornamento sincronizzato della barra slider
+      const pct = (p * 100).toFixed(1) + '%';
+      if (fillEl) fillEl.style.width = pct;
+      if (thumbEl) thumbEl.style.left = pct;
+
+      if (dotTransit && stepTransit) {
+        if (p >= 0.45) {
+          dotTransit.style.backgroundColor = '#0078FF';
+          stepTransit.classList.add('text-vexDark');
+          stepTransit.classList.remove('text-gray-400');
+        } else {
+          dotTransit.style.backgroundColor = '#D1D5DB';
+          stepTransit.classList.remove('text-vexDark');
+          stepTransit.classList.add('text-gray-400');
+        }
+      }
+
+      if (dotDelivered && stepDelivered) {
+        if (p >= 0.90) {
+          dotDelivered.style.backgroundColor = '#16A34A';
+          stepDelivered.classList.add('text-green-600');
+          stepDelivered.classList.remove('text-gray-400');
+        } else {
+          dotDelivered.style.backgroundColor = '#D1D5DB';
+          stepDelivered.classList.remove('text-green-600');
+          stepDelivered.classList.add('text-gray-400');
+        }
+      }
+    }
+
+    if (rail) {
+      rail.addEventListener('click', (e) => {
+        const rect = rail.getBoundingClientRect();
+        const clickRatio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const secRect = section.getBoundingClientRect();
+        const secTop = window.scrollY + secRect.top;
+        const totalScrollable = section.offsetHeight - window.innerHeight;
+        window.scrollTo({
+          top: secTop + (clickRatio * totalScrollable),
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    window.addEventListener('scroll', updateVideoProgress, { passive: true });
+    window.addEventListener('resize', updateVideoProgress, { passive: true });
+
+    let isVisible = false;
+    let animId = null;
+    let lastSeekTime = 0;
+
+    const videoObserver = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+      if (isVisible) {
+        updateVideoProgress();
+        if (!animId) animId = requestAnimationFrame(renderLoop);
+      } else {
+        if (animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
+        }
+      }
+    }, { rootMargin: '250px 0px' });
+    videoObserver.observe(section);
+
+    function renderLoop() {
+      if (!isVisible) {
+        animId = null;
+        return;
+      }
+
+      if (video.duration && !isNaN(video.duration)) {
+        const diff = targetProgress - currentProgress;
+        if (Math.abs(diff) > 0.002 && !isSeeking) {
+          currentProgress += diff * 0.2;
+          const targetTime = currentProgress * video.duration;
+          const now = performance.now();
+          if (now - lastSeekTime > 32 && Math.abs(video.currentTime - targetTime) > 0.033) {
+            isSeeking = true;
+            lastSeekTime = now;
+            if (typeof video.fastSeek === 'function') {
+              video.fastSeek(targetTime);
+            } else {
+              video.currentTime = targetTime;
+            }
+          }
+        }
+      }
+      animId = requestAnimationFrame(renderLoop);
+    }
+
+    video.addEventListener('seeked', () => { isSeeking = false; });
+    setTimeout(updateVideoProgress, 200);
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Termini e condizioni del servizio di intermediazione spedizioni VEX ONE.">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Termini & Condizioni</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/legal.css">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body class="bg-white">
+
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header style="background:#0A0A0B;color:#fff;padding:54px 0 46px;position:relative;overflow:hidden">
+ <div style="position:absolute;top:-40px;right:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(184,255,0,.12),transparent 70%)"></div>
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6">
+ <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#B8FF00;margin:0 0 10px">Legale</p>
+ <h1 style="font-size:clamp(30px,6vw,48px);font-weight:700;letter-spacing:-0.015em;line-height:.98;margin:0">Termini &amp; Condizioni</h1>
+ <p style="font-size:14px;color:rgba(255,255,255,.6);font-weight:600;margin:14px 0 0">Ultimo aggiornamento: <span class="ph">[data]</span></p>
+ </div>
+</header>
+
+<div style="background:#FEF9E7;border-bottom:1px solid #F0E2B0">
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6 py-4">
+ <p style="font-size:13px;color:#7A6212;font-weight:600;margin:0;line-height:1.5"> <strong>Bozza da completare e validare.</strong> I campi <span class="ph">[esempio]</span> vanno compilati con i tuoi dati reali. Fai verificare questo testo da un consulente legale prima della pubblicazione, soprattutto le clausole su responsabilità e recesso.</p>
+ </div>
+</div>
+
+<main style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6 py-12">
+ <div class="grid lg:grid-cols-[230px_1fr] gap-12 items-start">
+
+ <aside class="toc hidden lg:block" style="position:sticky;top:90px">
+ <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9CA3AF;margin:0 0 10px">Indice</p>
+ <a href="#oggetto">1. Oggetto del servizio</a>
+ <a href="#ruolo">2. Ruolo di VEX ONE</a>
+ <a href="#account">3. Account utente</a>
+ <a href="#tariffe">4. Tariffe e pagamenti</a>
+ <a href="#wallet">5. Wallet e ricariche</a>
+ <a href="#obblighi">6. Obblighi dell'utente</a>
+ <a href="#vietati">7. Contenuti vietati</a>
+ <a href="#responsabilita">8. Responsabilità</a>
+ <a href="#recesso">9. Recesso e rimborsi</a>
+ <a href="#legge">10. Legge applicabile</a>
+ </aside>
+
+ <article class="legal">
+ <p>I presenti Termini regolano l'utilizzo del sito e del servizio offerto da <span class="ph">[VEX ONE Srl]</span> ("VEX ONE"). Utilizzando il servizio accetti integralmente questi Termini. Se non li accetti, ti preghiamo di non utilizzare la piattaforma.</p>
+
+ <h2 id="oggetto">1. Oggetto del servizio</h2>
+ <p>VEX ONE è una piattaforma che consente di confrontare le tariffe di diversi corrieri, prenotare spedizioni e monitorarne lo stato. Le tariffe sono fornite tramite l'integrazione con fornitori terzi e corrieri.</p>
+
+ <h2 id="ruolo">2. Ruolo di VEX ONE (intermediario)</h2>
+ <p>VEX ONE agisce come <strong>intermediario</strong> tra l'utente e i corrieri: non effettua direttamente il trasporto, che è eseguito dal corriere selezionato secondo le proprie condizioni di trasporto. Il contratto di trasporto si perfeziona con il corriere; VEX ONE facilita la prenotazione e il pagamento.</p>
+
+ <h2 id="account">3. Account utente</h2>
+ <p>Per usare il servizio devi creare un account fornendo dati veritieri e aggiornati. Sei responsabile della riservatezza delle tue credenziali e di ogni attività svolta tramite il tuo account. L'accesso è riservato a soggetti maggiorenni.</p>
+
+ <h2 id="tariffe">4. Tariffe e pagamenti</h2>
+ <p>Le tariffe mostrate includono il servizio di intermediazione di VEX ONE e sono comprensive di IVA, salvo diversa indicazione. Il prezzo finale è quello confermato in fase di checkout. La fattura, se richiesta, viene emessa con i dati di fatturazione forniti.</p>
+
+ <h2 id="wallet">5. Wallet e ricariche</h2>
+ <p>Il wallet consente di precaricare credito da utilizzare per le spedizioni. Le ricariche sono gestite tramite i nostri fornitori di pagamento. Il credito caricato può essere utilizzato per i servizi della piattaforma secondo quanto previsto al successivo art. 9 in tema di rimborsi.</p>
+
+ <h2 id="obblighi">6. Obblighi dell'utente</h2>
+ <ul>
+ <li>Fornire dati di spedizione corretti e completi (indirizzi, contenuto, peso, dimensioni).</li>
+ <li>Imballare adeguatamente i colli secondo le indicazioni del corriere.</li>
+ <li>Non spedire merci vietate o soggette a restrizioni senza le necessarie autorizzazioni.</li>
+ <li>Rispettare le condizioni di trasporto del corriere selezionato.</li>
+ </ul>
+
+ <h2 id="vietati">7. Contenuti e merci vietate</h2>
+ <p>È vietato spedire, a titolo esemplificativo: denaro contante, oggetti illegali, sostanze pericolose o infiammabili, armi, materiale deperibile non consentito, e quanto vietato dalle condizioni del corriere o dalla legge. L'elenco completo dei divieti dipende dal corriere selezionato.</p>
+
+ <h2 id="responsabilita">8. Limitazione di responsabilità</h2>
+ <p>VEX ONE non risponde dei danni, ritardi o smarrimenti imputabili al corriere, che è il vettore responsabile del trasporto secondo le proprie condizioni e massimali di indennizzo. Eventuali coperture assicurative aggiuntive sono regolate dalle condizioni del corriere o dell'assicuratore. VEX ONE risponde unicamente del corretto funzionamento del servizio di intermediazione, nei limiti consentiti dalla legge.</p>
+
+ <h2 id="recesso">9. Recesso, annullamenti e rimborsi</h2>
+ <p>Le modalità di annullamento di una spedizione e di rimborso del credito dipendono dallo stato della spedizione e dalle condizioni del corriere. Per i consumatori restano impregiudicati i diritti previsti dal Codice del Consumo (D.lgs. 206/2005). Le richieste vanno inoltrate a <span class="ph">[supporto@vexone.it]</span>.</p>
+
+ <h2 id="legge">10. Legge applicabile e foro</h2>
+ <p>I presenti Termini sono regolati dalla legge italiana. Per i consumatori è competente il foro del luogo di residenza o domicilio. Per gli altri utenti è competente il foro di <span class="ph">[città]</span>.</p>
+
+ <div style="margin-top:40px;padding-top:24px;border-top:1px solid #F1F2F4;display:flex;gap:18px;flex-wrap:wrap">
+ <a href="privacy.html" class="footer-link" style="color:#0078FF">Privacy Policy →</a>
+ <a href="cookie.html" class="footer-link" style="color:#0078FF">Cookie Policy →</a>
+ </div>
+ </article>
+ </div>
+</main>
+
+<footer style="background:#0A0A0B;border-top:1px solid rgba(255,255,255,0.08);color:#fff" class="pt-14 pb-8">
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6">
+ <div class="flex flex-col sm:flex-row justify-between items-start gap-6 mb-8">
+ <div>
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:32px;width:auto;display:block">
+ <p style="font-size:12px;color:#9CA3AF;font-weight:600;margin:6px 0 0;max-width:280px">Spedisci smart, paga il giusto. Confronta i migliori corrieri in pochi secondi.</p>
+ </div>
+ <div class="flex gap-12">
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Piattaforma</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="comparatore.html" class="footer-link">Calcola Tariffa</a></li>
+ <li><a href="tracking.html" class="footer-link">Traccia Spedizione</a></li>
+ <li><a href="dashboard.html" class="footer-link">Dashboard</a></li>
+ </ul>
+ </div>
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Legale</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="privacy.html" class="footer-link">Privacy Policy</a></li>
+ <li><a href="termini.html" class="footer-link" style="color:#0078FF">Termini & Condizioni</a></li>
+ <li><a href="cookie.html" class="footer-link">Cookie Policy</a></li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;font-size:11px;color:#6B7280;font-weight:500">
+ <p style="margin:0">© 2026 VEX ONE — Tutti i diritti riservati · <span class="ph">[VEX ONE Srl]</span> · P.IVA <span class="ph">[numero]</span></p>
+ </div>
+ </div>
+</footer>
+
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/nav-user.js"></script>
+</body>
+</html>

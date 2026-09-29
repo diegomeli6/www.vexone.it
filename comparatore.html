@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Confronta in 2 secondi le tariffe di DHL, UPS, FedEx, BRT, GLS e altri corrieri. Scegli il prezzo più basso e spedisci subito con VEX ONE.">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Confronta Tariffe</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/comparatore.css?v=logos_free2">
+ <script>
+  (function(){
+    try {
+      if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+        document.documentElement.classList.add('is-logged-in');
+      }
+    } catch(e){}
+  })();
+ </script>
+</head>
+<body>
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:24px;width:auto">
+ <button onclick="closeDrawer()" class="ts" style="width:34px;height:34px;border-radius:50%;border:1px solid #E5E7EB;background:#F8F9FA;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1">×</button>
+ </div>
+ <div style="display:flex;align-items:center;gap:10px;background:#F8F9FA;border:1.5px solid #E8E8E8;border-radius:16px;padding:12px 14px;margin-bottom:20px">
+ <div style="width:38px;height:38px;border-radius:50%;background:#0078FF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">DA</div>
+ <div style="flex:1;min-width:0">
+ <p style="font-weight:700;font-size:13px;letter-spacing:-.02em;margin:0">Damiano Arcidiacono</p>
+ <p style="font-size:11px;color:#9CA3AF;margin:0">Piano Pro · 38 spedizioni</p>
+ </div>
+ <div style="text-align:right;flex-shrink:0">
+ <p style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.04em;margin:0">Wallet</p>
+ <p style="font-size:14px;font-weight:700;color:#16a34a;margin:0">€ 0,00</p>
+ </div>
+ </div>
+ <p class="lbl" style="margin-bottom:4px">Naviga</p>
+ <a href="comparatore.html" class="drawer-link active">Nuova Spedizione<span class="arr">→</span></a>
+ <a href="dashboard.html" class="drawer-link">Dashboard<span class="arr">→</span></a>
+ <a href="tracking.html" class="drawer-link">Tracking<span class="arr">→</span></a>
+ <a href="portafoglio.html" class="drawer-link" style="margin-bottom:20px">Portafoglio<span class="arr">→</span></a>
+ <p class="lbl" style="margin-bottom:4px;margin-top:8px">Account</p>
+ <a href="dashboard.html" class="drawer-link">Le mie spedizioni<span class="arr">→</span></a>
+ <a href="#" class="drawer-link">Rubrica<span class="arr">→</span></a>
+ <div class="drawer-cta">
+  <a href="dashboard.html" class="btn-dark shine" style="display:block;text-align:center;text-decoration:none;padding:13px;border-radius:var(--radius-lg);font-size:12px;letter-spacing:0.02em;font-weight:600;text-transform:uppercase">Dashboard →</a>
+  <button onclick="closeDrawer();showToast('Disconnessione...')" style="display:block;width:100%;margin-top:8px;background:none;border:none;font-size:11px;font-weight:700;color:#9CA3AF;cursor:pointer;padding:6px;letter-spacing:.05em">Esci ↩</button>
+  </div>
+</aside>
+
+<div style="min-height:100vh">
+  <main class="app-page-container pb-52">
+
+  <!-- HEADER UNIFICATO -->
+  <header class="page-header">
+    <div class="page-eyebrow">
+      <a href="index.html" style="color:inherit;text-decoration:none" onmouseover="this.style.color='#0078FF'" onmouseout="this.style.color='#6B7280'">Home</a>
+      <span>›</span>
+      <span style="color:#0A0A0B">Nuova Spedizione</span>
+    </div>
+    <h1 id="page-title" class="page-title">Nuova Spedizione</h1>
+    <p id="page-subtitle" class="page-subtitle">Inserisci i dettagli di mittente e destinatario per confrontare i corrieri disponibili in tempo reale.</p>
+  </header>
+
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7" style="align-items:start">
+
+ <!-- ═══════════ SIDEBAR ═══════════ -->
+ <div class="lg:col-span-5 xl:col-span-4">
+    <!-- ═══ CARD RIEPILOGO COLLI (CON RESOCONTO DETTAGLIATO PRIMA DELLA SCELTA CORRIERE) ═══ -->
+    <div id="colli-summary" class="colli-summary">
+      <div class="colli-summary-head">
+        <div style="display:flex;align-items:center;gap:11px;min-width:0">
+          <div class="colli-icon-box" id="cs-icon">
+            <svg style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7.5 4.27 9 5.15"/>
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+              <path d="m3.3 7 8.7 5 8.7-5"/>
+              <path d="M12 22V12"/>
+            </svg>
+          </div>
+          <div style="min-width:0">
+            <p style="font-size:11.5px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.02em;margin:0 0 2px">Pacchi da spedire</p>
+            <p id="cs-title" style="font-size:14px;font-weight:700;letter-spacing:-.01em;color:#0A0A0B;margin:0;line-height:1.2">1 collo · 2.0 kg</p>
+          </div>
+        </div>
+        <button type="button" onclick="openModal('modal-colli')" class="btn-colli-edit" style="font-size:11px;font-weight:700;color:#0078FF;background:rgba(0,120,255,.08);border:none;padding:7px 12px;border-radius:9px;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;gap:4px">
+          <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Modifica
+        </button>
+      </div>
+      <!-- Resoconto pacchi sempre visibile prima di selezionare il corriere -->
+      <div id="cs-breakdown-box" class="colli-breakdown-box">
+        <div class="colli-breakdown-item">
+          <span style="display:inline-flex;align-items:center;gap:5px"><svg style="width:11px;height:11px;color:#6B7280;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg> Pacco 1: <strong>2.0 kg</strong></span>
+          <span class="dim">30 × 20 × 15 cm</span>
+        </div>
+      </div>
+      <div id="cs-warning" style="display:none;padding:8px 14px;background:rgba(245,158,11,.1);border-top:1px solid rgba(245,158,11,.2);font-size:11px;font-weight:700;color:#d97706;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+        <svg style="width:12px;height:12px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Nessun collo configurato — <a href="#" onclick="openModal('modal-colli');return false" style="color:#0078FF;font-weight:700;text-decoration:underline">aggiungine uno</a>
+      </div>
+    </div>
+
+    <!-- PROGRESS BAR (3 numerini uniformi, stesso colore, opacità 45% -> 100%) -->
+    <div class="progress" id="progress-bar">
+      <div class="pstep active" id="pstep-1" onclick="goToStepSlide(1)">
+        <div class="pstep-dot"><span>1</span></div>
+        <p class="pstep-lbl">Mittente</p>
+      </div>
+      <div class="pstep-line" id="pline-1"></div>
+      <div class="pstep" id="pstep-2" onclick="goToStepSlide(2)">
+        <div class="pstep-dot"><span>2</span></div>
+        <p class="pstep-lbl">Destinatario</p>
+      </div>
+      <div class="pstep-line" id="pline-2"></div>
+      <div class="pstep" id="pstep-3" onclick="goToStepSlide(3)">
+        <div class="pstep-dot"><span>3</span></div>
+        <p class="pstep-lbl">Opzioni</p>
+      </div>
+    </div>
+
+    <!-- Indicatore salvataggio discreto -->
+    <p id="save-indicator" style="font-size:11.5px;color:#16a34a;font-weight:600;text-align:center;margin:0;padding:0;height:0;overflow:hidden;transition:all .25s ease;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap"></p>
+
+    <!-- ═══ STEP SLIDER CONTAINER (FORMS SCORREVOLI A SLIDE) ═══ -->
+    <div class="step-slider-container">
+
+      <!-- SLIDE 1 — MITTENTE -->
+      <div class="step-slide active" id="step-slide-1">
+        <div class="step-slide-head">
+          <h2 class="step-slide-title">
+            <span class="pstep-dot" style="width:22px;height:22px;font-size:11px;background:#0078FF;color:#fff;border-color:#0078FF">1</span>
+            Da dove parte la spedizione?
+          </h2>
+          <span class="step-slide-badge" id="slide-1-badge">Step 1 di 3</span>
+        </div>
+
+        <div class="fmode">
+          <div class="fmode-btn on" id="mode-priv" onclick="setFormMode('priv')" style="display:inline-flex;align-items:center;justify-content:center;gap:5px"><svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Privato</div>
+          <div class="fmode-btn" id="mode-biz" onclick="setFormMode('biz')" style="display:inline-flex;align-items:center;justify-content:center;gap:5px"><svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01M12 14h.01M8 14h.01M16 14h.01"/></svg> Azienda</div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:11.5px;font-weight:600;color:#6B7280" id="m-profile-hint">Profilo mittente</span>
+          <button type="button" onclick="autofillMittente()" class="ts" style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:rgba(0,120,255,.1);color:#0078FF;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+            <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Usa i miei dati
+          </button>
+        </div>
+
+        <div class="grid grid-cols-6 gap-2.5">
+          <input class="inp col-span-6" id="m-nome" placeholder="Nome e Cognome" autocomplete="name" oninput="onFieldChange()">
+          <input class="inp col-span-6" id="m-piva" placeholder="Partita IVA / Codice Fiscale" autocomplete="off" style="display:none">
+          <input class="inp col-span-4" id="m-via" placeholder="Via / Indirizzo" autocomplete="street-address" oninput="onFieldChange()">
+          <input class="inp col-span-2" id="m-num" placeholder="N. Civico" autocomplete="off">
+          <div style="grid-column:span 2;position:relative">
+            <input class="inp" id="m-cap" placeholder="CAP" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" oninput="onCapInput('m');onFieldChange()" style="width:100%">
+            <div class="cap-sug" id="m-cap-sug"></div>
+          </div>
+          <input class="inp col-span-3" id="m-city" placeholder="Città" autocomplete="address-level2">
+          <input class="inp col-span-1" id="m-pr" placeholder="PR" maxlength="2" autocomplete="address-level1" style="text-transform:uppercase">
+          <input class="inp col-span-6" id="m-tel" placeholder="Telefono (per il corriere)" type="tel" inputmode="tel" autocomplete="tel" oninput="onFieldChange()">
+          <input class="inp col-span-6" id="m-mail" placeholder="Email (per ricevuta e aggiornamenti)" type="email" inputmode="email" autocomplete="email">
+        </div>
+
+        <div class="step-nav-footer" style="justify-content:flex-end">
+          <button type="button" onclick="goToStepSlide(2)" class="step-btn-next">Continua: Destinatario →</button>
+        </div>
+      </div>
+
+      <!-- SLIDE 2 — DESTINATARIO -->
+      <div class="step-slide" id="step-slide-2">
+        <div class="step-slide-head">
+          <h2 class="step-slide-title">
+            <span class="pstep-dot" style="width:22px;height:22px;font-size:11px;background:#0078FF;color:#fff;border-color:#0078FF">2</span>
+            A chi deve essere consegnato?
+          </h2>
+          <span class="step-slide-badge" id="slide-2-badge">Step 2 di 3</span>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:11.5px;font-weight:600;color:#6B7280">Destinatario</span>
+          <button type="button" onclick="openModal('modal-rubrica')" class="ts" style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:rgba(0,120,255,.1);color:#0078FF;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+            <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Rubrica
+          </button>
+        </div>
+
+        <div class="grid grid-cols-6 gap-2.5">
+          <input class="inp col-span-6" id="d-nome" placeholder="Nome e Cognome o Ragione Sociale" autocomplete="name" oninput="onFieldChange()">
+          <input class="inp col-span-4" id="d-via" placeholder="Via / Indirizzo di consegna" autocomplete="street-address" oninput="onFieldChange()">
+          <input class="inp col-span-2" id="d-num" placeholder="N. Civico" autocomplete="off">
+          <div style="grid-column:span 2;position:relative">
+            <input class="inp" id="d-cap" placeholder="CAP" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" oninput="onCapInput('d');onFieldChange()" style="width:100%">
+            <div class="cap-sug" id="d-cap-sug"></div>
+          </div>
+          <input class="inp col-span-3" id="d-city" placeholder="Città" autocomplete="address-level2">
+          <input class="inp col-span-1" id="d-pr" placeholder="PR" maxlength="2" autocomplete="address-level1" style="text-transform:uppercase">
+          <input class="inp col-span-6" id="d-tel" placeholder="Telefono destinatario (obbligatorio)" type="tel" inputmode="tel" autocomplete="tel" oninput="onFieldChange()">
+          <input class="inp col-span-6" id="d-mail" placeholder="Email destinatario (per tracking live)" type="email" inputmode="email" autocomplete="email">
+          <input class="inp col-span-6" id="d-note" placeholder="Note per l'autista (es. Citofono Scala B, lasciare al portiere)" autocomplete="off">
+        </div>
+
+        <div class="step-nav-footer" style="flex-direction:column;gap:12px;align-items:stretch">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%">
+            <button type="button" onclick="goToStepSlide(1)" class="step-btn-prev">← Indietro (Mittente)</button>
+            <button type="button" onclick="goToStepSlide(3)" class="step-btn-next">Continua: Opzioni →</button>
+          </div>
+          <div style="display:flex;justify-content:center;padding-top:10px;border-top:1px dashed #E5E7EB">
+            <button type="button" onclick="saveDest()" style="font-size:12px;font-weight:600;color:#0078FF;background:rgba(0,120,255,0.06);border:1px solid rgba(0,120,255,0.18);padding:8px 16px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s" onmouseover="this.style.background='rgba(0,120,255,0.12)'" onmouseout="this.style.background='rgba(0,120,255,0.06)'">
+              <svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Salva questo destinatario in rubrica
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3 — OPZIONI -->
+      <div class="step-slide" id="step-slide-3">
+        <div class="step-slide-head">
+          <h2 class="step-slide-title">
+            <span class="pstep-dot" style="width:22px;height:22px;font-size:11px;background:#0078FF;color:#fff;border-color:#0078FF">3</span>
+            Opzioni di ritiro e note
+          </h2>
+          <span class="step-slide-badge" id="slide-3-badge">Step 3 di 3</span>
+        </div>
+
+        <p class="lbl" style="margin-bottom:8px;font-size:11px;">Modalità di ritiro merce <span class="help">?<span class="help-tip">A domicilio: il corriere ritira da te. Hub: consegni tu al punto convenzionato</span></span></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div class="ritiro-btn on" onclick="setRitiro(this,'domicilio')">
+            <p style="font-weight:700;font-size:12px;margin:0 0 4px;display:flex;align-items:center;gap:6px"><svg style="width:14px;height:14px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="9" rx="1"/><path d="M3 9h18"/><path d="M8 9V5a2 2 0 0 1 4 0v4"/><path d="m8 17 2 2 4-4"/></svg> A Domicilio</p>
+            <p style="font-size:11px;color:#6B7280;margin:0">Il corriere ritira dal mittente</p>
+          </div>
+          <div class="ritiro-btn" onclick="setRitiro(this,'hub')">
+            <p style="font-weight:700;font-size:12px;margin:0 0 4px;display:flex;align-items:center;gap:6px"><svg style="width:14px;height:14px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/><path d="M12 3v6"/></svg> Hub / Locker</p>
+            <p style="font-size:11px;color:#6B7280;margin:0">Porti il pacco al punto convenzionato</p>
+          </div>
+        </div>
+
+        <p class="lbl" style="margin-bottom:6px;font-size:11px;">Riferimento interno ordine <span style="font-weight:500;color:#9CA3AF">(opzionale)</span></p>
+        <input class="inp" id="rif-ordine" placeholder="Es. Ordine #1042, DDT n. 88, Bolla...">
+
+        <div style="background:rgba(0,120,255,.05);border:1px solid rgba(0,120,255,.12);border-radius:12px;padding:12px 14px;margin-top:14px;display:flex;align-items:flex-start;gap:9px">
+          <svg style="width:14px;height:14px;color:#0078FF;flex-shrink:0;margin-top:1px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <p style="font-size:11.5px;font-weight:700;color:#0078FF;margin:0">Servizi extra (Assicurazione merce, Contrassegno, Notifiche SMS) sono attivabili direttamente sulla card del corriere scelto a destra.</p>
+        </div>
+
+        <div class="step-nav-footer">
+          <button type="button" onclick="goToStepSlide(2)" class="step-btn-prev">← Indietro (Destinatario)</button>
+          <button type="button" onclick="focusOnResults()" class="step-btn-next" style="background:#15803D;display:inline-flex;align-items:center;gap:6px">
+            <svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Scegli il corriere a destra
+          </button>
+        </div>
+      </div>
+
+    </div>
+ </div>
+
+ <!-- ═══════════ RISULTATI ═══════════ -->
+ <div class="lg:col-span-7 xl:col-span-8" style="display:flex;flex-direction:column;gap:12px">
+
+ <div class="card" style="border-radius:var(--radius-md);padding:20px 24px">
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+ <div>
+ <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+ <span id="algo-dot" style="width:7px;height:7px;border-radius:50%;background:#0078FF;display:inline-block;animation:pulse 2s infinite;flex-shrink:0"></span>
+ <span id="algo-label" style="font-size:11px;font-weight:700;color:#0078FF;text-transform:uppercase;letter-spacing:0.04em;">Tariffe in tempo reale</span>
+ <span class="upd-pill" id="upd-pill"><span class="spin">⟳</span> Aggiorno</span>
+ </div>
+ <h3 id="res-count" style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin:0 0 3px">— Tariffe</h3>
+ <p id="res-sub" style="font-size:12px;color:#6B7280;font-weight:500;margin:0">Calcolo tariffe in corso...</p>
+ </div>
+ <div style="display:flex;gap:7px;flex-wrap:wrap">
+ <button class="sort-btn on" onclick="doSort('v',this)">↑ Più Veloce</button>
+ <button class="sort-btn" onclick="doSort('e',this)">↓ Più Economico</button>
+ </div>
+ </div>
+ <div id="last-ship-row" style="display:none;background:#F8F9FA;border-radius:10px;padding:8px 12px;margin-bottom:12px;border:1px solid #EBEBEB">
+ <p style="font-size:12px;color:#6B7280;margin:0 0 2px;font-weight:500">Ultima spedizione simile</p>
+ <p id="last-ship-txt" style="font-size:11px;font-weight:700;margin:0;color:#0A0A0B"></p>
+ </div>
+ <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #EEEEEE;align-items:center">
+ <span style="font-size:11.5px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.02em">Filtri:</span>
+ <button class="filter-btn" onclick="doFilter(this,'express')"> Express 24h</button>
+ <button class="filter-btn lime" onclick="doFilter(this,'oggi')">Ritira Oggi</button>
+ <button class="filter-btn" onclick="doFilter(this,'green')"> Carbon Neutral<span class="help" style="margin-left:3px;background:rgba(255,255,255,.6)">?<span class="help-tip">Spedizione a zero emissioni CO₂ grazie alla compensazione del corriere</span></span></button>
+ <button class="filter-btn" onclick="doFilter(this,'punti')">Punti Ritiro</button>
+ <button class="filter-btn" onclick="doFilter(this,'cod')">Contrassegno</button>
+ </div>
+ </div>
+
+ <!-- Empty state: visibile solo se l'utente svuota i CAP -->
+ <div id="empty-init" class="empty-state" style="display:none">
+ <span class="empty-icon" style="display:block"><svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+ <p style="font-size:24px;font-weight:700;letter-spacing:-0.015em;margin:0 0 6px">Manca qualche dato</p>
+ <p style="color:#6B7280;font-size:13px;margin:0 0 20px;line-height:1.5">Per vedere le tariffe servono <strong>CAP mittente</strong> e <strong>CAP destinatario</strong>.<br><span style="color:#9CA3AF">Suggerimento: parti dalla homepage per inserire colli e indirizzi insieme.</span></p>
+ <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;background:#0078FF;color:#fff;font-size:12px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:10px 18px;border-radius:var(--radius-lg);text-decoration:none;transition:all .2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">↩ Torna alla homepage</a>
+ <p style="font-size:11px;color:#C0C0C0;margin:14px 0 0;font-weight:700;letter-spacing:.05em">oppure compila i CAP a sinistra</p>
+ </div>
+
+ <!-- Skeleton: visibile all'apertura mentre arrivano le tariffe dalle API -->
+ <div id="skel" style="display:flex;flex-direction:column;gap:10px">
+ <div class="skel-card"><div class="shimmer" style="width:54px;height:54px;border-radius:13px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="shimmer" style="height:17px;width:55%"></div><div class="shimmer" style="height:10px;width:36%"></div><div style="display:flex;gap:5px"><div class="shimmer" style="height:18px;width:65px;border-radius:var(--radius-lg)"></div><div class="shimmer" style="height:18px;width:50px;border-radius:var(--radius-lg)"></div></div></div><div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end"><div class="shimmer" style="height:28px;width:70px"></div><div class="shimmer" style="height:34px;width:88px;border-radius:var(--radius-lg)"></div></div></div>
+ <div class="skel-card"><div class="shimmer" style="width:54px;height:54px;border-radius:13px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="shimmer" style="height:17px;width:44%"></div><div class="shimmer" style="height:10px;width:28%"></div></div><div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end"><div class="shimmer" style="height:28px;width:70px"></div><div class="shimmer" style="height:34px;width:88px;border-radius:var(--radius-lg)"></div></div></div>
+ <div class="skel-card"><div class="shimmer" style="width:54px;height:54px;border-radius:13px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="shimmer" style="height:17px;width:60%"></div><div class="shimmer" style="height:10px;width:32%"></div></div><div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end"><div class="shimmer" style="height:28px;width:70px"></div><div class="shimmer" style="height:34px;width:88px;border-radius:var(--radius-lg)"></div></div></div>
+ </div>
+
+      <div id="results" style="display:none;flex-direction:column;gap:10px"></div>
+    </div>
+  </div>
+  </main>
+</div>
+
+<div class="bot-bar" id="bot-bar">
+ <div style="display:flex;align-items:center;gap:14px;overflow:hidden;min-width:0">
+ <div id="bb-logo" style="width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;letter-spacing:-.02em;flex-shrink:0"></div>
+ <div style="min-width:0">
+ <p style="font-size:11px;font-weight:600;color:#6B7280;margin:0 0 2px">Corriere</p>
+ <p id="bb-name" style="font-size:14px;font-weight:700;letter-spacing:-.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</p>
+ </div>
+ <div class="bb-extra" style="border-left:1px solid #E5E7EB;padding-left:14px">
+ <p style="font-size:11px;font-weight:600;color:#6B7280;margin:0 0 2px">Consegna</p>
+ <p id="bb-del" style="font-size:12px;font-weight:700;margin:0">—</p>
+ </div>
+ <div class="bb-extra" style="border-left:1px solid #E5E7EB;padding-left:14px">
+ <p style="font-size:11px;font-weight:600;color:#6B7280;margin:0 0 2px">Risparmio</p>
+ <p id="bb-save" style="font-size:12px;font-weight:700;color:#16a34a;margin:0">—</p>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+ <div style="text-align:right">
+ <p style="font-size:11px;font-weight:600;color:#6B7280;margin:0 0 2px">Totale</p>
+ <p id="bb-price" style="font-size:22px;font-weight:700;letter-spacing:-0.015em;margin:0">—</p>
+ </div>
+ <button id="checkout-btn" onclick="goCheckout()" class="btn-dark shine" style="padding:13px 24px;opacity:0.5;cursor:not-allowed" disabled aria-disabled="true" title="Seleziona prima un corriere">Procedi →</button>
+ </div>
+</div>
+
+<div class="modal-overlay" id="modal-rubrica" role="dialog" aria-modal="true" aria-labelledby="modal-rubrica-title" onclick="if(event.target===this)closeModal('modal-rubrica')">
+ <div class="modal-box">
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+ <div>
+ <h2 id="modal-rubrica-title" style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin:0 0 4px">Rubrica Destinatari</h2>
+ <p style="font-size:12px;color:#9CA3AF;margin:0">Clicca per compilare il destinatario automaticamente.</p>
+ </div>
+ <button onclick="closeModal('modal-rubrica')" class="ts" style="width:30px;height:30px;border-radius:50%;border:1px solid #E5E7EB;background:#F8F9FA;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">×</button>
+ </div>
+ <input class="inp" placeholder=" Cerca nome, città o CAP..." oninput="filterContacts(this.value)" style="margin-bottom:14px">
+ <div id="contacts-list"></div>
+ </div>
+</div>
+
+<div class="modal-overlay" id="modal-preset" role="dialog" aria-modal="true" aria-labelledby="modal-preset-title" onclick="if(event.target===this)closeModal('modal-preset')">
+ <div class="modal-box" style="max-width:460px">
+ <h2 id="modal-preset-title" style="font-size:19px;font-weight:700;letter-spacing:-0.015em;margin:0 0 4px"> Crea preset</h2>
+ <p style="font-size:12px;color:#9CA3AF;margin:0 0 16px">Configura un modello di collo riutilizzabile. Lo aggiungerai con un click.</p>
+
+ <!-- Nome -->
+ <div style="margin-bottom:14px">
+ <label class="lbl" for="preset-name">Nome <span style="color:#dc2626;font-style:normal">*</span></label>
+ <input class="inp" id="preset-name" placeholder="Es. Scatola libri, Bottiglie vino..." maxlength="40" autocomplete="off">
+ </div>
+
+ <!-- Tipo -->
+ <div style="margin-bottom:14px">
+ <label class="lbl">Tipo collo</label>
+ <div style="display:flex;gap:6px">
+ <div class="tipo-btn on" data-preset-tipo="scatola" onclick="setPresetTipo(this,'scatola')"><span class="ti"></span><span class="tl">Scatola</span></div>
+ <div class="tipo-btn" data-preset-tipo="busta" onclick="setPresetTipo(this,'busta')"><span class="ti"></span><span class="tl">Busta</span></div>
+ <div class="tipo-btn" data-preset-tipo="pallet" onclick="setPresetTipo(this,'pallet')"><span class="ti"></span><span class="tl">Pallet</span></div>
+ </div>
+ </div>
+
+ <!-- Peso + dimensioni -->
+ <label class="lbl">Peso e dimensioni <span style="color:#dc2626;font-style:normal">*</span></label>
+ <div class="field-labels" style="margin-bottom:4px">
+ <span class="fl">Peso (kg)</span><span class="fl">Lungh. cm</span><span class="fl">Larg. cm</span><span class="fl">Alt. cm</span>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px">
+ <input class="inp" id="preset-peso" type="number" step="0.1" min="0.1" inputmode="decimal" placeholder="2" style="text-align:center" aria-label="Peso in kg">
+ <input class="inp" id="preset-l" type="number" min="1" inputmode="numeric" placeholder="30" style="text-align:center" aria-label="Lunghezza cm">
+ <input class="inp" id="preset-w" type="number" min="1" inputmode="numeric" placeholder="20" style="text-align:center" aria-label="Larghezza cm">
+ <input class="inp" id="preset-h" type="number" min="1" inputmode="numeric" placeholder="15" style="text-align:center" aria-label="Altezza cm">
+ </div>
+
+ <!-- Preview live -->
+ <div id="preset-preview" style="display:none;align-items:center;gap:10px;background:rgba(0,120,255,.06);border:1.5px solid rgba(0,120,255,.18);border-radius:12px;padding:10px 14px;margin-bottom:16px">
+ <span id="preset-preview-icon" style="font-size:20px"></span>
+ <span id="preset-preview-text" style="font-size:12px;font-weight:700;">— · — kg</span>
+ </div>
+
+ <div style="display:flex;gap:10px">
+ <button class="btn-ghost" onclick="closeModal('modal-preset')">Annulla</button>
+ <button class="btn-dark shine" style="flex:1" onclick="confirmSavePreset()"> Salva preset</button>
+ </div>
+ </div>
+</div>
+
+<div class="modal-overlay" id="modal-review" role="dialog" aria-modal="true" aria-labelledby="modal-review-title" onclick="if(event.target===this)closeModal('modal-review')">
+ <div class="modal-box" style="max-width:500px">
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
+ <div>
+ <h2 id="modal-review-title" style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin:0 0 4px">Conferma spedizione</h2>
+ <p style="font-size:12px;color:#9CA3AF;margin:0">Controlla i dettagli prima di procedere.</p>
+ </div>
+ <button onclick="closeModal('modal-review')" class="ts" style="width:30px;height:30px;border-radius:50%;border:1px solid #E5E7EB;background:#F8F9FA;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">×</button>
+ </div>
+ <div id="review-content"></div>
+ <div style="display:flex;gap:10px;margin-top:20px">
+ <button class="btn-ghost" onclick="closeModal('modal-review')">← Modifica</button>
+ <button class="btn-lime shine" style="flex:1;padding:14px" onclick="confirmCheckout()">Conferma e Procedi →</button>
+ </div>
+ </div>
+</div>
+
+<!-- ═══════════ MODAL COLLI (gestione dei colli) ═══════════ -->
+<div class="modal-overlay" id="modal-colli" role="dialog" aria-modal="true" aria-labelledby="modal-colli-title" onclick="if(event.target===this)closeModal('modal-colli')">
+ <div class="modal-box" style="max-width:560px">
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+ <div>
+ <h2 id="modal-colli-title" style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin:0 0 4px"> Modifica colli <span id="modal-colli-count" style="font-size:12px;color:#9CA3AF;font-weight:700;"></span></h2>
+ <p style="font-size:12px;color:#9CA3AF;margin:0">Aggiungi, modifica o rimuovi colli dalla spedizione.</p>
+ </div>
+ <button onclick="closeModal('modal-colli')" aria-label="Chiudi modal" class="ts" style="width:30px;height:30px;border-radius:50%;border:1px solid #E5E7EB;background:#F8F9FA;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">×</button>
+ </div>
+ <!-- Preset rapidi (compatto) -->
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+ <span class="lbl" style="margin-bottom:0;font-size:11px;">Preset rapidi</span>
+ <span id="colli-count" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;background:#0A0A0B;color:#fff;padding:4px 8px;border-radius:8px">1 collo</span>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px">
+ <div class="pblock" onclick="applyPreset('busta',0.5,32,23,2,this,'Busta')"><span class="pi"></span><span class="ps">Busta</span><span class="pw">½ kg</span></div>
+ <div class="pblock" onclick="applyPreset('scatola',2,30,20,15,this,'Small')"><span class="pi"></span><span class="ps">Small</span><span class="pw">2 kg</span></div>
+ <div class="pblock" onclick="applyPreset('scatola',5,40,30,25,this,'Medium')"><span class="pi"></span><span class="ps">Medium</span><span class="pw">5 kg</span></div>
+ <div class="pblock" onclick="applyPreset('scatola',15,60,40,40,this,'Large')"><span class="pi"></span><span class="ps">Large</span><span class="pw">15 kg</span></div>
+ </div>
+ <p class="lbl" style="font-size:11px;margin-bottom:6px">Colli configurati</p>
+ <div id="colli-wrap"></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #EEEEEE;margin-top:6px;margin-bottom:10px">
+ <span style="font-size:12px;font-weight:600;color:#4B5563;">Peso totale<span class="help">?<span class="help-tip">Il prezzo si calcola sul maggiore tra peso reale e peso volumetrico (L×W×H/5000)</span></span></span>
+ <div style="text-align:right">
+ <span style="font-size:13px;font-weight:700;" id="peso-tot">— kg</span>
+ <div class="vol-hint" id="vol-hint"></div>
+ </div>
+ </div>
+ <div style="position:relative;margin-bottom:18px" id="add-collo-wrap">
+ <button onclick="toggleColloPicker()" class="ts" id="add-collo-btn" style="width:100%;background:#F0F0F2;border:1.5px solid #E4E4E6;border-radius:11px;padding:9px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6B7280;cursor:pointer">+ Aggiungi altro collo ▾</button>
+ <div class="cpicker" id="collo-picker"></div>
+ </div>
+
+ <!-- ═══ Zona "I tuoi preset" ═══
+ Sezione separata visivamente, accessibile sempre, con header esplicativo.
+ Mostra elenco se esiste e bottone per salvare l'attuale configurazione. -->
+ <div style="background:rgba(0,120,255,.04);border:1.5px solid rgba(0,120,255,.15);border-radius:14px;padding:14px;margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+  <div>
+  <p style="font-size:12px;font-weight:600;color:#0078FF;margin:0">I miei preset</p>
+  <p style="font-size:12px;color:#6B7280;margin:2px 0 0;font-weight:500">Salva le dimensioni che usi più spesso per riutilizzarle al volo.</p>
+  </div>
+  <span id="presets-count-badge" style="font-size:11.5px;font-weight:600;color:#9CA3AF;background:#fff;border:1px solid #E5E7EB;padding:3px 8px;border-radius:10px;">0 salvati</span>
+  </div>
+  <!-- Sort bar (visibile da 4+ preset) -->
+  <div id="presets-sort-bar" style="display:none;align-items:center;gap:5px;margin-top:8px;flex-wrap:wrap">
+  <span style="font-size:11.5px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.02em;margin-right:3px">Ordina:</span>
+  <button data-sort="manual" onclick="setPresetSort('manual')" class="sort-pill on" style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:normal;padding:4px 9px;border-radius:14px;border:1px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;transition:all .15s">⋮⋮ Manuale</button>
+  <button data-sort="recent" onclick="setPresetSort('recent')" class="sort-pill" style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:normal;padding:4px 9px;border-radius:14px;border:1px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;transition:all .15s"><svg class="icon mr-1 inline" style="width:12px;height:12px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Recenti</button>
+  <button data-sort="usage" onclick="setPresetSort('usage')" class="sort-pill" style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:normal;padding:4px 9px;border-radius:14px;border:1px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;transition:all .15s"><svg class="icon mr-1 inline text-amber-500" style="width:12px;height:12px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Più usati</button>
+  <button data-sort="alpha" onclick="setPresetSort('alpha')" class="sort-pill" style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:normal;padding:4px 9px;border-radius:14px;border:1px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;transition:all .15s">A-Z</button>
+  </div>
+  <!-- Suggeriti per te (#4): popolato dinamicamente -->
+  <div id="presets-suggested-wrap" style="display:none;margin-top:10px"></div>
+  <div id="saved-presets-wrap" style="display:none;margin-top:10px;margin-bottom:8px">
+  <div id="saved-presets-list"></div>
+  </div>
+  <p id="presets-empty-hint" style="font-size:12px;color:#9CA3AF;margin:0 0 10px;text-align:center;padding:6px 0">Nessun preset salvato ancora.</p>
+  <button id="preset-create-btn" onclick="openSavePresetModal()" style="width:100%;background:#0078FF;border:none;border-radius:10px;padding:9px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.02em;color:#fff;cursor:pointer;transition:all .2s" onmouseover="if(!this.disabled)this.style.background='#0064D6'" onmouseout="if(!this.disabled)this.style.background='#0078FF'">+ Crea nuovo preset</button>
+  <!-- Esporta / Importa -->
+  <div id="preset-io-row" style="display:none;margin-top:8px;gap:6px">
+  <button onclick="exportPresets()" style="flex:1;background:transparent;border:1.5px solid #E5E7EB;border-radius:10px;padding:7px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.02em;color:#6B7280;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='#0078FF';this.style.color='#0078FF'" onmouseout="this.style.borderColor='#E5E7EB';this.style.color='#6B7280'"><svg class="icon mr-1 inline" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Esporta JSON</button>
+  <button onclick="triggerImportPresets()" style="flex:1;background:transparent;border:1.5px solid #E5E7EB;border-radius:10px;padding:7px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.02em;color:#6B7280;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='#0078FF';this.style.color='#0078FF'" onmouseout="this.style.borderColor='#E5E7EB';this.style.color='#6B7280'"><svg class="icon mr-1 inline" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importa JSON</button>
+  <input type="file" id="preset-import-input" accept=".json,application/json" style="display:none" onchange="handleImportFile(event)">
+  </div>
+ </div>
+
+ <button class="btn-dark shine" style="width:100%;padding:13px" onclick="closeModal('modal-colli');showToast('Colli aggiornati');refreshColliSummary()"> Fatto</button>
+ </div>
+</div>
+
+<div class="toast" id="toast" style="bottom:28px" role="status" aria-live="polite">
+ <div class="toast-dot"></div>
+ <span id="toast-msg">Ok</span>
+</div>
+
+<script>
+'use strict';
+
+/* ───── STATE ───── */
+const S = {
+ colli:[], sortBy:'v', filters:new Set(), ritiro:'domicilio',
+ selectedId:null, results:[], savedPresets:[],
+ activeStep:1, formMode:'priv',
+ collapsedColli:new Set(),
+ hasMinData:false,
+ expressMode:false, // true se arriviamo da homepage con dati pre-compilati
+ prefillUsed:false // tracciamo se URL aveva parametri
+};
+
+/* ───── CORRIERI CON LOGHI VETTORIALI ORIGINALI ───── */
+const CARRIERS = [
+  { id:'dhl',   name:'DHL Express',   short:'DHL', logo:'carriers/dhl.svg',   base:9.20, perKg:1.15, speed:1, delivery:'24H Express', tags:['express','oggi'], supports:['ass','firma','sms'], svcPrices:{ass:3.50,firma:1.80,sms:0.60} },
+  { id:'fedex', name:'FedEx Priority',short:'FX',  logo:'carriers/fedex.svg', base:8.50, perKg:1.10, speed:1, delivery:'24H Priority',tags:['express'],        supports:['ass','firma'], svcPrices:{ass:3.20,firma:1.50} },
+  { id:'ups',   name:'UPS Standard',  short:'UPS', logo:'carriers/ups.svg',   base:6.20, perKg:0.85, speed:2, delivery:'24-48H',       tags:['express','oggi','punti'], supports:['cod','ass','firma','sms'], svcPrices:{cod:3.00,ass:2.80,firma:1.20,sms:0.50} },
+  { id:'gls',   name:'GLS Standard',  short:'GLS', logo:'carriers/gls.svg',   base:4.50, perKg:0.68, speed:2, delivery:'24-48H',       tags:['green','oggi','punti','cod'], supports:['cod','ass','firma','sms','green'], svcPrices:{cod:2.50,ass:2.20,firma:0.90,sms:0.40} },
+  { id:'brt',   name:'BRT Espresso',  short:'BRT', logo:'carriers/brt.svg',   base:3.90, perKg:0.62, speed:2, delivery:'24-48H',       tags:['punti','cod'],   supports:['cod','ass','firma'], svcPrices:{cod:2.20,ass:1.80,firma:0.80} },
+  { id:'sda',   name:'Poste / SDA',   short:'SDA', logo:'carriers/sda.svg',   base:4.80, perKg:0.70, speed:3, delivery:'48-72H',       tags:['cod','punti'],   supports:['cod','firma'], svcPrices:{cod:2.00,firma:0.70} },
+  { id:'tnt',   name:'TNT Economy',   short:'TNT', logo:'carriers/tnt.svg',   base:4.50, perKg:0.65, speed:3, delivery:'48-72H',       tags:[],                supports:['ass','firma'], svcPrices:{ass:1.90,firma:0.80} },
+  { id:'inpost',name:'InPost Lockers',short:'INP', logo:'carriers/inpost.svg',base:3.20, perKg:0.55, speed:4, delivery:'2-4 giorni',  tags:['punti','green'], supports:['cod','firma'], svcPrices:{cod:1.80,firma:0.60} }
+];
+
+const SVC_LABELS = { cod:'Contrassegno (COD)', ass:'Assicurazione merce', firma:'Firma al ricevimento', sms:'Notifiche SMS', green:'Carbon Neutral' };
+const SVC_DESC = { cod:'Destinatario paga alla consegna', ass:'Copertura valore dichiarato', firma:'Prova di consegna firmata', sms:'Aggiornamenti real-time', green:'Emissioni CO₂ compensate' };
+
+const carrierSvcs = {};
+CARRIERS.forEach(c => { carrierSvcs[c.id] = new Set(); });
+
+const CONTACTS = [
+ { id:1, nome:'Marco Rossi', via:'Via Etnea 142', n:'', cap:'95124', city:'Catania', pr:'CT', tel:'+39 333 1234567', mail:'marco@rossi.it', color:'#0078FF' },
+ { id:2, nome:'Officine Verdi SRL', via:'Corso Italia 88', n:'12', cap:'20100', city:'Milano', pr:'MI', tel:'+39 02 45678910', mail:'info@verdi.srl', color:'#B8FF00' },
+ { id:3, nome:'Giulia Bianchi', via:'Via Roma 5', n:'', cap:'00184', city:'Roma', pr:'RM', tel:'+39 348 9876543', mail:'g.bianchi@mail.it', color:'#FF6600' },
+ { id:4, nome:'Studio Neri & Co', via:'Via Garibaldi 22', n:'', cap:'10121', city:'Torino', pr:'TO', tel:'+39 011 5432167', mail:'studio@neri.co', color:'#4D148C' },
+ { id:5, nome:'Anna Esposito', via:'Via Toledo 99', n:'B', cap:'80134', city:'Napoli', pr:'NA', tel:'+39 320 1112233', mail:'anna.e@gmail.com', color:'#E30613' },
+ { id:6, nome:'Logistics SRL', via:"Via dell'Industria", n:'4', cap:'40122', city:'Bologna', pr:'BO', tel:'+39 051 3334455', mail:'ops@logistics.srl', color:'#16a34a' }
+];
+
+const CAP_DB = {
+ '00':'Roma','01':'Viterbo','02':'Rieti','03':'Frosinone','04':'Latina','05':'Terni','06':'Perugia','07':'Sassari','08':'Nuoro','09':'Cagliari',
+ '10':'Torino','11':'Aosta','12':'Cuneo','13':'Vercelli','14':'Asti','15':'Alessandria','16':'Genova','17':'Savona','18':'Imperia','19':'La Spezia',
+ '20':'Milano','21':'Varese','22':'Como','23':'Sondrio','24':'Bergamo','25':'Brescia','26':'Cremona','27':'Pavia','28':'Novara','29':'Piacenza',
+ '30':'Venezia','31':'Treviso','32':'Belluno','33':'Udine','34':'Trieste','35':'Padova','36':'Vicenza','37':'Verona','38':'Trento','39':'Bolzano',
+ '40':'Bologna','41':'Modena','42':'Reggio Emilia','43':'Parma','44':'Ferrara','45':'Rovigo','46':'Mantova','47':'Forlì','48':'Ravenna',
+ '50':'Firenze','51':'Pistoia','52':'Arezzo','53':'Siena','54':'Massa','55':'Lucca','56':'Pisa','57':'Livorno','58':'Grosseto','59':'Prato',
+ '60':'Ancona','61':'Pesaro','62':'Macerata','63':'Ascoli Piceno','64':'Teramo','65':'Pescara','66':'Chieti','67':"L'Aquila",'68':'Isernia',
+ '70':'Bari','71':'Foggia','72':'Brindisi','73':'Lecce','74':'Taranto','75':'Matera','76':'Barletta','80':'Napoli','81':'Caserta','82':'Benevento',
+ '83':'Avellino','84':'Salerno','85':'Potenza','86':'Campobasso','87':'Cosenza','88':'Catanzaro','89':'Reggio Calabria',
+ '90':'Palermo','91':'Trapani','92':'Agrigento','93':'Caltanissetta','94':'Enna','95':'Catania','96':'Siracusa','97':'Ragusa','98':'Messina'
+};
+const CAP_PR = {
+ '00':'RM','01':'VT','02':'RI','03':'FR','04':'LT','05':'TR','06':'PG','07':'SS','08':'NU','09':'CA',
+ '10':'TO','11':'AO','12':'CN','13':'VC','14':'AT','15':'AL','16':'GE','17':'SV','18':'IM','19':'SP',
+ '20':'MI','21':'VA','22':'CO','23':'SO','24':'BG','25':'BS','26':'CR','27':'PV','28':'NO','29':'PC',
+ '30':'VE','31':'TV','32':'BL','33':'UD','34':'TS','35':'PD','36':'VI','37':'VR','38':'TN','39':'BZ',
+ '40':'BO','41':'MO','42':'RE','43':'PR','44':'FE','45':'RO','46':'MN','47':'FC','48':'RA',
+ '50':'FI','51':'PT','52':'AR','53':'SI','54':'MS','55':'LU','56':'PI','57':'LI','58':'GR','59':'PO',
+ '60':'AN','61':'PU','62':'MC','63':'AP','64':'TE','65':'PE','66':'CH','67':'AQ','68':'IS',
+ '70':'BA','71':'FG','72':'BR','73':'LE','74':'TA','75':'MT','76':'BT',
+ '80':'NA','81':'CE','82':'BN','83':'AV','84':'SA','85':'PZ','86':'CB','87':'CS','88':'CZ','89':'RC',
+ '90':'PA','91':'TP','92':'AG','93':'CL','94':'EN','95':'CT','96':'SR','97':'RG','98':'ME'
+};
+
+function getRealAccount() {
+  const u = (typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getUser() : {};
+  const s = (typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getSaldo() : 0.00;
+  return {
+    nome: u.displayName || u.nome || 'Utente VexONE',
+    email: u.email || '',
+    initials: u.initials || 'VX',
+    color: '#0078FF',
+    wallet: s,
+    spedizioni: 0,
+    piano: u.piano || 'VEX Base'
+  };
+}
+
+/* ───── UTILS ───── */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const uid = () => Math.random().toString(36).slice(2,9);
+const fmt = n => '€' + n.toFixed(2).replace('.',',');
+
+function showToast(msg) {
+ const t = $('#toast');
+ t.style.bottom = $('#bot-bar').classList.contains('show') ? '84px' : '28px';
+ $('#toast-msg').textContent = msg;
+ t.classList.add('show');
+ clearTimeout(window._tt);
+ window._tt = setTimeout(() => t.classList.remove('show'), 2600);
+}
+/* Modali stack: ogni openModal aumenta lo z-index per restare sopra al precedente */
+let _modalStackZ = 999;
+function openModal(id) {
+ const el = $('#'+id);
+ if (!el) return;
+ _modalStackZ += 2;
+ el.style.zIndex = _modalStackZ;
+ el.classList.add('open');
+}
+function closeModal(id) {
+ const el = $('#'+id);
+ if (!el) return;
+ el.classList.remove('open');
+ // Reset stack quando l'ultimo modal aperto si chiude
+ if (!document.querySelector('.modal-overlay.open')) {
+ _modalStackZ = 999;
+ }
+ // Dopo l'animazione di chiusura, ripuliamo lo style inline
+ setTimeout(() => { if (!el.classList.contains('open')) el.style.zIndex = ''; }, 350);
+}
+
+function toggleDrawer() {
+ const o = $('#drawer').classList.toggle('open');
+ $('#drawer-overlay').classList.toggle('open', o);
+ $('#hamb').classList.toggle('open', o);
+ document.body.style.overflow = o ? 'hidden' : '';
+}
+function closeDrawer() {
+ ['drawer','drawer-overlay','hamb'].forEach(id => $('#'+id).classList.remove('open'));
+ document.body.style.overflow = '';
+}
+
+/* ───── ACCOUNT ───── */
+function initAccount() {
+ const acc = getRealAccount();
+ const f2 = n => '€ ' + Number(n || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+ const e = id => document.getElementById(id);
+ if (e('acc-name-chip')) e('acc-name-chip').textContent = acc.nome;
+ if (e('acc-wallet-chip')) e('acc-wallet-chip').textContent = f2(acc.wallet);
+ if (e('acc-name-dd')) e('acc-name-dd').textContent = acc.nome;
+ if (e('acc-email-dd')) e('acc-email-dd').textContent = acc.email;
+ if (e('acc-wallet-dd')) e('acc-wallet-dd').textContent = f2(acc.wallet);
+ if (e('acc-plan')) e('acc-plan').textContent = (acc.piano || 'VEX BASE').toUpperCase();
+ if (e('acc-ship-count')) e('acc-ship-count').textContent = acc.spedizioni;
+ [e('acc-av'),e('acc-av2')].forEach(av => { if(av){av.textContent=acc.initials;av.style.background=acc.color;} });
+}
+function toggleAccMenu(ev) {
+ if (ev) ev.stopPropagation();
+ const open = $('#acc-menu').classList.toggle('open');
+ $('#acc-chip').classList.toggle('open', open);
+ const arr = $('#acc-arr');
+ if (arr) arr.style.transform = open ? 'rotate(180deg)' : '';
+}
+function closeAccMenu() {
+ $('#acc-menu')?.classList.remove('open');
+ $('#acc-chip')?.classList.remove('open');
+ const arr = $('#acc-arr');
+ if (arr) arr.style.transform = '';
+}
+
+/* ───── STEP NAVIGATION ───── */
+/* ───── GESTIONE STEP A SLIDE (FORMS SCORREVOLI) ───── */
+function goToStepSlide(n) {
+  S.activeStep = n;
+  for (let i = 1; i <= 3; i++) {
+    const slide = $('#step-slide-' + i);
+    if (slide) slide.classList.toggle('active', i === n);
+  }
+  updateProgressBar();
+  const activeSlide = $('#step-slide-' + n);
+  if (activeSlide && window.innerWidth < 1024) {
+    activeSlide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function scrollToStep(n) { goToStepSlide(n === 4 ? 3 : n); }
+function goToStep(n) { goToStepSlide(n === 4 ? 3 : n); }
+
+function isStepDone(n) { return stepStatus(n) === 'done'; }
+
+function stepStatus(n) {
+  if (n === 1) {
+    const cap = $('#m-cap')?.value || '';
+    const nome = $('#m-nome')?.value.trim();
+    if (cap.length === 5 && nome) return 'done';
+    if (cap.length === 5 || nome) return 'warn';
+    return 'empty';
+  }
+  if (n === 2) {
+    const cap = $('#d-cap')?.value || '';
+    const nome = $('#d-nome')?.value.trim();
+    const tel = $('#d-tel')?.value.trim();
+    if (cap.length === 5 && nome && tel) return 'done';
+    if (cap.length === 5 || nome || tel) return 'warn';
+    return 'empty';
+  }
+  if (n === 3) {
+    if (S.selectedId) return 'done';
+    if (S.activeStep === 3) return 'warn';
+    return 'empty';
+  }
+  return 'empty';
+}
+
+function updateProgressBar() {
+  const s1 = stepStatus(1);
+  const s2 = stepStatus(2);
+  const s3 = stepStatus(3);
+
+  for (let i = 1; i <= 3; i++) {
+    const ps = $('#pstep-' + i);
+    if (!ps) continue;
+    const isAct = (i === S.activeStep);
+    const st = (i === 1 ? s1 : i === 2 ? s2 : s3);
+    ps.classList.toggle('active', isAct);
+    ps.classList.toggle('done', st === 'done');
+  }
+
+  const l1 = $('#pline-1');
+  if (l1) l1.classList.toggle('done', s1 === 'done');
+  const l2 = $('#pline-2');
+  if (l2) l2.classList.toggle('done', s2 === 'done');
+}
+
+function focusOnResults() {
+  const target = document.querySelector('.carrier-card') || $('#res-list');
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.classList.add('field-filled-pop');
+    setTimeout(() => target.classList.remove('field-filled-pop'), 800);
+  }
+}
+
+function stepSummary(n) {
+ if (n === 1) {
+ const city = $('#m-city')?.value || CAP_DB[$('#m-cap')?.value.slice(0,2)] || '';
+ return ($('#m-nome')?.value || '') + (city ? ' · ' + city : '');
+ }
+ if (n === 2) {
+ const city = $('#d-city')?.value || CAP_DB[$('#d-cap')?.value.slice(0,2)] || '';
+ return ($('#d-nome')?.value || '') + (city ? ' · ' + city : '');
+ }
+ if (n === 4) return (S.ritiro==='hub'?'Hub corriere':'Domicilio') + (S.formMode==='biz'?' · Azienda':'');
+ return '';
+}
+
+/* ───── FORM MODE ───── */
+function setFormMode(mode) {
+ S.formMode = mode;
+ $('#mode-priv').classList.toggle('on', mode==='priv');
+ $('#mode-biz').classList.toggle('on', mode==='biz');
+ const piva = $('#m-piva');
+ const nome = $('#m-nome');
+ if (piva) piva.style.display = mode==='biz' ? 'block' : 'none';
+ if (nome) nome.placeholder = mode==='biz' ? 'Ragione sociale' : 'Nome e Cognome';
+ updateProgressBar();
+}
+
+/* ───── SWAP MITTENTE/DESTINATARIO ───── */
+function swapAddresses() {
+ const fields = ['nome','via','num','cap','city','pr','tel','mail'];
+ fields.forEach(f => {
+ const me = $('#m-'+f), de = $('#d-'+f);
+ if (me && de) { const tmp = me.value; me.value = de.value; de.value = tmp; }
+ });
+ // Re-trigger CAP suggestions
+ ['m','d'].forEach(p => {
+ const cap = $('#'+p+'-cap')?.value;
+ const sug = $('#'+p+'-cap-sug');
+ if (sug && cap && cap.length === 5) {
+ const c = CAP_DB[cap.slice(0,2)];
+ const pr = CAP_PR[cap.slice(0,2)];
+ sug.textContent = c ? '→ ' + c + (pr ? ' ('+pr+')' : '') : '';
+ sug.classList.toggle('show', !!c);
+ } else if (sug) {
+ sug.classList.remove('show');
+ }
+ });
+ onFieldChange();
+ showToast('Indirizzi invertiti');
+}
+
+/* ───── CAP AUTOFILL ───── */
+function onCapInput(prefix) {
+ const capEl = $('#'+prefix+'-cap');
+ const cityEl = $('#'+prefix+'-city');
+ const prEl = $('#'+prefix+'-pr');
+ const sugEl = $('#'+prefix+'-cap-sug');
+ const v = capEl.value.trim();
+ if (v.length === 5) {
+ const k = v.slice(0,2);
+ const city = CAP_DB[k];
+ const pr = CAP_PR[k];
+ if (city) {
+ if (sugEl) { sugEl.textContent = '→ ' + city + (pr ? ' ('+pr+')' : ''); sugEl.classList.add('show'); }
+ if (cityEl && !cityEl.value) cityEl.value = city;
+ if (prEl && !prEl.value) prEl.value = pr || '';
+ }
+ } else {
+ if (sugEl) sugEl.classList.remove('show');
+ }
+}
+
+/* ═══════════════════════════════════════════════════════════
+ ANALYTICS — stub. In produzione collegare a Google Analytics,
+ Mixpanel, Plausible, ecc.
+═══════════════════════════════════════════════════════════ */
+function track(event, data) {
+ // TODO: integrare con tracking provider
+ // es: window.gtag?.('event', event, data);
+ // es: window.plausible?.(event, {props: data});
+ if (window.console && console.debug) console.debug('[track]', event, data || {});
+}
+
+/* ═══════════════════════════════════════════════════════════
+ FORM RECOVERY — salva automaticamente lo stato del form
+ in sessionStorage. Ripristina all'apertura.
+═══════════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'vexone:comp:state:v1';
+let _storageTimer = null;
+let _lastSavedAt = null;
+let _saveIndicatorTimer = null;
+let _storageAvailable = null; // cache: null = non testato, true/false = risultato
+
+// Test se sessionStorage funziona (es. modalità privata Safari blocca)
+function isStorageAvailable() {
+ if (_storageAvailable !== null) return _storageAvailable;
+ try {
+ const k = '__test__'+Math.random();
+ sessionStorage.setItem(k, '1');
+ sessionStorage.removeItem(k);
+ _storageAvailable = true;
+ } catch(e) {
+ _storageAvailable = false;
+ }
+ return _storageAvailable;
+}
+
+function saveFormState() {
+ if (!isStorageAvailable()) return;
+ try {
+ const state = {
+ m: ['nome','via','num','cap','city','pr','tel','mail','piva'].reduce((o,k)=>{o[k]=$('#m-'+k)?.value||'';return o;},{}),
+ d: ['nome','via','num','cap','city','pr','tel','mail','note'].reduce((o,k)=>{o[k]=$('#d-'+k)?.value||'';return o;},{}),
+ formMode: S.formMode,
+ ritiro: S.ritiro,
+ rif: $('#rif-ordine')?.value || '',
+ colli: S.colli.map(c=>({tipo:c.tipo,peso:c.peso,l:c.l,w:c.w,h:c.h,q:c.q,nomePreset:c.nomePreset||null})),
+ savedPresets: S.savedPresets,
+ ts: Date.now()
+ };
+ sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+ _lastSavedAt = Date.now();
+ updateSaveIndicator();
+ } catch(e) {
+ // Storage pieno / non disponibile — disattiviamo per il resto della sessione
+ _storageAvailable = false;
+ }
+}
+
+function updateSaveIndicator() {
+ const el = $('#save-indicator');
+ if (!el || !_lastSavedAt) return;
+ const secondsAgo = Math.floor((Date.now() - _lastSavedAt) / 1000);
+ let label;
+ if (secondsAgo < 5) label = 'Salvato ora';
+ else if (secondsAgo < 60) label = 'Salvato ' + secondsAgo + 's fa';
+ else if (secondsAgo < 3600) label = 'Salvato ' + Math.floor(secondsAgo/60) + ' min fa';
+ else label = 'Salvato';
+ el.innerHTML = `<svg style="width:11px;height:11px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>${label}</span>`;
+ el.style.height = '16px';
+ el.style.paddingTop = '2px';
+ el.style.paddingBottom = '4px';
+}
+
+// Aggiorna l'indicatore ogni 10s
+setInterval(() => { if (_lastSavedAt) updateSaveIndicator(); }, 10000);
+
+function saveFormStateDebounced() {
+ clearTimeout(_storageTimer);
+ _storageTimer = setTimeout(saveFormState, 500);
+}
+
+function loadFormState() {
+ if (!isStorageAvailable()) return null;
+ try {
+ const raw = sessionStorage.getItem(STORAGE_KEY);
+ if (!raw) return null;
+ const state = JSON.parse(raw);
+ if (Date.now() - (state.ts || 0) > 4*60*60*1000) {
+ sessionStorage.removeItem(STORAGE_KEY);
+ return null;
+ }
+ return state;
+ } catch(e) { return null; }
+}
+
+function restoreFormState(state) {
+ if (!state) return false;
+ // Mittente
+ Object.entries(state.m || {}).forEach(([k,v])=>{
+ const el = $('#m-'+k); if (el && v) el.value = v;
+ });
+ // Destinatario
+ Object.entries(state.d || {}).forEach(([k,v])=>{
+ const el = $('#d-'+k); if (el && v) el.value = v;
+ });
+ // Mode (Privato/Azienda)
+ if (state.formMode) setFormMode(state.formMode);
+ // Ritiro
+ if (state.ritiro === 'hub') {
+ const btn = $$('.ritiro-btn')[1];
+ if (btn) setRitiro(btn, 'hub');
+ }
+ // Riferimento ordine
+ if (state.rif) { const el=$('#rif-ordine'); if(el) el.value=state.rif; }
+ // Colli
+ if (Array.isArray(state.colli) && state.colli.length) {
+ S.colli = state.colli.map(c => mkCollo({
+ tipo: c.tipo || 'scatola',
+ peso: c.peso, l: c.l, w: c.w, h: c.h, q: c.q || 1,
+ nomePreset: c.nomePreset || null
+ }));
+ }
+ // Preset salvati
+ if (Array.isArray(state.savedPresets)) {
+ S.savedPresets = state.savedPresets;
+ }
+ return true;
+}
+
+function clearFormState() {
+ if (!isStorageAvailable()) return;
+ try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) {}
+}
+
+/* ═══════════════════════════════════════════════════════════
+ VALIDAZIONE — chiamate al blur dei campi
+═══════════════════════════════════════════════════════════ */
+function validateEmail(el) {
+ const v = el.value.trim();
+ if (!v) { el.classList.remove('err'); return true; } // vuoto = ok (opzionale)
+ const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+ const ok = re.test(v);
+ el.classList.toggle('err', !ok);
+ if (!ok) showToast('Email non valida');
+ return ok;
+}
+
+function validatePiva(el) {
+ const v = el.value.replace(/\s/g,'').toUpperCase();
+ if (!v) { el.classList.remove('err'); return true; }
+ // P.IVA: 11 cifre numeriche · Codice Fiscale: 16 alfanumerici
+ const ok = /^[0-9]{11}$/.test(v) || /^[A-Z0-9]{16}$/.test(v);
+ el.classList.toggle('err', !ok);
+ if (!ok) showToast('P.IVA (11 cifre) o Codice Fiscale (16 caratteri) non valido');
+ else el.value = v; // normalizza
+ return ok;
+}
+
+function validateTel(el) {
+ const v = el.value.replace(/[\s\-\(\)]/g,'');
+ if (!v) { el.classList.remove('err'); return true; }
+ // Almeno 7 cifre, può iniziare con + e contenere solo numeri
+ const ok = /^\+?[0-9]{7,15}$/.test(v);
+ el.classList.toggle('err', !ok);
+ if (!ok) showToast('Numero di telefono non valido');
+ return ok;
+}
+
+function attachValidators() {
+ const email = (id) => { const el = $('#'+id); if (el) el.addEventListener('blur', () => validateEmail(el)); };
+ const tel = (id) => { const el = $('#'+id); if (el) el.addEventListener('blur', () => validateTel(el)); };
+ email('m-mail'); email('d-mail');
+ tel('m-tel'); tel('d-tel');
+ const piva = $('#m-piva'); if (piva) piva.addEventListener('blur', () => validatePiva(piva));
+}
+
+/* ═══════════════════════════════════════════════════════════
+ UNDO RIMOZIONE COLLO — toast con bottone Annulla
+═══════════════════════════════════════════════════════════ */
+let _undoTimer = null;
+function showUndoToast(msg, undoFn) {
+ const t = $('#toast');
+ t.style.bottom = $('#bot-bar').classList.contains('show') ? '84px' : '28px';
+ t.innerHTML = `
+ <div style="width:7px;height:7px;border-radius:50%;background:#dc2626;flex-shrink:0"></div>
+ <span>${msg}</span>
+ <button id="undo-btn" style="background:#B8FF00;color:#0A0A0B;border:none;padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;cursor:pointer;margin-left:8px;pointer-events:auto">↶ Annulla</button>`;
+ t.classList.add('show');
+ $('#undo-btn').addEventListener('click', () => {
+ undoFn();
+ t.classList.remove('show');
+ clearTimeout(_undoTimer);
+ });
+ clearTimeout(_undoTimer);
+ _undoTimer = setTimeout(() => {
+ t.classList.remove('show');
+ // Ripristina contenuto normale del toast dopo l'animazione
+ setTimeout(() => {
+ t.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:#B8FF00;flex-shrink:0"></div><span id="toast-msg">Ok</span>';
+ }, 400);
+ }, 4500);
+}
+
+/* ───── ONFIELDCHANGE (auto ricalcola) ───── */
+let _debounceTimer = null;
+function onFieldChange() {
+ updateProgressBar();
+ checkMinData();
+ refreshColliSummary();
+ saveFormStateDebounced();
+ clearTimeout(_debounceTimer);
+ if (S.hasMinData) {
+ $('#upd-pill')?.classList.add('show');
+ _debounceTimer = setTimeout(() => {
+ ricalcola(true);
+ }, 700);
+ }
+}
+
+function checkMinData() {
+ const mcap = $('#m-cap')?.value || '';
+ const dcap = $('#d-cap')?.value || '';
+ const ok = mcap.length === 5 && dcap.length === 5;
+ S.hasMinData = ok;
+ // Toggle empty state vs results
+ if (ok) {
+ $('#empty-init').style.display = 'none';
+ } else {
+ $('#empty-init').style.display = 'block';
+ $('#results').style.display = 'none';
+ $('#skel').style.display = 'none';
+ $('#res-count').textContent = '— Tariffe';
+ $('#res-sub').textContent = 'Compila CAP mittente e destinatario per iniziare';
+ }
+}
+
+/* ───── COLLI ───── */
+function mkCollo(o={}) { return { id:uid(), tipo:'scatola', peso:null, l:null, w:null, h:null, q:1, nomePreset:null, ...o }; }
+
+function colloHTML(c, idx) {
+ // Etichetta nome: "Collo #N" o "Collo #N · NomePreset" se viene da un preset
+ const baseLbl = 'Collo #' + (idx + 1);
+ const fullLbl = c.nomePreset ? baseLbl + ' · ' + c.nomePreset : baseLbl;
+ const isCollapsed = S.collapsedColli.has(c.id) && c.peso > 0;
+ if (isCollapsed) {
+ return `
+<div class="collo-card collapsed" id="cc-${c.id}" onclick="expandCollo('${c.id}')">
+ <span style="font-size:18px;flex-shrink:0">${c.tipo==='busta'?'':c.tipo==='pallet'?'':''}</span>
+ <div style="flex:1;min-width:0">
+ <p style="font-size:11px;font-weight:700;margin:0;letter-spacing:-.02em">${fullLbl} · ${c.peso}kg ${c.q>1?'×'+c.q:''}</p>
+ <p style="font-size:11px;color:#9CA3AF;margin:1px 0 0">${c.l||0}×${c.w||0}×${c.h||0} cm</p>
+ </div>
+ <span style="font-size:11px;font-weight:700;color:#0078FF;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0">Modifica →</span>
+</div>`;
+ }
+ const rm = S.colli.length > 1
+ ? `<button class="collo-remove" onclick="event.stopPropagation();removeCollo('${c.id}')" title="Rimuovi">×</button>` : '';
+ const compact = c.peso > 0 ? `<button onclick="event.stopPropagation();collapseCollo('${c.id}')" class="ts" style="font-size:11px;font-weight:700;color:#9CA3AF;background:none;border:none;cursor:pointer;letter-spacing:.05em;padding:0 6px" title="Compatta">↑ Compatta</button>` : '';
+ // Badge "da preset" se applicabile, cliccabile per rimuoverlo
+ const presetBadge = c.nomePreset
+ ? `<span onclick="event.stopPropagation();unlinkPreset('${c.id}')" title="Rimuovi etichetta preset" style="font-size:11px;font-weight:700;background:rgba(0,120,255,.1);color:#0078FF;padding:2px 7px;border-radius:10px;letter-spacing:.05em;text-transform:none;margin-left:6px;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(220,38,38,.1)';this.style.color='#dc2626'" onmouseout="this.style.background='rgba(0,120,255,.1)';this.style.color='#0078FF'">${c.nomePreset} ×</span>`
+ : '';
+ return `
+<div class="collo-card" id="cc-${c.id}">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+ <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;min-width:0">
+ <span style="font-size:11px;font-weight:700;color:#0078FF;text-transform:uppercase;letter-spacing:0.04em;">${baseLbl}</span>
+ ${presetBadge}
+ </div>
+ <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">${compact}${rm}</div>
+ </div>
+ <div style="display:flex;gap:6px;margin-bottom:10px">
+ <div class="tipo-btn ${c.tipo==='busta'?'on':''}" onclick="setTipo('${c.id}','busta')"><span class="ti"></span><span class="tl">Busta</span></div>
+ <div class="tipo-btn ${c.tipo==='scatola'?'on':''}" onclick="setTipo('${c.id}','scatola')"><span class="ti"></span><span class="tl">Scatola</span></div>
+ <div class="tipo-btn ${c.tipo==='pallet'?'on':''}" onclick="setTipo('${c.id}','pallet')"><span class="ti"></span><span class="tl">Pallet</span></div>
+ </div>
+ <div class="field-labels">
+ <span class="fl">Peso (kg)</span><span class="fl">Lungh. cm</span><span class="fl">Larg. cm</span><span class="fl">Alt. cm</span>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
+ <input class="inp" type="number" step="0.1" min="0.1" inputmode="decimal" placeholder="es. 2" value="${c.peso??''}" oninput="updF('${c.id}','peso',this.value)" style="text-align:center" aria-label="Peso in kg">
+ <input class="inp" type="number" min="1" inputmode="numeric" placeholder="es. 30" value="${c.l??''}" oninput="updF('${c.id}','l',this.value)" style="text-align:center" aria-label="Lunghezza in cm">
+ <input class="inp" type="number" min="1" inputmode="numeric" placeholder="es. 20" value="${c.w??''}" oninput="updF('${c.id}','w',this.value)" style="text-align:center" aria-label="Larghezza in cm">
+ <input class="inp" type="number" min="1" inputmode="numeric" placeholder="es. 15" value="${c.h??''}" oninput="updF('${c.id}','h',this.value)" style="text-align:center" aria-label="Altezza in cm">
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center">
+ <span style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.04em;">Quantità</span>
+ <div style="display:flex;align-items:center;gap:9px">
+ <button onclick="updQ('${c.id}',-1)" aria-label="Diminuisci quantità" class="ts" style="width:30px;height:30px;border-radius:50%;background:#EDEDED;border:none;font-size:16px;line-height:1;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>
+ <span class="q-display" style="font-size:14px;font-weight:700;min-width:18px;text-align:center">${c.q}</span>
+ <button onclick="updQ('${c.id}',1)" aria-label="Aumenta quantità" class="ts" style="width:30px;height:30px;border-radius:50%;background:#EDEDED;border:none;font-size:16px;line-height:1;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+ </div>
+ </div>
+</div>`;
+}
+
+function renderColli() {
+ const wrap = $('#colli-wrap');
+ if (wrap) wrap.innerHTML = S.colli.map((c,i) => colloHTML(c,i)).join('');
+ updateWeightDisplay();
+ const n = S.colli.reduce((s,c)=>s+(c.q||1),0);
+ const cc = $('#colli-count');
+ if (cc) cc.textContent = n + (n===1?' collo':' colli');
+ // Aggiorna anche il sub-title del modal-colli (#6)
+ const modalCount = $('#modal-colli-count');
+ if (modalCount) {
+ const tot = getTotalWeight();
+ modalCount.textContent = tot > 0 ? '(' + n + (n===1?' collo':' colli') + ' · ' + tot.toFixed(1) + ' kg)' : '';
+ }
+ refreshColliSummary();
+}
+
+/* ───── REFRESH CARD COLLI (sidebar fissa) ───── */
+/* ───── REFRESH CARD COLLI (RESOCONTO DETTAGLIATO PRIMA DEL CORRIERE) ───── */
+function refreshColliSummary() {
+  const title = $('#cs-title'), breakdownBox = $('#cs-breakdown-box');
+  const warn = $('#cs-warning'), wrap = $('#colli-summary');
+  if (!title) return;
+  const validi = S.colli.filter(c => c.peso > 0);
+  if (!validi.length) {
+    title.textContent = 'Nessun collo configurato';
+    if (breakdownBox) breakdownBox.innerHTML = '<div style="font-size:11.5px;color:#9CA3AF">Nessun pacco inserito. Clicca su Modifica per aggiungerne uno.</div>';
+    if (warn) warn.style.display = 'block';
+    if (wrap) wrap.classList.add('warn');
+    return;
+  }
+  if (warn) warn.style.display = 'none';
+  if (wrap) wrap.classList.remove('warn');
+
+  const totQ = S.colli.reduce((s,c) => s + (c.q || 1), 0);
+  const tot = getTotalWeight();
+  title.textContent = totQ + ' coll' + (totQ === 1 ? 'o' : 'i') + ' · ' + tot.toFixed(1) + ' kg';
+
+  if (breakdownBox) {
+    breakdownBox.innerHTML = validi.map((c, i) => {
+      const tipoLabel = c.tipo === 'busta' ? 'Busta' : c.tipo === 'pallet' ? 'Pallet' : 'Pacco';
+      const dim = (c.l && c.w && c.h) ? `${c.l} × ${c.w} × ${c.h} cm` : 'Dimensioni standard';
+      const vol = ((c.l||0)*(c.w||0)*(c.h||0)/5000) * (c.q || 1);
+      const volInfo = (vol > (c.peso*(c.q||1)) + 0.2) ? ` <span style="color:#d97706;font-size:11.5px">(Vol. ${vol.toFixed(1)} kg)</span>` : '';
+      return `
+        <div class="colli-breakdown-item">
+          <span>${tipoLabel} ${i+1}${c.q > 1 ? ` (×${c.q})` : ''}: <strong>${c.peso} kg</strong>${volInfo}</span>
+          <span class="dim">${dim}</span>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function updateWeightDisplay() {
+ let totReal=0, totVol=0;
+ S.colli.forEach(c => {
+ const r = (parseFloat(c.peso)||0)*(c.q||1);
+ const v = ((c.l||0)*(c.w||0)*(c.h||0)/5000)*(c.q||1);
+ totReal += r; totVol += v;
+ });
+ const tot = Math.max(totReal, totVol);
+ $('#peso-tot').textContent = tot > 0 ? tot.toFixed(2)+' kg' : '— kg';
+ const hint = $('#vol-hint');
+ if (hint && totVol > totReal + 0.1 && totReal > 0) {
+ hint.textContent = ' Peso vol. '+totVol.toFixed(2)+' kg determina il prezzo';
+ hint.classList.add('show');
+ } else if (hint) {
+ hint.classList.remove('show');
+ }
+}
+
+function removeCollo(id) {
+ if (S.colli.length <= 1) return;
+ const idx = S.colli.findIndex(c=>c.id===id);
+ if (idx === -1) return;
+ // Salviamo una copia per l'undo
+ const removed = {...S.colli[idx]};
+ const removedIdx = idx;
+ const wasCollapsed = S.collapsedColli.has(id);
+ // Rimuoviamo
+ S.colli.splice(idx, 1);
+ S.collapsedColli.delete(id);
+ renderColli();
+ onFieldChange();
+ track('collo_removed', {idx: removedIdx});
+ // Mostra toast con UNDO
+ showUndoToast('Collo #'+(removedIdx+1)+' rimosso', () => {
+ S.colli.splice(removedIdx, 0, removed);
+ if (wasCollapsed) S.collapsedColli.add(removed.id);
+ renderColli();
+ onFieldChange();
+ track('collo_remove_undone', {idx: removedIdx});
+ });
+}
+function collapseCollo(id) { S.collapsedColli.add(id); renderColli(); }
+function expandCollo(id) { S.collapsedColli.delete(id); renderColli(); }
+
+/* Rimuove l'etichetta nomePreset dal collo: l'utente "scollega" il collo dal preset (#1) */
+function unlinkPreset(id) {
+ const c = S.colli.find(x => x.id === id);
+ if (!c || !c.nomePreset) return;
+ const oldName = c.nomePreset;
+ c.nomePreset = null;
+ renderColli();
+ saveFormStateDebounced();
+ showToast('Etichetta "' + oldName + '" rimossa');
+}
+function setTipo(id, tipo) {
+ const c = S.colli.find(c=>c.id===id); if(!c) return;
+ c.tipo = tipo;
+ if (tipo==='busta' && !c.l) { c.l=32; c.w=23; c.h=2; if(!c.peso) c.peso=0.5; }
+ if (tipo==='pallet' && !c.l) { c.l=120; c.w=80; c.h=100; if(!c.peso) c.peso=200; }
+ renderColli(); onFieldChange();
+}
+function updF(id, field, val) {
+ const c = S.colli.find(c=>c.id===id); if(!c) return;
+ c[field] = val==='' ? null : parseFloat(val);
+ updateWeightDisplay();
+ onFieldChange();
+}
+function updQ(id, d) {
+ const c = S.colli.find(c=>c.id===id); if(!c) return;
+ c.q = Math.max(1,(c.q||1)+d);
+ // Aggiorna solo il numero nel DOM esistente, niente full re-render
+ // (così non si perde lo scroll mentre l'utente sta usando il modal)
+ const card = document.getElementById('cc-'+id);
+ if (card) {
+ const qSpan = card.querySelector('.q-display');
+ if (qSpan) qSpan.textContent = c.q;
+ }
+ // Aggiorna conteggio totale e peso
+ updateWeightDisplay();
+ const n = S.colli.reduce((s,x)=>s+(x.q||1),0);
+ const cc = $('#colli-count');
+ if (cc) cc.textContent = n + (n===1?' collo':' colli');
+ refreshColliSummary();
+ // Ricalcola le tariffe (debounced)
+ clearTimeout(_debounceTimer);
+ $('#upd-pill')?.classList.add('show');
+ _debounceTimer = setTimeout(() => ricalcola(true), 700);
+}
+
+/* ───── PRESET ───── */
+
+/* Limite preset (sicurezza storage + UX) */
+const PRESET_LIMIT = 30;
+
+/* Aggiunge un nuovo collo dal preset (rapido o salvato).
+ - Se il primo collo è completamente vuoto, lo usa (no doppione);
+ - Altrimenti aggiunge in coda con nome "Collo #N · NomePreset". */
+function _addColloFromPreset({tipo, peso, l, w, h, nomePreset}) {
+ // Trovo il primo collo davvero vuoto (no peso, no dimensioni, no nome preset)
+ const empty = S.colli.find(c => !c.peso && !c.l && !c.nomePreset);
+ if (empty) {
+ Object.assign(empty, {tipo, peso, l, w, h, nomePreset: nomePreset || null});
+ S.collapsedColli.delete(empty.id);
+ return empty;
+ }
+ // Altrimenti aggiungo in coda
+ if (S.colli.length >= 10) {
+ showToast('Massimo 10 colli per spedizione');
+ return null;
+ }
+ const nuovo = mkCollo({tipo, peso, l, w, h, nomePreset: nomePreset || null});
+ S.colli.push(nuovo);
+ return nuovo;
+}
+
+function applyPreset(tipo, peso, l, w, h, btn, nomePreset) {
+ $$('.pblock').forEach(b => b.classList.remove('sel'));
+ if (btn) btn.classList.add('sel');
+ const added = _addColloFromPreset({tipo, peso, l, w, h, nomePreset});
+ if (!added) return;
+ renderColli(); onFieldChange();
+ animateNewCollo(added.id);
+ showToast(nomePreset ? '"'+nomePreset+'" aggiunto come collo' : 'Collo aggiunto dal preset rapido');
+}
+
+function applySaved(idx) {
+ const p = S.savedPresets[idx];
+ if (!p) return;
+ const added = _addColloFromPreset({
+ tipo: p.tipo, peso: p.peso, l: p.l, w: p.w, h: p.h,
+ nomePreset: p.nome
+ });
+ if (!added) return;
+ // Incrementa contatore uso
+ p.usageCount = (p.usageCount || 0) + 1;
+ p.lastUsed = Date.now();
+ renderColli(); renderSavedPresets(); onFieldChange();
+ animateNewCollo(added.id);
+ showToast('"' + p.nome + '" aggiunto come collo');
+ track('preset_applied', {nome: p.nome, usageCount: p.usageCount});
+}
+
+/* Helper: applica animazione di "atterraggio" sul collo appena aggiunto */
+function animateNewCollo(id) {
+ setTimeout(() => {
+ const el = document.getElementById('cc-' + id);
+ if (!el) return;
+ el.classList.add('just-added');
+ setTimeout(() => el.classList.remove('just-added'), 600);
+ el.scrollIntoView({behavior:'smooth', block:'nearest'});
+ }, 30);
+}
+
+/* Stato locale: ordinamento e sezione suggeriti */
+let _presetSort = 'manual'; // 'manual' | 'recent' | 'usage' | 'alpha'
+
+function setPresetSort(mode) {
+ _presetSort = mode;
+ // Aggiorna UI dei pulsanti
+ $$('[data-sort]').forEach(b => b.classList.toggle('on', b.dataset.sort === mode));
+ renderSavedPresets();
+ saveFormStateDebounced();
+ track('preset_sorted', {mode});
+}
+
+function getSortedPresets() {
+ if (_presetSort === 'manual') return S.savedPresets.map((p,i) => ({p, originalIdx:i}));
+ const indexed = S.savedPresets.map((p,i) => ({p, originalIdx:i}));
+ if (_presetSort === 'recent') {
+ return indexed.sort((a,b) => (b.p.lastUsed||b.p.createdAt||0) - (a.p.lastUsed||a.p.createdAt||0));
+ }
+ if (_presetSort === 'usage') {
+ return indexed.sort((a,b) => (b.p.usageCount||0) - (a.p.usageCount||0));
+ }
+ if (_presetSort === 'alpha') {
+ return indexed.sort((a,b) => a.p.nome.toLowerCase().localeCompare(b.p.nome.toLowerCase()));
+ }
+ return indexed;
+}
+
+/* Calcola i 3 preset più usati negli ultimi 30 giorni */
+function getSuggestedPresets() {
+ const cutoff = Date.now() - 30*24*60*60*1000;
+ return S.savedPresets
+ .map((p,i) => ({p, originalIdx:i}))
+ .filter(x => (x.p.lastUsed || 0) >= cutoff && (x.p.usageCount || 0) > 0)
+ .sort((a,b) => (b.p.usageCount||0) - (a.p.usageCount||0))
+ .slice(0, 3);
+}
+
+function renderSavedPresets() {
+ const wrap=$('#saved-presets-wrap'), list=$('#saved-presets-list');
+ const hint=$('#presets-empty-hint'), badge=$('#presets-count-badge');
+ const ioRow=$('#preset-io-row');
+ const sortBar=$('#presets-sort-bar');
+ const sugWrap=$('#presets-suggested-wrap');
+ const createBtn=$('#preset-create-btn');
+ const n = S.savedPresets.length;
+
+ if (badge) {
+ if (n >= PRESET_LIMIT) {
+ badge.textContent = n + '/' + PRESET_LIMIT + ' · limite';
+ badge.style.color = '#dc2626';
+ badge.style.borderColor = '#dc2626';
+ } else {
+ badge.textContent = n + (n===1 ? ' salvato' : ' salvati');
+ badge.style.color = '';
+ badge.style.borderColor = '';
+ }
+ }
+
+ // Bottone Crea: disabilitato se limite raggiunto (#8)
+ if (createBtn) {
+ if (n >= PRESET_LIMIT) {
+ createBtn.disabled = true;
+ createBtn.style.opacity = '0.5';
+ createBtn.style.cursor = 'not-allowed';
+ createBtn.title = 'Limite di ' + PRESET_LIMIT + ' raggiunto: eliminane uno';
+ } else {
+ createBtn.disabled = false;
+ createBtn.style.opacity = '';
+ createBtn.style.cursor = '';
+ createBtn.title = '';
+ }
+ }
+
+ if (ioRow) ioRow.style.display = 'flex';
+
+ if (!n) {
+ if (wrap) wrap.style.display = 'none';
+ if (hint) hint.style.display = 'block';
+ if (sortBar) sortBar.style.display = 'none';
+ if (sugWrap) sugWrap.style.display = 'none';
+ return;
+ }
+ if (hint) hint.style.display = 'none';
+ if (wrap) wrap.style.display = 'block';
+
+ // Sort bar visibile solo da 4 preset in su
+ if (sortBar) sortBar.style.display = n >= 4 ? 'flex' : 'none';
+
+ // Sezione Suggeriti (#4): preset più usati negli ultimi 30gg
+ const suggested = getSuggestedPresets();
+ if (sugWrap) {
+ if (suggested.length >= 2 && _presetSort === 'manual') {
+ sugWrap.style.display = 'block';
+ sugWrap.innerHTML = `
+ <p style="font-size:12px;font-weight:600;color:#0078FF;margin:0 0 6px">Suggeriti per te</p>
+ <div>${suggested.map(({p,originalIdx}) => renderOnePreset(p, originalIdx, true)).join('')}</div>
+ <div style="height:1px;background:#E5E7EB;margin:10px 0"></div>
+ <p style="font-size:12px;font-weight:600;color:#6B7280;margin:0 0 6px">Tutti i preset</p>
+ `;
+ } else {
+ sugWrap.style.display = 'none';
+ sugWrap.innerHTML = '';
+ }
+ }
+
+ // Lista preset principale
+ const sorted = getSortedPresets();
+ list.innerHTML = sorted.map(({p, originalIdx}) => renderOnePreset(p, originalIdx, false)).join('');
+}
+
+/* Render di una singola riga preset (usata sia per Suggeriti che lista principale) */
+function renderOnePreset(p, i, isSuggested) {
+ const icon = p.tipo==='busta'?'':p.tipo==='pallet'?'':'';
+ // Trovo il preset più usato per metterci la stellina (#6)
+ const topUsed = S.savedPresets.reduce((max, x) => (x.usageCount||0) > (max?.usageCount||0) ? x : max, null);
+ const isTop = topUsed && p === topUsed && (p.usageCount||0) > 0 && !isSuggested;
+ const star = isTop ? '<span style="font-size:11px;color:#f59e0b;margin-left:4px" title="Il tuo preset più usato"><svg class="icon inline text-amber-500" style="width:12px;height:12px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>' : '';
+
+ // Usato N volte + ultimo uso inline (#2)
+ let metaInfo = '';
+ if (p.usageCount > 0) {
+ metaInfo = `<span style="font-size:11px;color:#9CA3AF;font-weight:700;margin-left:6px">· ${p.usageCount}× usato</span>`;
+ }
+ let timeAgo = '';
+ if (p.lastUsed) {
+ timeAgo = `<span style="font-size:11px;color:#9CA3AF;font-weight:600;">${formatRelativeTime(p.lastUsed)}</span>`;
+ } else if (p.usageCount === 0) {
+ timeAgo = `<span style="font-size:11px;color:#C0C0C0;font-weight:600;">mai usato</span>`;
+ }
+
+ const tooltip = p.lastUsed
+ ? 'Ultimo uso: ' + formatRelativeTime(p.lastUsed)
+ : (p.usageCount > 0 ? '' : 'Mai usato — clicca per aggiungerlo come collo');
+
+ // Frecce mobile (solo nella lista principale, non in suggeriti, e solo se sort=manual)
+ const total = S.savedPresets.length;
+ const showArrows = !isSuggested && _presetSort === 'manual' && total > 1;
+ const upDisabled = i === 0;
+ const downDisabled = i === total - 1;
+ const mobileArrows = showArrows ? `
+ <div class="preset-mobile-arrows" style="display:none;flex-direction:column;gap:2px;margin-right:2px">
+ <button onclick="event.stopPropagation();movePreset(${i},-1)" aria-label="Sposta su" title="Sposta su"
+ style="width:18px;height:14px;border:none;background:#E8E8E8;color:#6B7280;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;${upDisabled?'opacity:.3;cursor:not-allowed':''}" ${upDisabled?'disabled':''}>▲</button>
+ <button onclick="event.stopPropagation();movePreset(${i},1)" aria-label="Sposta giù" title="Sposta giù"
+ style="width:18px;height:14px;border:none;background:#E8E8E8;color:#6B7280;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;${downDisabled?'opacity:.3;cursor:not-allowed':''}" ${downDisabled?'disabled':''}>▼</button>
+ </div>` : '';
+
+ // Drag handle solo se sort=manual e non in suggeriti
+ const dragAttrs = (!isSuggested && _presetSort === 'manual')
+ ? `draggable="true" ondragstart="presetDragStart(event,${i})" ondragover="presetDragOver(event)" ondragleave="presetDragLeave(event)" ondrop="presetDrop(event,${i})" ondragend="presetDragEnd(event)"`
+ : '';
+ const handle = (!isSuggested && _presetSort === 'manual' && total > 1)
+ ? `<span class="preset-handle" style="cursor:grab;color:#C0C0C0;font-size:11px;user-select:none;line-height:1;padding-right:2px" title="Trascina per riordinare">⋮⋮</span>`
+ : '';
+
+ return `
+ <div class="saved-preset" data-idx="${i}" ${dragAttrs} title="${tooltip}" style="${isSuggested?'background:rgba(0,120,255,.06);border-color:rgba(0,120,255,.2)':''}">
+ ${mobileArrows}${handle}
+ <span style="font-size:14px">${icon}</span>
+ <div style="flex:1;min-width:0" onclick="applySaved(${i})">
+ <p style="font-weight:700;font-size:11px;margin:0;display:flex;align-items:center;flex-wrap:wrap;gap:3px">
+ ${p.nome}${star}${metaInfo}
+ </p>
+ <p style="font-size:11px;color:#9CA3AF;margin:0;display:flex;justify-content:space-between;align-items:center;gap:6px">
+ <span>${p.peso}kg · ${p.l}×${p.w}×${p.h} cm</span>
+ ${timeAgo}
+ </p>
+ </div>
+ <button class="sp-edit" onclick="event.stopPropagation();renamePreset(${i})" aria-label="Rinomina preset ${p.nome}" title="Rinomina"
+ style="width:22px;height:22px;border-radius:50%;border:none;background:#E8E8E8;color:#6B7280;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;padding:0;line-height:1"></button>
+ <button class="sp-del" onclick="event.stopPropagation();deleteSaved(${i})" aria-label="Elimina preset ${p.nome}">×</button>
+ </div>`;
+}
+
+/* Helper: tempo relativo italiano */
+function formatRelativeTime(ts) {
+ const diff = Date.now() - ts;
+ const sec = Math.floor(diff / 1000);
+ if (sec < 60) return 'pochi secondi fa';
+ const min = Math.floor(sec / 60);
+ if (min < 60) return min + (min===1 ? ' minuto fa' : ' minuti fa');
+ const ore = Math.floor(min / 60);
+ if (ore < 24) return ore + (ore===1 ? ' ora fa' : ' ore fa');
+ const gg = Math.floor(ore / 24);
+ if (gg < 30) return gg + (gg===1 ? ' giorno fa' : ' giorni fa');
+ const mesi = Math.floor(gg / 30);
+ if (mesi < 12) return mesi + (mesi===1 ? ' mese fa' : ' mesi fa');
+ const anni = Math.floor(mesi / 12);
+ return anni + (anni===1 ? ' anno fa' : ' anni fa');
+}
+
+/* Sposta preset su/giù di una posizione (per frecce mobile) */
+function movePreset(idx, direction) {
+ const target = idx + direction;
+ if (target < 0 || target >= S.savedPresets.length) return;
+ const [moved] = S.savedPresets.splice(idx, 1);
+ S.savedPresets.splice(target, 0, moved);
+ renderSavedPresets();
+ saveFormStateDebounced();
+ track('preset_reordered', {method: 'arrow'});
+}
+
+function deleteSaved(idx) {
+ const p = S.savedPresets[idx];
+ if (!p) return;
+ // Messaggio contestuale: se usato di recente o molto usato, avviso più ricco
+ let msg = 'Eliminare il preset "' + p.nome + '"?';
+ if (p.lastUsed) {
+ const giorni = Math.floor((Date.now() - p.lastUsed) / (24*60*60*1000));
+ if (giorni < 7) {
+ msg = 'Hai usato "' + p.nome + '" ' + formatRelativeTime(p.lastUsed) +
+ ' (' + (p.usageCount || 0) + ' volte in totale).\n\nSicuro di volerlo eliminare?';
+ } else if ((p.usageCount || 0) >= 5) {
+ msg = 'Hai usato "' + p.nome + '" ' + p.usageCount + ' volte.\n\nSicuro di volerlo eliminare?';
+ }
+ }
+ if (!confirm(msg)) return;
+ S.savedPresets.splice(idx,1);
+ renderSavedPresets();
+ saveFormStateDebounced();
+ showToast('Preset "' + p.nome + '" eliminato');
+ track('preset_deleted', {nome: p.nome, usageCount: p.usageCount || 0});
+}
+
+function renamePreset(idx) {
+ const p = S.savedPresets[idx];
+ if (!p) return;
+ const nuovo = prompt('Nuovo nome per "' + p.nome + '":', p.nome);
+ if (nuovo === null) return; // utente ha annullato
+ const trimmed = nuovo.trim();
+ if (!trimmed) return showToast('Il nome non può essere vuoto');
+ if (trimmed.length > 40) return showToast('Massimo 40 caratteri');
+ // Check duplicati (escludendo questo stesso preset)
+ if (S.savedPresets.some((x,i) => i !== idx && x.nome.toLowerCase() === trimmed.toLowerCase())) {
+ return showToast('Esiste già un preset con questo nome');
+ }
+ const oldName = p.nome;
+ p.nome = trimmed;
+ renderSavedPresets();
+ saveFormStateDebounced();
+ showToast('Rinominato in "' + trimmed + '"');
+ track('preset_renamed', {old: oldName, new: trimmed});
+}
+
+/* Drag & drop riordino preset */
+let _dragSrcIdx = null;
+function presetDragStart(e, idx) {
+ _dragSrcIdx = idx;
+ e.currentTarget.style.opacity = '0.4';
+ e.dataTransfer.effectAllowed = 'move';
+ // Firefox richiede dataTransfer.setData per attivare il drag
+ try { e.dataTransfer.setData('text/plain', String(idx)); } catch(_){}
+}
+function presetDragOver(e) {
+ e.preventDefault();
+ e.dataTransfer.dropEffect = 'move';
+ e.currentTarget.style.background = 'rgba(0,120,255,.08)';
+}
+function presetDragLeave(e) {
+ e.currentTarget.style.background = '';
+}
+function presetDrop(e, idx) {
+ e.preventDefault();
+ e.currentTarget.style.background = '';
+ if (_dragSrcIdx === null || _dragSrcIdx === idx) return;
+ const [moved] = S.savedPresets.splice(_dragSrcIdx, 1);
+ S.savedPresets.splice(idx, 0, moved);
+ _dragSrcIdx = null;
+ renderSavedPresets();
+ saveFormStateDebounced();
+ track('preset_reordered', {});
+}
+function presetDragEnd(e) {
+ e.currentTarget.style.opacity = '';
+ _dragSrcIdx = null;
+ $$('.saved-preset').forEach(el => el.style.background = '');
+}
+
+/* Apre il modal preset con preview dei dati che si stanno per salvare */
+/* Stato locale del modal preset (form da zero) */
+let _presetFormTipo = 'scatola';
+
+function setPresetTipo(el, tipo) {
+ _presetFormTipo = tipo;
+ $$('[data-preset-tipo]').forEach(b => b.classList.toggle('on', b === el));
+ // Suggerisci valori di default in base al tipo se i campi sono vuoti
+ const peso = $('#preset-peso'), L = $('#preset-l'), W = $('#preset-w'), H = $('#preset-h');
+ if (tipo === 'busta' && !L.value && !W.value && !H.value) {
+ L.value = 32; W.value = 23; H.value = 2;
+ if (!peso.value) peso.value = 0.5;
+ } else if (tipo === 'pallet' && !L.value && !W.value && !H.value) {
+ L.value = 120; W.value = 80; H.value = 100;
+ if (!peso.value) peso.value = 200;
+ }
+ updatePresetPreview();
+}
+
+function updatePresetPreview() {
+ const peso = parseFloat($('#preset-peso')?.value) || 0;
+ const l = parseFloat($('#preset-l')?.value) || 0;
+ const w = parseFloat($('#preset-w')?.value) || 0;
+ const h = parseFloat($('#preset-h')?.value) || 0;
+ const preview = $('#preset-preview');
+ if (!preview) return;
+ if (peso > 0 && l > 0 && w > 0 && h > 0) {
+ const icon = _presetFormTipo === 'busta' ? '' : _presetFormTipo === 'pallet' ? '' : '';
+ $('#preset-preview-icon').textContent = icon;
+ $('#preset-preview-text').textContent = peso + 'kg · ' + l + '×' + w + '×' + h + ' cm';
+ preview.style.display = 'flex';
+ } else {
+ preview.style.display = 'none';
+ }
+}
+
+function openSavePresetModal() {
+ if (S.savedPresets.length >= PRESET_LIMIT) {
+ showToast('Hai raggiunto il limite di ' + PRESET_LIMIT + ' preset. Eliminane qualcuno o esportali.');
+ return;
+ }
+ // Pre-seleziona il tipo basandosi sul primo collo configurato (#9)
+ const primaConfig = S.colli.find(c => c.peso > 0) || S.colli[0];
+ const tipoIniziale = (primaConfig && primaConfig.tipo) || 'scatola';
+ _presetFormTipo = tipoIniziale;
+ $$('[data-preset-tipo]').forEach(b => b.classList.toggle('on', b.dataset.presetTipo === tipoIniziale));
+ // Reset campi
+ ['preset-name','preset-peso','preset-l','preset-w','preset-h'].forEach(id => {
+ const el = $('#'+id); if (el) { el.value = ''; el.classList.remove('err'); }
+ });
+ $('#preset-preview').style.display = 'none';
+ // Aggancia listener live preview (solo prima volta)
+ if (!window._presetLiveBound) {
+ ['preset-peso','preset-l','preset-w','preset-h'].forEach(id => {
+ $('#'+id)?.addEventListener('input', updatePresetPreview);
+ });
+ window._presetLiveBound = true;
+ }
+ openModal('modal-preset');
+ setTimeout(() => $('#preset-name')?.focus(), 100);
+}
+
+function confirmSavePreset() {
+ const nomeEl = $('#preset-name'), pesoEl = $('#preset-peso');
+ const lEl = $('#preset-l'), wEl = $('#preset-w'), hEl = $('#preset-h');
+ const nome = nomeEl.value.trim();
+ const peso = parseFloat(pesoEl.value);
+ const l = parseFloat(lEl.value);
+ const w = parseFloat(wEl.value);
+ const h = parseFloat(hEl.value);
+
+ // Validazione
+ let invalid = [];
+ if (!nome) { nomeEl.classList.add('err'); invalid.push('Nome'); } else nomeEl.classList.remove('err');
+ if (!peso || peso <= 0) { pesoEl.classList.add('err'); invalid.push('Peso'); } else pesoEl.classList.remove('err');
+ if (!l || l <= 0) { lEl.classList.add('err'); invalid.push('Lungh.'); } else lEl.classList.remove('err');
+ if (!w || w <= 0) { wEl.classList.add('err'); invalid.push('Larg.'); } else wEl.classList.remove('err');
+ if (!h || h <= 0) { hEl.classList.add('err'); invalid.push('Alt.'); } else hEl.classList.remove('err');
+ if (invalid.length) return showToast('Compila: ' + invalid.join(', '));
+
+ // Duplicato nome
+ if (S.savedPresets.some(p => p.nome.toLowerCase() === nome.toLowerCase())) {
+ nomeEl.classList.add('err');
+ return showToast('Esiste già un preset con questo nome');
+ }
+
+ S.savedPresets.push({
+ nome,
+ tipo: _presetFormTipo,
+ peso, l, w, h,
+ usageCount: 0,
+ createdAt: Date.now()
+ });
+ renderSavedPresets();
+ saveFormStateDebounced();
+ closeModal('modal-preset');
+ showToast('"' + nome + '" creato — clicca il preset per usarlo');
+ track('preset_saved', {nome, tipo: _presetFormTipo});
+}
+
+/* ───── ESPORTA / IMPORTA ───── */
+
+/* Esporta TUTTA la spedizione (mittente+destinatario+colli+opzioni) (#10) */
+function exportFullShipment() {
+ const data = {
+ version: 1,
+ exportedAt: new Date().toISOString(),
+ source: 'vexone',
+ type: 'shipment',
+ mittente: ['nome','via','num','cap','city','pr','tel','mail','piva'].reduce((o,k)=>{o[k]=$('#m-'+k)?.value||'';return o;},{}),
+ destinatario:['nome','via','num','cap','city','pr','tel','mail','note'].reduce((o,k)=>{o[k]=$('#d-'+k)?.value||'';return o;},{}),
+ formMode: S.formMode,
+ ritiro: S.ritiro,
+ rif: $('#rif-ordine')?.value || '',
+ colli: S.colli.filter(c => c.peso > 0).map(c => ({
+ tipo:c.tipo, peso:c.peso, l:c.l, w:c.w, h:c.h, q:c.q,
+ nomePreset: c.nomePreset || null
+ }))
+ };
+ if (!data.colli.length && !data.mittente.nome && !data.destinatario.nome) {
+ return showToast('Niente da esportare: compila almeno un campo');
+ }
+ try {
+ const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ const slug = (data.destinatario.nome || 'spedizione').replace(/[^a-zA-Z0-9]+/g,'-').slice(0,30).toLowerCase();
+ a.download = 'vexone-' + slug + '-' + new Date().toISOString().slice(0,10) + '.json';
+ document.body.appendChild(a);
+ a.click();
+ setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
+ showToast('Spedizione esportata');
+ track('shipment_exported', {n_colli: data.colli.length});
+ } catch(e) {
+ showToast('Errore durante l\'esportazione');
+ }
+}
+
+function exportPresets() {
+ if (!S.savedPresets.length) return showToast('Nessun preset da esportare');
+ const data = {
+ version: 1,
+ exportedAt: new Date().toISOString(),
+ source: 'vexone',
+ presets: S.savedPresets
+ };
+ try {
+ const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ a.download = 'vexone-preset-' + new Date().toISOString().slice(0,10) + '.json';
+ document.body.appendChild(a);
+ a.click();
+ setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
+ showToast(S.savedPresets.length + ' preset esportati');
+ track('preset_exported', {n: S.savedPresets.length});
+ } catch(e) {
+ showToast('Errore durante l\'esportazione');
+ }
+}
+
+function triggerImportPresets() {
+ $('#preset-import-input')?.click();
+}
+
+function handleImportFile(ev) {
+ const file = ev.target.files?.[0];
+ if (!file) return;
+ if (file.size > 200 * 1024) { // sanity check 200KB max
+ showToast('File troppo grande (max 200KB)');
+ ev.target.value = '';
+ return;
+ }
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ try {
+ const data = JSON.parse(e.target.result);
+ const incoming = Array.isArray(data) ? data : data.presets;
+ if (!Array.isArray(incoming)) throw new Error('Formato non valido');
+ // Validazione + dedup
+ let added = 0, skipped = 0;
+ incoming.forEach(p => {
+ if (typeof p.nome !== 'string' || !p.nome.trim()) { skipped++; return; }
+ if (typeof p.peso !== 'number' && typeof p.l !== 'number') { skipped++; return; }
+ // Skip duplicati nome
+ if (S.savedPresets.some(x => x.nome.toLowerCase() === p.nome.toLowerCase())) { skipped++; return; }
+ S.savedPresets.push({
+ nome: String(p.nome).slice(0,40),
+ tipo: ['busta','scatola','pallet'].includes(p.tipo) ? p.tipo : 'scatola',
+ peso: Number(p.peso) || 1,
+ l: Number(p.l) || 20,
+ w: Number(p.w) || 15,
+ h: Number(p.h) || 10,
+ usageCount: Number(p.usageCount) || 0,
+ createdAt: Number(p.createdAt) || Date.now()
+ });
+ added++;
+ });
+ renderSavedPresets();
+ saveFormStateDebounced();
+ showToast(added + ' importati' + (skipped ? ', ' + skipped + ' saltati' : ''));
+ track('preset_imported', {added, skipped});
+ } catch(err) {
+ showToast('File JSON non valido');
+ } finally {
+ ev.target.value = ''; // reset così si può reimportare lo stesso file
+ }
+ };
+ reader.onerror = () => showToast('Errore lettura file');
+ reader.readAsText(file);
+}
+
+/* ───── OPZIONI ───── */
+function setRitiro(el,tipo) {
+ $$('.ritiro-btn').forEach(b=>b.classList.remove('on'));
+ el.classList.add('on');
+ S.ritiro=tipo;
+ updateProgressBar();
+ onFieldChange();
+}
+
+/* ───── PRICING ───── */
+function getTotalWeight() {
+ return S.colli.reduce((s,c) => {
+ const r=(parseFloat(c.peso)||1), v=((c.l||20)*(c.w||15)*(c.h||10))/5000;
+ return s+Math.max(r,v)*(c.q||1);
+ }, 0);
+}
+function distSurcharge(capA,capB) {
+ if(!capA||!capB||capA.length!==5||capB.length!==5) return 1.50;
+ const d=Math.abs((parseInt(capA.slice(0,2))||0)-(parseInt(capB.slice(0,2))||0));
+ if(d<=3) return 0; if(d<=12) return 0.80; if(d<=35) return 1.60; return 2.50;
+}
+function calcPrice(carrier,weight,distAdd) {
+ let p=carrier.base+carrier.perKg*weight+distAdd;
+ if(S.ritiro==='hub') p*=0.95;
+ const extra=Math.max(0,S.colli.reduce((s,c)=>s+(c.q||1),0)-1);
+ p+=extra*1.50;
+ const svcs=carrierSvcs[carrier.id]||new Set();
+ svcs.forEach(key=>{p+=carrier.svcPrices[key]||0;});
+ const seed=carrier.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+ p+=Math.sin(seed)*0.28;
+ return Math.max(2.50,p);
+}
+
+async function callApi(payload) {
+  window.__live_quotation = null;
+  if (window.VEX_API && typeof window.VEX_API.getQuotation === 'function') {
+    const mCap = $('#m-cap')?.value?.trim() || '';
+    const dCap = $('#d-cap')?.value?.trim() || '';
+    if (mCap.length === 5 && dCap.length === 5) {
+      try {
+        const hasPallet = S.colli.some(c => c.tipo === 'pallet');
+        const hasBusta = S.colli.some(c => c.tipo === 'busta');
+        const quotationReq = {
+          dettagli: {
+            tipo_spedizione: 'N',
+            cosa_spedire: hasPallet ? 'P' : (hasBusta ? 'D' : 'M'),
+            contenuto: 'Merci varie'
+          },
+          colli: S.colli.map(c => ({
+            peso: Math.max(0.1, parseFloat(c.peso) || 1),
+            larghezza: Math.max(1, Math.round(parseFloat(c.w) || 20)),
+            profondita: Math.max(1, Math.round(parseFloat(c.l) || 20)),
+            altezza: Math.max(1, Math.round(parseFloat(c.h) || 10)),
+            nr_colli: c.q || 1
+          })),
+          mittente: {
+            cap: mCap,
+            localita: $('#m-city')?.value || 'N/D',
+            provincia: $('#m-pr')?.value || (CAP_PR[mCap.slice(0, 2)] || 'IT'),
+            nazione: 'IT'
+          },
+          destinatario: {
+            cap: dCap,
+            localita: $('#d-city')?.value || 'N/D',
+            provincia: $('#d-pr')?.value || (CAP_PR[dCap.slice(0, 2)] || 'IT'),
+            nazione: 'IT'
+          }
+        };
+
+        const res = await VEX_API.getQuotation(quotationReq);
+        if (res && res.result === 'OK' && Array.isArray(res.quotation) && res.quotation.length > 0) {
+          window.__live_quotation = res.quotation;
+          return res;
+        }
+      } catch (err) {
+        console.warn('[Comparatore] Chiamata preventivo live differita o fallback:', err);
+      }
+    }
+  }
+  return null;
+}
+
+/* ───── COMPUTE ───── */
+/* ───── MINI-PREVENTIVO RAPIDO ───── */
+function runQuickQuote() {
+ const from = (document.getElementById('qq-from').value||'').trim();
+ const to = (document.getElementById('qq-to').value||'').trim();
+ const kg = parseFloat((document.getElementById('qq-kg').value||'').replace(',','.'));
+ const box = document.getElementById('qq-result');
+ const isCap = v => /^[0-9]{5}$/.test(v);
+ if(!isCap(from) || !isCap(to) || !(kg > 0)){
+ box.style.display='block';
+ box.innerHTML = '<p style="color:#FCA5A5;font-size:12px;font-weight:700;margin:0">Inserisci due CAP validi (5 cifre) e un peso maggiore di 0.</p>';
+ return;
+ }
+ // Riusa la logica di calcolo reale, simulando un singolo collo del peso indicato
+ const dist = distSurcharge(from, to);
+ const prices = CARRIERS.map(c => {
+ let p = c.base + c.perKg*kg + dist;
+ const seed = c.id.split('').reduce((a,ch)=>a+ch.charCodeAt(0),0);
+ p += Math.sin(seed)*0.28;
+ return { name:c.name, short:c.short, color:c.color, txt:c.txt, delivery:c.delivery, price:Math.max(2.50,p) };
+ }).sort((a,b)=>a.price-b.price);
+ const best = prices[0];
+ const list = Math.round((best.price*1.55+1.20)*100)/100;
+ const save = list - best.price;
+ box.style.display='block';
+ box.innerHTML = `
+ <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+ <div style="width:42px;height:42px;border-radius:11px;background:${best.color};color:${best.txt};display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:${best.short.length<=2?'14px':'11px'}">${best.short}</div>
+ <div style="flex:1;min-width:120px">
+ <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:rgba(255,255,255,.5);margin:0">A partire da</p>
+ <p style="margin:0;color:#fff"><span style="font-size:22px;font-weight:700;letter-spacing:-0.015em;color:#B8FF00">${fmt(best.price)}</span> <span style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600">· ${best.name}</span></p>
+ ${save>0.5?`<p style="font-size:11px;color:#86efac;font-weight:700;margin:2px 0 0"> Risparmi ${fmt(save)} sul listino diretto</p>`:''}
+ </div>
+ <button onclick="document.getElementById('quick-quote').style.display='none';document.getElementById('step-1')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:12px;font-weight:600;letter-spacing:normal;text-transform:uppercase;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap">Spedisci ora →</button>
+ </div>
+ <p style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;margin:10px 0 0">Prezzo indicativo per 1 collo. Compila i dati per il preventivo completo con tutti i corrieri.</p>`;
+}
+
+/* ───── COMPUTE ───── */
+function compute() {
+ const w = getTotalWeight();
+ const dist = distSurcharge($('#m-cap')?.value, $('#d-cap')?.value);
+ const liveQuotes = window.__live_quotation;
+
+ S.results = CARRIERS.map(c => {
+   let price = calcPrice(c, w, dist);
+   let delivery = c.delivery;
+   let offerCode = null;
+
+   // Se il server reale ha restituito quotazioni per questo corriere, usiamo il prezzo reale
+   if (Array.isArray(liveQuotes)) {
+     const match = liveQuotes.find(q => {
+       const name = (q.nome_vettore || '').toLowerCase();
+       return name.includes(c.id) || (c.id === 'sda' && name.includes('poste'));
+     });
+     if (match) {
+       const rawP = parseFloat(match.totale_dovuto || match.importo_tariffa);
+       if (!isNaN(rawP) && rawP > 0) {
+         price = Math.round(rawP * 100) / 100;
+       }
+       if (match.tempiconsegna) {
+         delivery = match.tempiconsegna;
+       }
+       offerCode = match.codice_offerta;
+     }
+   }
+
+   const listPrice = Math.round((price * 1.55 + 1.20) * 100) / 100;
+   return { ...c, price, listPrice, delivery, offerCode };
+ });
+
+ S.results.sort(S.sortBy === 'e' ? (a, b) => a.price - b.price : (a, b) => a.speed - b.speed || a.price - b.price);
+ if (S.filters.size) {
+   S.results = S.results.filter(c => {
+     for (const f of S.filters) {
+       if (f === 'express' && c.speed > 2) return false;
+       if (f === 'oggi' && !c.tags.includes('oggi')) return false;
+       if (f === 'green' && !c.tags.includes('green')) return false;
+       if (f === 'punti' && !c.tags.includes('punti')) return false;
+       if (f === 'cod' && !c.tags.includes('cod')) return false;
+     }
+     return true;
+   });
+ }
+}
+
+
+
+/* ───── CARRIER CARD ───── */
+function extrasHTML(c) {
+ if(!c.supports.length) return '';
+ const svcs=carrierSvcs[c.id];
+ const rows=c.supports.map(key=>{
+ const on=svcs.has(key), price=c.svcPrices[key]||0;
+ return `
+ <div class="svc-toggle ${on?'on':''}" onclick="toggleSvc('${c.id}','${key}',this)">
+ <div style="min-width:0">
+ <p style="font-size:11px;font-weight:700;margin:0 0 1px">${SVC_LABELS[key]}</p>
+ <p style="font-size:11px;color:#9CA3AF;margin:0">${SVC_DESC[key]}</p>
+ </div>
+ <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px">
+ <span class="svc-price">+${fmt(price)}</span>
+ <div class="svc-knob-bg"><div class="svc-knob"></div></div>
+ </div>
+ </div>`;
+ }).join('');
+ return `<div class="carrier-extras">
+ <p style="font-size:12px;font-weight:600;color:#0078FF;margin:0 0 8px">Servizi opzionali · ${c.name}</p>
+ ${rows}
+ </div>`;
+}
+
+function carrierCardHTML(c,idx,maxPrice,recoId,cheapestId) {
+  const isBest = idx === 0, isSel = S.selectedId === c.id;
+  const isReco = (c.id === recoId);
+  const isCheapest = (c.id === cheapestId);
+  const saveVsList = (c.listPrice || 0) - c.price;
+  const savePct = c.listPrice ? Math.round(saveVsList / c.listPrice * 100) : 0;
+
+  // Icone vettoriali discrete a destra del nome del corriere (no banner giganti)
+  let vectorBadge = '';
+  const svgEco  = `<svg style="width:11px;height:11px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+  const svgFast = `<svg style="width:11px;height:11px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`;
+  const svgStar = `<svg style="width:11px;height:11px;flex-shrink:0" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+
+  if (isReco) {
+    vectorBadge = `<span class="badge-tag-star" title="Consigliato per te">${svgStar} Consigliato</span>`;
+  } else if (isCheapest && S.sortBy !== 'e') {
+    vectorBadge = `<span class="badge-tag-eco" title="Spedizione più economica">${svgEco} Più Economico</span>`;
+  } else if (isBest && S.sortBy === 'e') {
+    vectorBadge = `<span class="badge-tag-eco" title="Spedizione più economica">${svgEco} Più Economico</span>`;
+  } else if (isBest && S.sortBy === 'v') {
+    vectorBadge = `<span class="badge-tag-fast" title="Spedizione più veloce">${svgFast} Più Veloce</span>`;
+  } else if (c.speed === 1) {
+    vectorBadge = `<span class="badge-tag-fast" title="Consegna in 24 ore">${svgFast} 24h</span>`;
+  }
+
+  const badges = [];
+  const svgLeaf = `<svg style="width:11px;height:11px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`;
+  if (c.tags.includes('green')) badges.push(`<span class="svc-b g" style="white-space:nowrap">${svgLeaf} ECO</span>`);
+  if (c.tags.includes('oggi'))  badges.push('<span class="svc-b b">Ritira oggi</span>');
+  if (c.tags.includes('punti')) badges.push('<span class="svc-b">Punti ritiro</span>');
+  if (c.tags.includes('cod'))   badges.push('<span class="svc-b a">COD</span>');
+
+  const logoSrc = c.logo || ('carriers/' + c.id + '.svg');
+
+  return `
+<div class="carrier-card ${isSel ? 'sel' : ''}" style="animation-delay:${idx*35}ms">
+  <div class="card-main" onclick="selectCarrier('${c.id}')">
+    <div class="carrier-logo-wrap" style="background:transparent!important;border:none!important;box-shadow:none!important;width:64px;height:44px;display:flex;align-items:center;justify-content:center">
+      <img src="${logoSrc}" alt="${c.name}" class="carrier-logo-img carrier-logo-icon" onerror="this.onerror=null;this.src='carriers/dhl.svg'">
+    </div>
+    <div class="c-info-col">
+      <div class="c-title-row">
+        <h3 class="c-name">${c.name}</h3>
+        ${vectorBadge}
+      </div>
+      <div class="c-del"><svg style="width:12px;height:12px;vertical-align:middle;margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${c.delivery}</div>
+      <div>${badges.join('')}</div>
+    </div>
+    <div class="price-action-group">
+      <div class="price-box">
+        ${saveVsList > 0.5 ? `<div class="price-strike">${fmt(c.listPrice)}</div>` : ''}
+        <div class="price-main" id="price-${c.id}">${fmt(c.price)}</div>
+        ${saveVsList > 0.5 ? `<div class="price-save">Risparmi ${fmt(saveVsList)}${savePct>=10?` (−${savePct}%)`:''}</div>` : ''}
+      </div>
+      <button class="sel-btn" type="button">${isSel ? '<svg style="width:12px;height:12px;vertical-align:middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Scelto' : 'Scegli →'}</button>
+    </div>
+  </div>
+  ${extrasHTML(c)}
+</div>`;
+}
+
+function renderResults() {
+ const mc=$('#m-cap')?.value||'?', dc=$('#d-cap')?.value||'?';
+ const n=S.colli.reduce((s,c)=>s+(c.q||1),0);
+ $('#res-sub').textContent=`${mc} → ${dc} · ${n} ${n===1?'collo':'colli'}`;
+ $('#res-count').textContent=(S.results.length||'—')+' Tariffe '+(S.results.length===1?'Trovata':'Trovate');
+ if(!S.results.length){
+ $('#results').innerHTML=`<div class="empty-state">
+ <span class="empty-icon" style="display:block"><svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+ <p style="font-size:24px;font-weight:700;letter-spacing:-0.015em;margin:0 0 6px">Nessuna tariffa</p>
+ <p style="color:#6B7280;font-size:13px;margin:0 0 18px">Prova ad allargare i filtri</p>
+ <button class="btn-ghost" onclick="clearFilters()">↺ Azzera filtri</button>
+ </div>`;
+ return;
+ }
+ const maxP=Math.max(...S.results.map(c=>c.price));
+ const sortedByPrice = [...S.results].sort((a,b)=>a.price-b.price);
+ const median = sortedByPrice[Math.floor(sortedByPrice.length/2)]?.price || 0;
+ const cheapest = sortedByPrice[0];
+ const fastUnder = sortedByPrice.filter(c => c.speed <= 2 && c.price <= median * 1.15);
+ const recoCarrier = fastUnder.length ? fastUnder.sort((a,b)=>a.speed-b.speed||a.price-b.price)[0] : cheapest;
+ const recoId = recoCarrier ? recoCarrier.id : null;
+ const cheapestId = cheapest ? cheapest.id : null;
+
+ $('#results').innerHTML=S.results.map((c,i)=>carrierCardHTML(c,i,maxP,recoId,cheapestId)).join('');
+}
+
+/* ───── TOGGLE SERVIZIO ───── */
+function toggleSvc(carrierId,key,row) {
+ const svcs=carrierSvcs[carrierId];
+ if(svcs.has(key)) svcs.delete(key); else svcs.add(key);
+ const on=svcs.has(key);
+ const w=getTotalWeight(), dist=distSurcharge($('#m-cap')?.value,$('#d-cap')?.value);
+ const c=CARRIERS.find(x=>x.id===carrierId); if(!c) return;
+ const newP=calcPrice(c,w,dist);
+ const idx=S.results.findIndex(x=>x.id===carrierId);
+ if(idx>=0) S.results[idx].price=newP;
+ const el=$(`#price-${carrierId}`);
+ if(el){el.textContent=fmt(newP);el.classList.add('upd');setTimeout(()=>el.classList.remove('upd'),400);}
+ if(S.selectedId===carrierId) updateBotBar();
+ row.classList.toggle('on',on);
+}
+
+/* ───── SORT / FILTER ───── */
+function doSort(by,btn) {
+ S.sortBy=by;
+ $$('.sort-btn').forEach(b=>b.classList.remove('on'));
+ btn.classList.add('on');
+ compute(); renderResults();
+}
+function doFilter(btn,key) {
+ if(S.filters.has(key)){S.filters.delete(key);btn.classList.remove('on');}
+ else{S.filters.add(key);btn.classList.add('on');}
+ compute(); renderResults();
+}
+function clearFilters() {
+ S.filters.clear();
+ $$('.filter-btn').forEach(b=>b.classList.remove('on'));
+ compute(); renderResults();
+}
+
+/* ───── RICALCOLA (auto) ───── */
+async function ricalcola(soft=false) {
+ if (!S.hasMinData) return;
+ if (!soft) {
+ S.selectedId=null;
+ $('#bot-bar').classList.remove('show');
+ updateCheckoutBtnState();
+ $('#skel').style.display='flex';
+ $('#results').style.display='none';
+ }
+ $('#upd-pill')?.classList.add('show');
+ const payload = {
+ mittente: {cap:$('#m-cap').value, city:$('#m-city').value, paese:'IT'},
+ destinatario:{cap:$('#d-cap').value, city:$('#d-city').value, paese:'IT'},
+ colli: S.colli.map(c=>({tipo:c.tipo,peso:c.peso||1,l:c.l||20,w:c.w||15,h:c.h||10,q:c.q||1})),
+ ritiro: S.ritiro
+ };
+ try {
+ await callApi(payload);
+ await new Promise(r => setTimeout(r, soft ? 350 : 600));
+ compute();
+ renderResults();
+ showLastShip();
+ $('#skel').style.display='none';
+ $('#empty-init').style.display='none';
+ $('#results').style.display='flex';
+ track('tariffe_caricate', {n: S.results.length, soft: soft});
+ } catch (err) {
+ console.error('API error:', err);
+ track('tariffe_errore', {err: err?.message || 'unknown'});
+ $('#skel').style.display='none';
+ $('#results').style.display='flex';
+ $('#results').innerHTML = `<div class="empty-state">
+ <span class="empty-icon" style="display:block"><svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+ <p style="font-size:22px;font-weight:700;letter-spacing:-0.015em;margin:0 0 6px">Impossibile calcolare le tariffe</p>
+ <p style="color:#6B7280;font-size:13px;margin:0 0 18px">Servizio temporaneamente non disponibile. Riprova tra un momento.</p>
+ <button class="btn-dark shine" onclick="ricalcola(false)" style="padding:11px 22px">↻ Riprova</button>
+ </div>`;
+ showToast('Errore nel calcolo tariffe');
+ } finally {
+ $('#upd-pill')?.classList.remove('show');
+ }
+}
+
+function showLastShip() {
+ const row=$('#last-ship-row'), txt=$('#last-ship-txt');
+ if(!row||!txt) return;
+ const dc=$('#d-cap')?.value;
+ if(dc && dc.length===5) {
+ const city = CAP_DB[dc.slice(0,2)] || dc;
+ row.style.display='block';
+ txt.textContent='GLS · '+city+' · €7,80 · 3 giorni fa';
+ } else {
+ row.style.display='none';
+ }
+}
+
+/* ───── SELEZIONE ───── */
+function selectCarrier(id) {
+ if(S.selectedId===id){
+ S.selectedId=null;
+ $('#bot-bar').classList.remove('show');
+ updateCheckoutBtnState();
+ renderResults();
+ return;
+ }
+ S.selectedId=id;
+ const c = S.results.find(x => x.id === id);
+ if (c) track('carrier_selected', {id: c.id, price: c.price, position: S.results.indexOf(c)});
+ updateBotBar();
+ updateCheckoutBtnState();
+ renderResults();
+}
+
+/* Pulsante Procedi: enabled SOLO quando c'è una selezione e con testo dinamico */
+function updateCheckoutBtnState() {
+ const btn = $('#checkout-btn');
+ if (!btn) return;
+ if (S.selectedId) {
+   const c = S.results.find(x => x.id === S.selectedId);
+   btn.disabled = false;
+   btn.removeAttribute('aria-disabled');
+   btn.style.opacity = '';
+   btn.style.cursor = '';
+   btn.title = '';
+   btn.textContent = c ? `Procedi con ${c.name} (${fmt(c.price)}) →` : 'Procedi al Checkout →';
+ } else {
+   btn.disabled = true;
+   btn.setAttribute('aria-disabled', 'true');
+   btn.style.opacity = '0.5';
+   btn.style.cursor = 'not-allowed';
+   btn.title = 'Seleziona prima un corriere';
+   btn.textContent = 'Seleziona un corriere →';
+ }
+}
+function updateBotBar() {
+ const c=S.results.find(x=>x.id===S.selectedId); if(!c) return;
+ const maxP=Math.max(...S.results.map(x=>x.price)), saving=maxP-c.price;
+ const $bb=$('#bb-logo');
+ const logoSrc = c.logo || ('carriers/' + c.id + '.svg');
+ $bb.style.background='transparent';
+ $bb.innerHTML=`<img src="${logoSrc}" width="48" height="36" class="carrier-logo-icon" style="width:48px;height:36px;object-fit:contain" alt="${c.name}">`;
+ $('#bb-name').textContent=c.name;
+ $('#bb-del').textContent=c.delivery;
+ $('#bb-save').textContent=saving>1?'−'+fmt(saving):'—';
+ $('#bb-price').textContent=fmt(c.price);
+ $('#bb-price').classList.add('upd');
+ setTimeout(()=>$('#bb-price').classList.remove('upd'),400);
+ $('#bot-bar').classList.add('show');
+}
+
+/* ───── CHECKOUT + REVIEW ───── */
+function goCheckout() {
+ if(!S.selectedId) return showToast('Seleziona prima un corriere');
+ const errs=[];
+ const errFields=[];
+ const isCap = v => /^[0-9]{5}$/.test((v||'').trim()); // 5 cifre reali, non solo 5 caratteri
+ if(!isCap($('#m-cap')?.value)){errs.push('CAP mittente (5 cifre)');errFields.push('m-cap');}
+ if(!$('#m-nome')?.value?.trim()){errs.push('Nome mittente');errFields.push('m-nome');}
+ if(!isCap($('#d-cap')?.value)){errs.push('CAP destinatario (5 cifre)');errFields.push('d-cap');}
+ if(!$('#d-nome')?.value?.trim()){errs.push('Nome destinatario');errFields.push('d-nome');}
+ if(!$('#d-tel')?.value?.trim()){errs.push('Telefono destinatario');errFields.push('d-tel');}
+ // ── Controllo peso: almeno un collo deve avere un peso reale > 0 ──
+ const pesoMancante = S.colli.some(c => !(parseFloat(c.peso) > 0));
+ if(S.colli.length === 0 || pesoMancante){
+ errs.push('Peso dei colli');
+ }
+ if(errs.length){
+ showToast('Controlla: '+errs.join(', '));
+ // Highlight visivo campi mancanti
+ errFields.forEach(id => {
+ const el=$('#'+id); if(!el) return;
+ el.classList.add('err');
+ setTimeout(()=>el.classList.remove('err'), 2500);
+ });
+ // Vai allo step problematico
+ if(errFields.some(f=>f.startsWith('m-'))) goToStep(1);
+ else if(errFields.some(f=>f.startsWith('d-'))) goToStep(2);
+ else if(pesoMancante) goToStep(3);
+ return;
+ }
+ buildReviewModal();
+ openModal('modal-review');
+}
+
+function buildReviewModal() {
+ const c=S.results.find(x=>x.id===S.selectedId); if(!c) return;
+ const svcsAttivi=[...carrierSvcs[c.id]].map(k=>SVC_LABELS[k]).join(', ')||'—';
+ const rif=$('#rif-ordine')?.value?.trim();
+ const n=S.colli.reduce((s,x)=>s+(x.q||1),0);
+ const w=getTotalWeight().toFixed(2);
+ $('#review-content').innerHTML=`
+ <div style="background:#F8F9FA;border-radius:14px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+ <div style="width:44px;height:44px;border-radius:12px;background:${c.color};color:${c.txt};display:flex;align-items:center;justify-content:center;font-size:${c.short.length<=2?'14px':'11px'};font-weight:700;flex-shrink:0">${c.short}</div>
+ <div style="flex:1">
+ <p style="font-size:15px;font-weight:700;letter-spacing:-.02em;margin:0">${c.name}</p>
+ <p style="font-size:12px;color:#6B7280;margin:0;font-weight:500">${c.delivery}</p>
+ </div>
+ <p style="font-size:22px;font-weight:700;letter-spacing:-0.015em;color:#0078FF;margin:0">${fmt(c.price)}</p>
+ </div>
+ <div style="margin-bottom:6px">
+ <div class="review-row"><span class="review-lbl">Mittente</span><span class="review-val">${$('#m-nome')?.value||'—'}<br><span style="color:#9CA3AF;font-weight:600;font-style:normal;font-size:11px">${$('#m-cap')?.value||''} ${$('#m-city')?.value||''}</span></span></div>
+ <div class="review-row"><span class="review-lbl">Destinatario</span><span class="review-val">${$('#d-nome')?.value||'—'}<br><span style="color:#9CA3AF;font-weight:600;font-style:normal;font-size:11px">${$('#d-cap')?.value||''} ${$('#d-city')?.value||''}</span></span></div>
+ <div class="review-row"><span class="review-lbl">Colli</span><span class="review-val">${n} ${n===1?'collo':'colli'} · ${w} kg</span></div>
+ <div class="review-row"><span class="review-lbl">Modalità ritiro</span><span class="review-val">${S.ritiro==='hub'?' Hub corriere':' Domicilio'}</span></div>
+ <div class="review-row"><span class="review-lbl">Servizi opzionali</span><span class="review-val" style="max-width:60%">${svcsAttivi}</span></div>
+ ${rif?`<div class="review-row"><span class="review-lbl">Riferimento</span><span class="review-val">${rif}</span></div>`:''}
+ </div>`;
+}
+function confirmCheckout() {
+ closeModal('modal-review');
+ const c = S.results.find(x => x.id === S.selectedId);
+ if(!c) return;
+ track('checkout_confirmed', {
+ carrier: S.selectedId,
+ price: c?.price,
+ colli: S.colli.reduce((s,c)=>s+(c.q||1),0),
+ weight: getTotalWeight()
+ });
+
+ // ── Calcola il totale dei servizi opzionali attivi sul corriere scelto ──
+ const svcsSet = carrierSvcs[c.id] || new Set();
+ let svcTotal = 0;
+ svcsSet.forEach(k => { svcTotal += (c.svcPrices[k] || 0); });
+ const svcLabel = [...svcsSet].map(k => SVC_LABELS[k]).join(', ') || 'Nessuno';
+
+ // ── Prepara il pacchetto dati per la pagina di checkout ──
+ const checkoutData = {
+ carrierShort: c.short,
+ carrierName: c.name,
+ delivery: c.delivery,
+ price: +(c.price).toFixed(2),
+ listPrice: +(c.listPrice||0).toFixed(2),
+ svcTotal: +(svcTotal).toFixed(2),
+ svc: svcLabel,
+ mittNome: $('#m-nome')?.value || '—',
+ mittCap: $('#m-cap')?.value || '',
+ mittCity: $('#m-city')?.value || '',
+ destNome: $('#d-nome')?.value || '—',
+ destCap: $('#d-cap')?.value || '',
+ destCity: $('#d-city')?.value || '',
+ colli: S.colli.reduce((s,x)=>s+(x.q||1),0),
+ peso: +(getTotalWeight()).toFixed(2),
+ ritiro: S.ritiro || 'domicilio',
+ rif: $('#rif-ordine')?.value?.trim() || ''
+ };
+ try { sessionStorage.setItem('vexone:checkout:v1', JSON.stringify(checkoutData)); } catch(e){}
+
+ // Pulisci lo state recovery del form — i dati ora passano al checkout
+ clearFormState();
+
+ // Se l'utente non è autenticato, apri la scheda in overlay prima del checkout
+ if (typeof VEX_AUTH !== 'undefined' && !VEX_AUTH.isLoggedIn()) {
+ window.openGuestAuthModal(() => {
+ showToast('Reindirizzamento al checkout...');
+ setTimeout(() => { window.location.href = 'checkout.html'; }, 400);
+ });
+ return;
+ }
+
+ showToast('Reindirizzamento al checkout...');
+ setTimeout(() => { window.location.href = 'checkout.html'; }, 500);
+}
+
+/* ───── AUTOFILL INTELLIGENTE (PRIVATO / AZIENDA) ───── */
+function getStoredUserProfile() {
+  let u = null;
+  try {
+    const raw = localStorage.getItem('vexone_user_profile') || localStorage.getItem('vexone:user:v1');
+    if (raw) u = JSON.parse(raw);
+  } catch(e) {}
+
+  let savedAddr = {};
+  try {
+    const rawAddr = localStorage.getItem('vexone_user_address');
+    if (rawAddr) savedAddr = JSON.parse(rawAddr);
+  } catch(e) {}
+
+  if (u) {
+    const fullName = (u.displayName || `${u.nome || u.first_name || ''} ${u.cognome || u.last_name || ''}`).trim() || u.name || '';
+    const email = u.email || localStorage.getItem('vexone_user_email') || '';
+    const phone = u.phone || '';
+    const addr = u.default_address || savedAddr || {};
+
+    const street = u.via || u.address || addr.address || addr.street || addr.via || '';
+    const num = u.num || addr.number || addr.num || '';
+    const cap = u.cap || u.zip_code || addr.zip_code || addr.cap || '';
+    const city = u.city || addr.city || addr.citta || '';
+    const pr = (u.pr || u.province || addr.province || addr.pr || '').toUpperCase();
+    const pivaVal = (u.vatNumber || u.vat_number || '').trim();
+
+    return {
+      priv: {
+        nome: fullName,
+        via: street,
+        num: num,
+        cap: cap,
+        city: city,
+        pr: pr,
+        tel: phone,
+        mail: email
+      },
+      biz: {
+        nome: u.company || fullName,
+        piva: pivaVal,
+        via: street,
+        num: num,
+        cap: cap,
+        city: city,
+        pr: pr,
+        tel: phone,
+        mail: email
+      }
+    };
+  }
+
+  return {
+    priv: { nome: '', via: '', num: '', cap: '', city: '', pr: '', tel: '', mail: '' },
+    biz: { nome: '', piva: '', via: '', num: '', cap: '', city: '', pr: '', tel: '', mail: '' }
+  };
+}
+
+function autofillMittente() {
+  const isBiz = (typeof S !== 'undefined' && S.formMode === 'biz');
+  const profile = getStoredUserProfile();
+  const data = isBiz ? (profile.biz || {}) : (profile.priv || {});
+
+  if (!data.nome && !data.mail) {
+    showToast('Nessun dato utente trovato. Accedi al tuo account o salva il profilo nelle impostazioni.');
+    const nome = $('#m-nome');
+    if (nome) nome.focus();
+    return;
+  }
+
+  // Mappatura flessibile su tutti i campi disponibili
+  const fieldMap = {
+    'm-nome': data.nome || '',
+    'm-via': data.via || '',
+    'm-num': data.num || '',
+    'm-cap': data.cap || '',
+    'm-city': data.city || '',
+    'm-pr': (data.pr || '').toUpperCase(),
+    'm-tel': data.tel || '',
+    'm-mail': data.mail || ''
+  };
+
+  // P.IVA: Solo ed esclusivamente se in modalità Azienda e se l'utente possiede una P.IVA reale
+  if (isBiz && data.piva) {
+    fieldMap['m-piva'] = data.piva;
+  } else {
+    // In modalità Privato, non aggiungere MAI una P.IVA fasulla e nascondi il campo
+    const pivaEl = $('#m-piva');
+    if (pivaEl) {
+      pivaEl.value = '';
+      if (!isBiz) pivaEl.style.display = 'none';
+    }
+  }
+
+  // Assegnazione valori e applicazione animazione di risalto
+  Object.entries(fieldMap).forEach(([id, val]) => {
+    const el = $('#' + id);
+    if (el && val !== undefined) {
+      el.value = val;
+      el.classList.add('field-filled-pop');
+      setTimeout(() => el.classList.remove('field-filled-pop'), 700);
+    }
+  });
+
+  // Suggerimento CAP
+  const sug = $('#m-cap-sug');
+  if (sug && data.city) {
+    sug.textContent = `→ ${data.city} (${data.pr || ''})`;
+    sug.classList.add('show');
+  }
+
+  // Notifica all'applicazione che i campi sono cambiati
+  if (typeof onFieldChange === 'function') onFieldChange();
+
+  showToast(isBiz ? 'Dati aziendali caricati' : 'Dati profilo caricati');
+}
+
+// Salva in automatico i dati del mittente digitati dall'utente
+function saveUserProfileOnBlur() {
+  try {
+    const profile = getStoredUserProfile();
+    const isBiz = (typeof S !== 'undefined' && S.formMode === 'biz');
+    const current = {
+      nome: $('#m-nome')?.value.trim() || '',
+      via: $('#m-via')?.value.trim() || '',
+      num: $('#m-num')?.value.trim() || '',
+      cap: $('#m-cap')?.value.trim() || '',
+      city: $('#m-city')?.value.trim() || '',
+      pr: ($('#m-pr')?.value.trim() || '').toUpperCase(),
+      tel: $('#m-tel')?.value.trim() || '',
+      mail: $('#m-mail')?.value.trim() || ''
+    };
+    if (isBiz) {
+      current.piva = $('#m-piva')?.value.trim() || '';
+      profile.biz = { ...profile.biz, ...current };
+    } else {
+      profile.priv = { ...profile.priv, ...current };
+    }
+    localStorage.setItem('vexone_user_profile', JSON.stringify(profile));
+  } catch(e) {}
+}
+
+
+/* ───── RUBRICA ───── */
+function renderContacts(q='') {
+ const f=q.toLowerCase().trim();
+ const list=f?CONTACTS.filter(c=>c.nome.toLowerCase().includes(f)||c.city.toLowerCase().includes(f)||c.cap.includes(f)):CONTACTS;
+ $('#contacts-list').innerHTML=!list.length
+ ?'<p style="text-align:center;color:#9CA3AF;padding:28px 0">Nessun contatto trovato.</p>'
+ :list.map(c=>`
+<div class="contact-item" onclick="pickContact(${c.id})">
+ <div class="c-avatar" style="background:${c.color}22;color:${c.color}">${c.nome.split(' ').slice(0,2).map(x=>x[0]).join('')}</div>
+ <div style="flex:1;min-width:0">
+ <p style="font-weight:700;font-size:12px;letter-spacing:-.02em;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nome}</p>
+ <p style="font-size:11px;color:#9CA3AF;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.via}${c.n?', '+c.n:''} · ${c.cap} ${c.city} (${c.pr})</p>
+ </div>
+ <span style="color:#0078FF;font-size:14px;flex-shrink:0">→</span>
+</div>`).join('');
+}
+function filterContacts(v){renderContacts(v);}
+function pickContact(id) {
+ const c=CONTACTS.find(x=>x.id===id);if(!c) return;
+ Object.entries({'d-nome':c.nome,'d-via':c.via,'d-num':c.n,'d-cap':c.cap,'d-city':c.city,'d-pr':c.pr,'d-tel':c.tel,'d-mail':c.mail})
+ .forEach(([k,v])=>{const el=$('#'+k);if(el)el.value=v||'';});
+ const sug=$('#d-cap-sug');
+ if(sug&&c.city){sug.textContent='→ '+c.city+' ('+c.pr+')';sug.classList.add('show');}
+ closeModal('modal-rubrica');
+ onFieldChange();
+ showToast('"'+c.nome+'" impostato');
+}
+function saveDest() {
+ const nome=$('#d-nome')?.value.trim();
+ if(!nome) return showToast('Inserisci almeno il nome');
+ showToast('"'+nome+'" salvato in rubrica');
+}
+
+/* ───── PRE-FILL DA URL ─────
+ Parametri supportati:
+ - m-cap, m-city, m-nome, m-tel, m-via, m-num, m-pr, m-mail (mittente)
+ - d-cap, d-city, d-nome, d-tel, d-via, d-num, d-pr, d-mail (destinatario)
+ - peso, l, w, h, tipo (collo singolo, retrocompatibile)
+ - colli (array JSON encoded: '[{"peso":2,"l":30,"w":20,"h":15,"tipo":"scatola","q":1}]')
+ - mode (priv | biz)
+ - ritiro (domicilio | hub)
+*/
+function prefillFromURL() {
+ const p = new URLSearchParams(location.search);
+ let used = false;
+
+ // Indirizzi: tutti i campi possibili
+ const addressFields = [
+ 'm-cap','m-city','m-nome','m-tel','m-via','m-num','m-pr','m-mail',
+ 'd-cap','d-city','d-nome','d-tel','d-via','d-num','d-pr','d-mail','d-note'
+ ];
+ addressFields.forEach(id => {
+ const v = p.get(id);
+ if (v) {
+ const el = $('#'+id);
+ if (el) { el.value = v; used = true; }
+ }
+ });
+
+ // CAP suggestions: triggera l'autofill città/PR se presenti
+ ['m','d'].forEach(prefix => {
+ const cap = $('#'+prefix+'-cap')?.value;
+ if (cap && cap.length === 5) {
+ const k = cap.slice(0,2);
+ const city = CAP_DB[k];
+ const pr = CAP_PR[k];
+ const sug = $('#'+prefix+'-cap-sug');
+ if (sug && city) {
+ sug.textContent = '→ ' + city + (pr ? ' ('+pr+')' : '');
+ sug.classList.add('show');
+ }
+ // Se città vuota, compila
+ const cityEl = $('#'+prefix+'-city');
+ const prEl = $('#'+prefix+'-pr');
+ if (cityEl && !cityEl.value && city) cityEl.value = city;
+ if (prEl && !prEl.value && pr) prEl.value = pr;
+ }
+ });
+
+ // Form mode
+ const mode = p.get('mode');
+ if (mode === 'biz' || mode === 'priv') { setFormMode(mode); used = true; }
+
+ // Ritiro
+ const ritiro = p.get('ritiro');
+ if (ritiro === 'hub') {
+ const btn = $$('.ritiro-btn')[1];
+ if (btn) setRitiro(btn, 'hub');
+ used = true;
+ }
+
+ // Riferimento ordine
+ const rif = p.get('rif');
+ if (rif) { const el=$('#rif-ordine'); if(el){el.value=rif;used=true;} }
+
+ // Colli multipli (JSON)
+ const colliJson = p.get('colli');
+ if (colliJson) {
+ try {
+ const arr = JSON.parse(decodeURIComponent(colliJson));
+ if (Array.isArray(arr) && arr.length) {
+ S.colli = arr.map(c => mkCollo({
+ tipo: c.tipo || 'scatola',
+ peso: parseFloat(c.peso) || null,
+ l: parseFloat(c.l) || null,
+ w: parseFloat(c.w) || null,
+ h: parseFloat(c.h) || null,
+ q: parseInt(c.q) || 1,
+ nomePreset: c.nomePreset || null
+ }));
+ used = true;
+ }
+ } catch(e) { /* malformed JSON, ignora */ }
+ } else {
+ // Collo singolo retrocompatibile
+ const peso=parseFloat(p.get('peso')),l=parseFloat(p.get('l')),w=parseFloat(p.get('w')),h=parseFloat(p.get('h')),tipo=p.get('tipo');
+ if (peso||l||w||h||tipo) {
+ Object.assign(S.colli[0], {
+ peso: peso || null,
+ l: l || null,
+ w: w || null,
+ h: h || null,
+ tipo: tipo || 'scatola'
+ });
+ used = true;
+ }
+ }
+
+ S.prefillUsed = used;
+}
+
+/* ───── (Express mode dismesso: il prefill ora è il caso normale) ───── */
+
+/* ───── SCELTA STEP INIZIALE ─────
+/* Step: 1 (Mittente), 2 (Destinatario), 3 (Opzioni) */
+function pickInitialStep() {
+  for (const i of [1, 2, 3]) {
+    const s = stepStatus(i);
+    if (s === 'warn' || s === 'empty') return i;
+  }
+  return 1;
+}
+
+/* ───── COLLO PICKER ───── */
+const SVG_BOX = `<svg class="icon text-vexBlue" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`;
+const SVG_MAIL = `<svg class="icon text-vexBlue" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
+const SVG_PLUS = `<svg class="icon text-vexBlue" viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>`;
+const QUICK_PRESETS=[
+ {tipo:'busta', peso:0.5,l:32,w:23,h:2, nome:'Busta', icon: SVG_MAIL},
+ {tipo:'scatola',peso:2, l:30,w:20,h:15,nome:'Small · 2kg', icon: SVG_BOX},
+ {tipo:'scatola',peso:5, l:40,w:30,h:25,nome:'Medium · 5kg', icon: SVG_BOX},
+ {tipo:'scatola',peso:15, l:60,w:40,h:40,nome:'Large · 15kg', icon: SVG_BOX},
+];
+function buildPickerHTML() {
+ let html=`<p class="cpicker-title">Aggiungi collo</p>
+ <div class="cprow" onclick="pickCollo('blank')"><span class="cpicon">${SVG_PLUS}</span><div><p class="cpname">Collo vuoto</p><p class="cpdim">Inserisci dimensioni manualmente</p></div></div>
+ <div style="height:1px;background:#EEEEEE;margin:6px 0"></div>
+ <p class="cpicker-title" style="margin-top:4px">Preset rapidi</p>`;
+ QUICK_PRESETS.forEach((p,i)=>{
+ html+=`<div class="cprow" onclick="pickCollo('quick',${i})"><span class="cpicon">${p.icon}</span><div><p class="cpname">${p.nome}</p><p class="cpdim">${p.l}×${p.w}×${p.h} cm</p></div></div>`;
+ });
+ if(S.savedPresets.length){
+ html+=`<div style="height:1px;background:#EEEEEE;margin:6px 0"></div><p class="cpicker-title" style="margin-top:4px">I tuoi preset</p>`;
+ S.savedPresets.forEach((p,i)=>{
+ html+=`<div class="cprow" onclick="pickCollo('saved',${i})" style="border-color:rgba(0,120,255,.15);background:rgba(0,120,255,.03)">
+ <span class="cpicon">${p.tipo==='busta'?SVG_MAIL:SVG_BOX}</span>
+ <div><p class="cpname" style="color:#0078FF">${p.nome}</p><p class="cpdim">${p.peso}kg · ${p.l}×${p.w}×${p.h} cm</p></div>
+ <span style="font-size:11px;background:rgba(0,120,255,.1);color:#0078FF;padding:2px 7px;border-radius:10px;font-weight:700;white-space:nowrap;margin-left:auto">Account</span>
+ </div>`;
+ });
+ }
+ return html;
+}
+function toggleColloPicker() {
+ if(S.colli.length>=10) return showToast('Massimo 10 colli');
+ const picker=$('#collo-picker'), btn=$('#add-collo-btn');
+ if(picker.classList.contains('open')){closeColloPicker();return;}
+ picker.innerHTML=buildPickerHTML();
+ const rect=btn.getBoundingClientRect();
+ const spaceBelow=window.innerHeight-rect.bottom;
+ if(spaceBelow>260){picker.classList.remove('up');picker.classList.add('dn');}
+ else{picker.classList.remove('dn');picker.classList.add('up');}
+ picker.classList.add('open');
+ btn.textContent='+ Aggiungi altro collo ▴';
+}
+function closeColloPicker() {
+ const picker=$('#collo-picker'),btn=$('#add-collo-btn');
+ if(picker) picker.classList.remove('open');
+ if(btn) btn.textContent='+ Aggiungi altro collo ▾';
+}
+function pickCollo(type,idx) {
+ closeColloPicker();
+ let addedId = null;
+ if (type === 'blank') {
+ const nuovo = mkCollo();
+ S.colli.push(nuovo);
+ addedId = nuovo.id;
+ } else if (type === 'quick') {
+ const p = QUICK_PRESETS[idx];
+ const cleanName = p.nome.split('·')[0].trim();
+ const nuovo = mkCollo({tipo:p.tipo, peso:p.peso, l:p.l, w:p.w, h:p.h, nomePreset:cleanName});
+ S.colli.push(nuovo);
+ addedId = nuovo.id;
+ showToast('"'+cleanName+'" aggiunto come collo');
+ } else if (type === 'saved') {
+ const p = S.savedPresets[idx];
+ const nuovo = mkCollo({tipo:p.tipo, peso:p.peso, l:p.l, w:p.w, h:p.h, nomePreset:p.nome});
+ S.colli.push(nuovo);
+ addedId = nuovo.id;
+ p.usageCount = (p.usageCount || 0) + 1;
+ p.lastUsed = Date.now();
+ renderSavedPresets();
+ showToast('"'+p.nome+'" aggiunto come collo');
+ track('preset_applied', {nome:p.nome, usageCount:p.usageCount, source:'picker'});
+ }
+ renderColli(); onFieldChange();
+ if (addedId) animateNewCollo(addedId);
+}
+
+/* ───── INIT ───── */
+function init() {
+ S.colli = [mkCollo({tipo:'scatola'})];
+ prefillFromURL();
+ initAccount();
+
+ // ═══════════════════════════════════════════════════════════
+ // MOCK DEMO: simula arrivo dalla homepage anche senza URL params.
+ // In produzione questi valori arriveranno dai query string (CAP mittente,
+ // CAP destinatario, colli) generati dalla homepage. Rimuovere questo blocco
+ // quando la homepage passerà i dati veri.
+ // ═══════════════════════════════════════════════════════════
+ if (!S.prefillUsed) {
+ if (!$('#m-cap').value) $('#m-cap').value = '95124';
+ if (!$('#d-cap').value) $('#d-cap').value = '20100';
+ onCapInput('m');
+ onCapInput('d');
+ S.prefillUsed = true;
+ }
+
+ if (!S.colli.some(c => c.peso > 0)) {
+ S.colli = [mkCollo({tipo:'scatola',peso:2,l:30,w:20,h:15})];
+ }
+
+ // ═══════════════════════════════════════════════════════════
+ // FORM RECOVERY — ripristina dati da sessionStorage se presenti.
+ // Prevale sui dati URL solo se non ci sono parametri URL espliciti.
+ // ═══════════════════════════════════════════════════════════
+ const savedState = loadFormState();
+ let stateRestored = false;
+ if (savedState) {
+ stateRestored = restoreFormState(savedState);
+ }
+
+ renderColli();
+ renderContacts();
+ renderSavedPresets();
+ checkMinData();
+
+ // Titolo pagina
+ const pt = $('#page-title');
+ const ps = $('#page-subtitle');
+ if (pt) pt.innerHTML = 'Mittente e <span style="color:#0078FF">Destinatario.</span>';
+ if (ps) ps.textContent = 'Tariffe già calcolate dai dati della homepage. Completa nomi, indirizzo e contatti.';
+
+  // Step iniziale: default sempre a Step 1 (Mittente) per consentire la verifica e autocompilazione
+  const explicitStep = parseInt(new URLSearchParams(window.location.search).get('step'), 10);
+  goToStepSlide(explicitStep && [1, 2, 3].includes(explicitStep) ? explicitStep : 1);
+  refreshColliSummary();
+
+ // Stato iniziale bottone Procedi (disabled)
+ updateCheckoutBtnState();
+
+ // Aggancia validatori al blur
+ attachValidators();
+
+ // Banner "dati ripristinati"
+ if (stateRestored) {
+ setTimeout(() => {
+ showRestoreToast();
+ }, 600);
+ track('form_restored', {});
+ }
+
+ // Calcola le tariffe immediatamente
+ if (S.hasMinData) {
+ setTimeout(() => ricalcola(false), 200);
+ track('page_loaded', {restored: stateRestored, prefill: S.prefillUsed});
+ }
+}
+
+function showRestoreToast() {
+ const t = $('#toast');
+ t.style.bottom = $('#bot-bar').classList.contains('show') ? '84px' : '28px';
+ t.innerHTML = `
+ <div style="width:7px;height:7px;border-radius:50%;background:#16a34a;flex-shrink:0"></div>
+ <span> Dati ripristinati dalla sessione precedente</span>
+ <button id="reset-btn" style="background:transparent;color:#9CA3AF;border:1px solid #4B5563;padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;cursor:pointer;margin-left:8px;pointer-events:auto">Ricomincia</button>`;
+ t.classList.add('show');
+ $('#reset-btn').addEventListener('click', () => {
+ if (confirm('Vuoi davvero cancellare tutti i dati e ricominciare da zero?')) {
+ clearFormState();
+ location.reload();
+ }
+ });
+ setTimeout(() => {
+ t.classList.remove('show');
+ setTimeout(() => {
+ t.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:#B8FF00;flex-shrink:0"></div><span id="toast-msg">Ok</span>';
+ }, 400);
+ }, 6000);
+}
+
+document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Escape')return;
+ closeDrawer();closeAccMenu();closeColloPicker();
+ $$('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+});
+document.addEventListener('click',e=>{
+ const aw=document.getElementById('acc-wrap');
+ if(aw&&!aw.contains(e.target))closeAccMenu();
+ const pw=document.getElementById('add-collo-wrap');
+ if(pw&&!pw.contains(e.target))closeColloPicker();
+});
+
+/* Focus tracking: quando l'utente clicca dentro un input,
+ la card che lo contiene diventa visivamente "active". */
+document.addEventListener('focusin', e => {
+ const card = e.target.closest('.step-card');
+ if (!card) return;
+ const id = card.id; // step-1 | step-2 | step-4
+ const n = parseInt(id.split('-')[1]);
+ if (!isNaN(n) && n !== S.activeStep) {
+ S.activeStep = n;
+ updateProgressBar();
+ }
+});
+</script>
+<script src="assets/js/carrier-logos.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/nav-user.js"></script>
+</body>
+</html>

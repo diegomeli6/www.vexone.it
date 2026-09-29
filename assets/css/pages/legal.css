@@ -1,0 +1,126 @@
+/* ==========================================================================
+   VEXONE - PAGINE LEGALI (Cookie Policy, Privacy Policy, Termini & Condizioni)
+   ========================================================================== */
+/* Tipografia documenti legali */
+.legal h2 {
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight:700;
+  
+  letter-spacing:-0.015em;
+  margin: 38px 0 12px;
+  scroll-margin-top: 90px;
+}
+.legal h3 {
+  font-size: 15px;
+  font-weight:700;
+  margin: 22px 0 8px;
+  color: #0A0A0B;
+}
+.legal p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0 0 14px;
+}
+.legal ul {
+  margin: 0 0 16px;
+  padding-left: 0;
+  list-style: none;
+}
+.legal li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #374151;
+  padding-left: 22px;
+  position: relative;
+  margin-bottom: 8px;
+}
+.legal li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 11px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vexLime, #B8FF00);
+}
+.legal a {
+  color: var(--vexBlue, #0078FF);
+  text-decoration: none;
+  font-weight: 700;
+}
+.legal a:hover {
+  text-decoration: underline;
+}
+/* Placeholder evidenziati */
+.ph {
+  background: #FEF9E7;
+  border: 1px dashed #E0C24A;
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-size: 13px;
+  font-weight:700;
+  color: #92760E;
+  font-style: normal;
+}
+/* Tabella Cookie */
+.ck-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 18px;
+  font-size: 13px;
+}
+.ck-table th {
+  text-align: left;
+  font-size:11px;
+  font-weight:700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #9CA3AF;
+  padding: 10px 12px;
+  border-bottom: 2px solid #F1F2F4;
+}
+.ck-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #F3F4F6;
+  color: #374151;
+  font-weight: 600;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.ck-table tr:last-child td {
+  border-bottom: none;
+}
+/* Badge categorie cookie */
+.badge {
+  display: inline-block;
+  font-size:11px;
+  font-weight:700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  padding: 3px 9px;
+  border-radius:var(--radius-lg);
+}
+.badge.tech {
+  background: rgba(22, 163, 74, .1);
+  color: #16a34a;
+}
+.badge.opt {
+  background: rgba(0, 120, 255, .1);
+  color: #0078FF;
+}
+/* Indice dei contenuti */
+.toc a {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6B7280;
+  text-decoration: none;
+  padding: 7px 0;
+  border-bottom: 1px solid #F3F4F6;
+  transition: color .2s;
+}
+.toc a:hover {
+  color: var(--vexBlue, #0078FF);
+}

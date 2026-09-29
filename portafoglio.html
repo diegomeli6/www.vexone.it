@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Portafoglio</title>
+<meta name="description" content="Gestisci il tuo portafoglio VEX ONE: ricariche, transazioni, fatture PDF ed estratti conto.">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <!-- jsPDF per generazione fatture/estratti conto lato client -->
+ <script src="assets/js/jspdf.umd.min.js"></script>
+  <script>
+    if (!window.jspdf) {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>');
+    }
+  </script>
+ <script src="assets/js/tailwind-config.js"></script>
+
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/portafoglio.css?v=2">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+
+<!-- ════════════════════ PAGINA ════════════════════ -->
+<div style="min-height:100vh">
+  <main class="app-page-container fade-in">
+
+  <!-- HEADER UNIFICATO -->
+  <header class="page-header">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="page-eyebrow" id="wallet-eyebrow">
+          <span id="eyebrow-user">Utente</span>
+          <span>·</span>
+          <span id="eyebrow-plan">Conto Verificato</span>
+        </div>
+        <h1 class="page-title">Portafoglio & Credito</h1>
+        <p class="page-subtitle">Ricarica il tuo conto prepagato per spedire senza interruzioni, gestisci i metodi di pagamento e scarica le fatture.</p>
+      </div>
+      <div class="flex items-center gap-3 self-start md:self-auto">
+        <a href="portafoglio-impostazioni.html" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-gray-200 bg-white hover:border-gray-300 shadow-sm text-xs font-semibold text-gray-700 transition-all no-underline">
+          <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Gestione &amp; Impostazioni</span>
+        </a>
+        <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-gray-200 bg-white shadow-sm text-xs">
+          <span class="font-medium text-gray-500">Stato conto:</span>
+          <span class="font-bold text-green-600">Attivo & Verificato</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+ <!-- ═══ COL 1 (Fissa / Sticky su Desktop) ═══ -->
+ <div class="space-y-5 port-sticky-left">
+
+ <div class="wallet-hero">
+ <div class="wallet-hero-bar"></div>
+ <span class="lbl" style="color:rgba(255,255,255,.5); margin-bottom:12px; display:block">Credito disponibile</span>
+ <p class="wallet-saldo" id="saldo-display">€ 0,00</p>
+ <p class="text-xs mt-2 mb-5 font-semibold" style="color:rgba(255,255,255,.6)" id="hero-user">Utente · Conto Verificato</p>
+ <div class="flex gap-2 flex-wrap">
+ <span class="wallet-badge-attivo"><span class="dot"></span>Attivo</span>
+ <span class="badge" style="background:rgba(255,255,255,.14); color:#FFFFFF" id="hero-plan">Tariffa Base</span>
+ </div>
+ </div>
+
+ <div class="low-credit-warning" id="low-credit-warning" style="display:none">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+ <p>Credito in esaurimento — ricarica per continuare a spedire.</p>
+ </div>
+
+ <div class="card">
+ <p class="lbl mb-1" id="stats-month-label">Mese Corrente</p>
+ <div class="mt-3 space-y-0">
+ <div class="stat-row">
+ <span class="stat-label">Spedizioni</span>
+ <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-sped" style="background:#0078FF; width:0%"></div></div>
+ <span class="stat-val" id="stat-sped">0</span>
+ </div>
+ <div class="stat-row">
+ <span class="stat-label">Totale speso</span>
+ <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-speso" style="background:#0078FF; width:0%"></div></div>
+ <span class="stat-val" id="stat-speso">€ 0,00</span>
+ </div>
+ <div class="stat-row">
+ <span class="stat-label">Ricariche</span>
+ <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-ric" style="background:#0078FF; width:0%"></div></div>
+ <span class="stat-val" id="stat-ric">0</span>
+ </div>
+ </div>
+ <div style="margin-top:16px; padding:12px 14px; background:#F0FDF4; border-radius:var(--radius-sm); border:1px solid #BBF7D0; display:flex; justify-content:space-between; align-items:center">
+ <div>
+ <p class="text-xs font-semibold text-green-800 m-0">Risparmio stimato</p>
+ <p class="text-[11px] text-gray-500 font-medium m-0 mt-0.5">vs. tariffe standard</p>
+ </div>
+ <span class="text-lg font-bold text-green-700" id="stat-risparmio">€ 0,00</span>
+ </div>
+ <div class="credit-progress">
+ <div class="flex justify-between items-center">
+ <span class="text-xs font-normal text-gray-500">Budget mensile stimato</span>
+ <span class="text-[11px] font-bold" id="credit-pct">0%</span>
+ </div>
+ <div class="credit-progress-track"><div class="credit-progress-fill" id="credit-bar" style="width:0%"></div></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══ COL 2-3 ═══ -->
+ <div class="lg:col-span-2 space-y-5">
+
+ <!-- ═════ CARD RICARICA ═════ -->
+ <div class="card" style="position:relative" id="ricarica-card">
+ <div class="processing-overlay" id="proc-overlay" aria-hidden="true">
+ <div class="big-spinner"></div>
+ <p class="text-sm font-bold">Elaborazione in corso…</p>
+ </div>
+
+ <h2 class="text-xl font-bold tracking-tight mb-6">Ricarica il tuo credito</h2>
+
+ <label class="lbl mb-3">Importo rapido</label>
+ <div class="flex gap-2 flex-wrap mb-3" id="amount-btns" role="group">
+ <button type="button" class="amt-chip" data-amt="50" aria-pressed="false">€ 50</button>
+ <button type="button" class="amt-chip on" data-amt="100" aria-pressed="true">€ 100</button>
+ <button type="button" class="amt-chip" data-amt="200" aria-pressed="false">€ 200</button>
+ <button type="button" class="amt-chip" data-amt="500" aria-pressed="false">€ 500</button>
+ <button type="button" class="amt-chip" data-amt="1000" aria-pressed="false">€ 1.000</button>
+ </div>
+
+ <label class="sr-only" for="wallet-amount">Importo personalizzato in euro</label>
+ <div class="amt-field">
+ <span class="euro-sym" aria-hidden="true">€</span>
+ <input id="wallet-amount" type="number" min="1" max="10000" placeholder="100" value="100" inputmode="decimal">
+ <span class="amt-hint">Max € 10.000</span>
+ </div>
+
+ <!-- ═══ CODICE PROMO ═══ -->
+ <label class="lbl mb-2">Hai un codice promozionale?</label>
+ <div class="promo-wrap" id="promo-wrap">
+ <input class="inp" id="promo-input" placeholder="ES. BENVENUTO10" maxlength="20">
+ <button type="button" class="btn-ghost" id="promo-apply">Applica</button>
+ </div>
+ <div class="promo-applied" id="promo-applied" style="display:none">
+ <div class="promo-applied-info">
+ <b id="promo-code-tag">BENVENUTO10</b>
+ <span id="promo-msg">Bonus di € 10,00 sulla ricarica</span>
+ </div>
+  <button type="button" class="promo-remove" id="promo-remove" aria-label="Rimuovi codice">×</button>
+  </div>
+
+  <label class="lbl mb-2.5">Metodo di pagamento</label>
+
+  <!-- Selezione tra Carta Memorizzata vs Nuova Carta -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4" id="pay-mode-selector">
+    <button type="button" class="pay-mode-card flex items-center gap-3 p-3.5 rounded-xl text-left cursor-pointer" id="btn-mode-saved" style="display:none" onclick="selectPayMode('saved')">
+      <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center flex-shrink-0 font-bold text-xs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-gray-900 m-0 truncate">Carta Memorizzata</p>
+        <p class="text-[11px] text-gray-500 m-0 truncate" id="lbl-saved-card-desc">—</p>
+      </div>
+      <span class="w-4 h-4 rounded-full border-2 border-blue-600 bg-blue-600 flex items-center justify-center flex-shrink-0 mode-radio-dot">
+        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+      </span>
+    </button>
+
+    <button type="button" class="pay-mode-card active flex items-center gap-3 p-3.5 rounded-xl text-left cursor-pointer" id="btn-mode-new" onclick="selectPayMode('new')">
+      <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0 font-bold text-xs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-gray-900 m-0 truncate">Carta di Credito / Debito</p>
+        <p class="text-[11px] text-gray-500 m-0 truncate">Pagamento protetto e sicuro</p>
+      </div>
+      <span class="w-4 h-4 rounded-full border border-blue-600 bg-blue-600 flex items-center justify-center flex-shrink-0 mode-radio-dot">
+        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- BOX CARTA SALVATA SELEZIONATA -->
+  <div id="box-saved-card" style="display:none" class="p-3.5 rounded-xl border border-blue-200 bg-blue-50/40 mb-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-7 rounded bg-blue-900 text-white flex items-center justify-center font-bold text-[10px] tracking-wider" id="quick-card-brand">CARD</div>
+        <div>
+          <div class="text-xs font-bold text-gray-900 flex items-center gap-2">
+            <span id="quick-card-num">•••• •••• •••• —</span>
+            <span class="text-[10px] font-semibold text-blue-600 bg-blue-100/70 px-2 py-0.5 rounded-full">Predefinita</span>
+          </div>
+          <p class="text-[11px] text-gray-500 m-0 mt-0.5" id="quick-card-meta">—</p>
+        </div>
+      </div>
+      <a href="portafoglio-impostazioni.html#carte" class="text-xs font-semibold text-blue-600 hover:text-blue-800 no-underline">Gestisci carte →</a>
+    </div>
+  </div>
+
+  <!-- BOX FORM NUOVA CARTA -->
+  <div id="box-new-card" class="mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3" id="card-form-fields">
+      <div class="md:col-span-2">
+        <label class="lbl" for="card-num">Numero carta</label>
+        <input class="inp" id="card-num" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric" autocomplete="cc-number">
+      </div>
+      <div>
+        <label class="lbl" for="card-exp">Scadenza</label>
+        <input class="inp" id="card-exp" placeholder="MM/AA" maxlength="5" inputmode="numeric" autocomplete="cc-exp">
+      </div>
+      <div>
+        <label class="lbl" for="card-cvv">CVV</label>
+        <input class="inp" id="card-cvv" type="password" placeholder="•••" maxlength="4" inputmode="numeric" autocomplete="cc-csc">
+      </div>
+      <div class="md:col-span-2">
+        <label class="lbl" for="card-holder">Intestatario</label>
+        <input class="inp" id="card-holder" placeholder="Nome come sulla carta" value="" autocomplete="cc-name">
+      </div>
+    </div>
+
+    <!-- Checkbox salva carta -->
+    <label class="flex items-center gap-2 mb-2 cursor-pointer" id="save-card-wrap">
+      <input type="checkbox" id="save-card-check" checked class="w-4 h-4 rounded accent-blue-600 cursor-pointer">
+      <span class="text-[11px] font-semibold text-gray-700">Memorizza questa carta nel portafoglio per le prossime ricariche</span>
+    </label>
+  </div>
+
+  <button type="button" class="w-full btn-blue shine" style="padding:14px 20px; font-size:14px; font-weight:700; border-radius:12px;" onclick="eseguiRicaricaPortafoglio()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    Ricarica sicura — € <span class="btn-amt">100</span>
+  </button>
+  <p class="text-center text-[11px] text-gray-500 mt-3 font-medium">Pagamento protetto con crittografia SSL 256-bit · Accredito immediato sul saldo</p>
+  </div>
+
+  <!-- ═════ TASTI DI NAVIGAZIONE VERSO LA SOTTOPAGINA ═════ -->
+  <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Tasto 1: Storico Transazioni -->
+    <a href="portafoglio-impostazioni.html#storico" class="p-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-500 hover:shadow-md transition-all flex items-center justify-between group no-underline">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-gray-900 m-0 group-hover:text-blue-600 transition-colors">Storico Transazioni</h3>
+          <p class="text-xs text-gray-500 m-0 mt-0.5">Consulta i movimenti, seleziona ed esporta PDF</p>
+        </div>
+      </div>
+      <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- Tasto 2: Impostazioni & Carte -->
+    <a href="portafoglio-impostazioni.html#impostazioni" class="p-5 rounded-2xl border border-gray-200 bg-white hover:border-gray-900 hover:shadow-md transition-all flex items-center justify-between group no-underline">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-700 flex items-center justify-center flex-shrink-0 group-hover:bg-gray-900 group-hover:text-white transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-gray-900 m-0 group-hover:text-gray-900 transition-colors">Impostazioni &amp; Carte</h3>
+          <p class="text-xs text-gray-500 m-0 mt-0.5">Auto-ricarica, limiti di spesa e carte</p>
+        </div>
+      </div>
+      <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+ </div>
+ </div>
+ </main>
+</div>
+
+<!-- ════════════════════ MODAL CONFERMA ════════════════════ -->
+<div class="modal-overlay" id="modal-conferma" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+ <div class="modal-box">
+ <h2 id="modal-title" class="text-2xl font-bold tracking-tight mb-2">Confermi la ricarica?</h2>
+ <p class="text-gray-500 font-medium text-sm mb-6">Importo elevato. Verifica i dati prima di procedere.</p>
+ <div style="background:#F8F9FA; border-radius:16px; padding:20px; margin-bottom:24px">
+ <div class="flex justify-between items-center mb-2">
+ <span class="text-xs font-bold text-gray-400">Importo</span>
+ <span class="font-bold text-3xl" style="color:#0078FF">€ <span id="conf-amt">0</span></span>
+ </div>
+ <div class="flex justify-between items-center mb-2" id="conf-bonus-row" style="display:none">
+ <span class="text-xs font-bold text-gray-400">Bonus promo</span>
+ <span class="font-bold text-sm" style="color:#5A9900">+ € <span id="conf-bonus">0</span></span>
+ </div>
+ <div class="flex justify-between items-center">
+ <span class="text-xs font-bold text-gray-400">Metodo</span>
+ <span class="font-bold" id="conf-met">—</span>
+ </div>
+ </div>
+ <div class="flex gap-3 justify-end">
+ <button class="btn-ghost" id="modal-cancel">Annulla</button>
+ <button class="btn-blue shine" id="modal-confirm">Conferma e paga</button>
+ </div>
+ </div>
+</div>
+
+<!-- ════════════════════ MODAL BILLING ════════════════════ -->
+<div class="modal-overlay" id="modal-billing" role="dialog" aria-modal="true" aria-labelledby="billing-title" aria-hidden="true">
+ <div class="modal-box">
+ <h2 id="billing-title" class="text-2xl font-bold tracking-tight mb-1">Dati di fatturazione</h2>
+ <p class="text-gray-500 font-medium text-sm mb-6">Servono per generare le fatture delle tue ricariche.</p>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+ <div class="md:col-span-2">
+ <label class="lbl" for="bl-name">Nome / Ragione sociale</label>
+ <input class="inp" id="bl-name" placeholder="Mario Rossi / Mario Rossi Srl">
+ </div>
+ <div class="md:col-span-2">
+ <label class="lbl" for="bl-address">Indirizzo</label>
+ <input class="inp" id="bl-address" placeholder="Via Roma 123">
+ </div>
+ <div>
+ <label class="lbl" for="bl-cap">CAP</label>
+ <input class="inp" id="bl-cap" placeholder="00100" maxlength="5" inputmode="numeric">
+ </div>
+ <div>
+ <label class="lbl" for="bl-city">Città</label>
+ <input class="inp" id="bl-city" placeholder="Roma">
+ </div>
+ <div>
+ <label class="lbl" for="bl-province">Provincia (sigla)</label>
+ <input class="inp" id="bl-province" placeholder="RM" maxlength="2" style="text-transform:uppercase">
+ </div>
+ <div>
+ <label class="lbl" for="bl-country">Paese</label>
+ <input class="inp" id="bl-country" placeholder="Italia" value="Italia">
+ </div>
+ <div>
+ <label class="lbl" for="bl-cf">Codice Fiscale</label>
+ <input class="inp" id="bl-cf" placeholder="RSSMRA80A01H501Z" maxlength="16" style="text-transform:uppercase">
+ </div>
+ <div>
+ <label class="lbl" for="bl-piva">P. IVA (opzionale)</label>
+ <input class="inp" id="bl-piva" placeholder="12345678901" maxlength="11" inputmode="numeric">
+ </div>
+ <div class="md:col-span-2">
+ <label class="lbl" for="bl-sdi">Codice destinatario SDI / PEC (opzionale)</label>
+ <input class="inp" id="bl-sdi" placeholder="0000000 o pec@esempio.it">
+ </div>
+ </div>
+
+ <div class="flex gap-3 justify-end">
+ <button class="btn-ghost" id="billing-cancel">Annulla</button>
+ <button class="btn-blue shine" id="billing-save">Salva dati</button>
+ </div>
+ </div>
+</div>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="vex-footer">
+ <div class="max-w-7xl mx-auto px-6">
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+ <div>
+ <div class="flex items-center gap-2 mb-4">
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:32px;width:auto">
+ </div>
+ <p class="text-[13px] font-medium leading-relaxed" style="color:rgba(255,255,255,.5)">Il comparatore corrieri italiano. Confronta, prenota e spedisci dai migliori corrieri in tempo reale.</p>
+ </div>
+ <div>
+ <p class="foot-title">Piattaforma</p>
+ <a href="comparatore.html" class="foot-link">Calcola Tariffa</a>
+ <a href="tracking.html" class="foot-link">Traccia Spedizione</a>
+ <a href="dashboard.html" class="foot-link">Dashboard</a>
+ </div>
+ <div>
+ <p class="foot-title">Supporto</p>
+ <a href="assistenza.html" class="foot-link">Centro Assistenza</a>
+ <a href="assistenza.html#form" class="foot-link">Contatta</a>
+ <a href="assistenza.html" class="foot-link">Come Imballare</a>
+ </div>
+ <div>
+ <p class="foot-title">Legale</p>
+ <a href="privacy.html" class="foot-link">Privacy Policy</a>
+ <a href="termini.html" class="foot-link">Termini &amp; Condizioni</a>
+ <a href="cookie.html" class="foot-link">Cookie Policy</a>
+ </div>
+ </div>
+ <div class="foot-sep"></div>
+ <div class="flex flex-col md:flex-row justify-between items-center gap-3 text-[11px] font-medium" style="color:rgba(255,255,255,.35)">
+ <span>© 2026 VEX ONE Srl · P.IVA 01234567890</span>
+ <span>Made with <span style="color:#B8FF00">●</span> in Italia</span>
+ </div>
+ </div>
+</footer>
+
+<!-- Floating Action Button (+ Nuova Spedizione) -->
+<a href="comparatore.html" class="fab-new-shipment" title="Crea una nuova spedizione" style="position:fixed!important;bottom:26px!important;right:26px!important;z-index:900!important;display:inline-flex!important;align-items:center!important;gap:8px!important;background:#0A0A0B!important;color:#FFFFFF!important;padding:11px 18px!important;border-radius:9999px!important;font-size:12.5px!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,0.2)!important;border:1px solid rgba(255,255,255,0.15)!important">
+  <span class="fab-icon" style="width:20px!important;height:20px!important;border-radius:50%!important;background:#B8FF00!important;color:#0A0A0B!important;display:flex!important;align-items:center!important;justify-content:center!important;font-weight:700!important;font-size:13px!important;flex-shrink:0!important">+</span>
+  <span>Nuova Spedizione</span>
+</a>
+
+<!-- TOAST + COOKIE -->
+<div class="toast" id="toast" role="status" aria-live="polite" style="display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;white-space:nowrap!important">
+ <span class="toast-dot" style="width:8px;height:8px;border-radius:50%;background:#B8FF00;box-shadow:0 0 6px rgba(184,255,0,.6);flex-shrink:0;display:inline-block"></span>
+ <span id="toast-msg"></span>
+</div>
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Consenso cookie" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9998;width:min(700px,calc(100vw - 32px));background:#fff;border-radius:18px;padding:18px 24px;box-shadow:0 20px 60px rgba(0,0,0,.15);border:1px solid rgba(0,0,0,.06);align-items:center;justify-content:space-between;gap:12px">
+ <p class="text-xs text-gray-700 m-0">Usiamo cookie tecnici essenziali e, con il tuo consenso, cookie analitici per migliorare la piattaforma.</p>
+ <div class="flex gap-2 flex-wrap flex-shrink-0">
+ <button class="btn-lime shine text-xs px-3 py-1.5" data-cookie="all">Accetta tutti</button>
+ <button class="btn-ghost text-xs px-3 py-1.5" style="border-color:#E5E7EB; color:#374151" data-cookie="essential">Solo essenziali</button>
+ </div>
+</div>
+
+<script src="assets/js/api.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+ SAFE STORAGE WRAPPER
+════════════════════════════════════════════════════════ */
+const safeStorage = {
+ get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } },
+ set(k, v) { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } },
+ remove(k) { try { localStorage.removeItem(k); } catch(e) {} }
+};
+
+/* ════════════════════════════════════════════════════════
+ STORAGE KEYS
+════════════════════════════════════════════════════════ */
+const KEY_SALDO = 'vexone:wallet:saldo:v1';
+const KEY_TX = 'vexone:wallet:tx:v1';
+const KEY_COOKIES = 'vex_cookies';
+const KEY_USER = 'vexone:user:v1';
+const KEY_METHODS = 'vexone:wallet:methods:v1';
+const KEY_AUTORELOAD = 'vexone:wallet:autoreload:v1';
+const KEY_NOTIFY = 'vexone:wallet:notify:v1';
+const KEY_SPENDLIMIT = 'vexone:wallet:spendlimit:v1';
+const KEY_BILLING = 'vexone:wallet:billing:v1';
+
+/* ════════════════════════════════════════════════════════
+ CODICI PROMO (mock)
+════════════════════════════════════════════════════════ */
+const PROMO_CODES = {
+ 'BENVENUTO10': { type:'percent', value:10, min:50, desc:'10% di bonus sulla ricarica' },
+ 'VEX20': { type:'flat', value:20, min:100, desc:'€ 20,00 di bonus' },
+ 'MARZO2026': { type:'percent', value:5, min:50, desc:'5% di bonus sulla ricarica' }
+};
+let appliedPromo = null; // { code, bonus, desc }
+
+/* ════════════════════════════════════════════════════════
+ USER + UTILS
+════════════════════════════════════════════════════════ */
+function getUser() {
+  if (typeof VEX_AUTH !== 'undefined') {
+    const u = VEX_AUTH.getUser();
+    if (u && u.displayName && u.displayName !== 'Utente VexONE') {
+      return {
+        name: u.displayName,
+        initials: u.initials || 'VX',
+        role: 'user',
+        plan: u.piano || 'VEX Base'
+      };
+    }
+  }
+  const raw = safeStorage.get(KEY_USER) || localStorage.getItem('vexone_user_profile') || localStorage.getItem('vexone:user:v1');
+  if (raw) {
+    try {
+      const u = JSON.parse(raw);
+      const name = u.displayName || u.name || `${u.nome || u.first_name || ''} ${u.cognome || u.last_name || ''}`.trim() || 'Utente VEX ONE';
+      const initials = u.initials || (name.length >= 2 ? name.substring(0,2).toUpperCase() : 'VX');
+      return { name, initials, role: u.type || 'user', plan: u.piano || u.plan || 'VEX Base' };
+    } catch(e) {}
+  }
+  return { name:'Utente VEX ONE', initials:'VX', role:'user', plan:'VEX Base' };
+}
+function fmtEur(n) { return '€ ' + Number(n || 0).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtDate(d) {
+  const dt = (d instanceof Date) ? d : new Date(d);
+  return dt.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+
+/* ════════════════════════════════════════════════════════
+ SALDO con animazione counter
+════════════════════════════════════════════════════════ */
+function getSaldo() {
+  if (typeof VEX_AUTH !== 'undefined') return VEX_AUTH.getSaldo();
+  const s = safeStorage.get(KEY_SALDO);
+  if (s !== null && !isNaN(parseFloat(s))) return parseFloat(s);
+  try {
+    const u = JSON.parse(localStorage.getItem('vexone:user:v1') || '{}');
+    if (u.creditRaw !== undefined) return u.creditRaw;
+  } catch(e) {}
+  return 0.00;
+}
+function setSaldo(newVal) {
+ const oldVal = getSaldo();
+ safeStorage.set(KEY_SALDO, String(newVal));
+ animateCounter('saldo-display', oldVal, newVal, 800);
+ const str = fmtEur(newVal);
+ ['dd-saldo','mob-saldo'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent = str; });
+ updateCreditBar(newVal);
+ checkLowCredit(newVal);
+}
+function animateCounter(id, from, to, duration) {
+ const el = document.getElementById(id);
+ if (!el) return;
+ const start = performance.now();
+ el.classList.remove('anim'); void el.offsetWidth; el.classList.add('anim');
+ function tick(now) {
+ const t = Math.min((now - start) / duration, 1);
+ const ease = 1 - Math.pow(1 - t, 4);
+ el.textContent = fmtEur(from + (to - from) * ease);
+ if (t < 1) requestAnimationFrame(tick); else el.textContent = fmtEur(to);
+ }
+ requestAnimationFrame(tick);
+}
+
+/* ════════════════════════════════════════════════════════
+ CREDIT BAR + WARNING
+════════════════════════════════════════════════════════ */
+const PIANO_MAX = 2000;
+function updateCreditBar(saldo) {
+ const pct = Math.min(100, Math.round((saldo / PIANO_MAX) * 100));
+ const bar = document.getElementById('credit-bar');
+ const lbl = document.getElementById('credit-pct');
+ if (bar) bar.style.width = pct + '%';
+ if (lbl) lbl.textContent = pct + '%';
+ if (bar) {
+ if (pct <= 10) bar.style.background = 'linear-gradient(90deg,#dc2626,#ef4444)';
+ else if (pct <= 30) bar.style.background = 'linear-gradient(90deg,#f59e0b,#fbbf24)';
+ else bar.style.background = 'linear-gradient(90deg,#B8FF00,#7ACC00)';
+ }
+}
+function checkLowCredit(saldo) {
+ const w = document.getElementById('low-credit-warning');
+ if (w) w.classList.toggle('show', saldo < 50);
+ // Check anche auto-ricarica
+ maybeTriggerAutoreload(saldo);
+}
+
+/* ════════════════════════════════════════════════════════
+ TOAST
+════════════════════════════════════════════════════════ */
+let toastT = null;
+function showToast(msg, ok) {
+ if (ok === undefined) ok = true;
+ const t = document.getElementById('toast');
+ document.getElementById('toast-msg').textContent = msg;
+ t.classList.toggle('err', !ok);
+ t.classList.add('show');
+ clearTimeout(toastT);
+ toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ════════════════════════════════════════════════════════
+ DROPDOWN ACCOUNT + EXPORT
+════════════════════════════════════════════════════════ */
+function initDropdown() {
+ const trigger = document.getElementById('acc-trigger');
+ const dd = document.getElementById('acc-dd');
+ const wrap = document.getElementById('acc-wrap');
+ if (!trigger || !dd) return;
+ const open = () => { dd.classList.add('open'); trigger.setAttribute('aria-expanded','true'); const f = dd.querySelector('.dd-item'); if(f) f.focus(); };
+ const close = () => { dd.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
+ trigger.addEventListener('click', e => { e.stopPropagation(); dd.classList.contains('open') ? close() : open(); });
+ trigger.addEventListener('keydown', e => { if(['ArrowDown','Enter',' '].includes(e.key)) { e.preventDefault(); open(); } });
+ document.addEventListener('click', e => { if (!wrap.contains(e.target)) close(); });
+ document.addEventListener('keydown', e => { if(e.key==='Escape' && dd.classList.contains('open')) { close(); trigger.focus(); } });
+ dd.addEventListener('keydown', e => {
+ const items = Array.from(dd.querySelectorAll('.dd-item'));
+ const idx = items.indexOf(document.activeElement);
+ if(e.key==='ArrowDown') { e.preventDefault(); items[(idx+1)%items.length].focus(); }
+ if(e.key==='ArrowUp') { e.preventDefault(); items[(idx-1+items.length)%items.length].focus(); }
+ });
+}
+function initExportDropdown() {
+ const trigger = document.getElementById('btn-export-trigger');
+ const dd = document.getElementById('export-dd');
+ if (!trigger || !dd) return;
+ const wrap = trigger.parentElement;
+ const close = () => { dd.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
+ trigger.addEventListener('click', e => {
+ e.stopPropagation();
+ const open = !dd.classList.contains('open');
+ dd.classList.toggle('open', open);
+ trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+ });
+ document.addEventListener('click', e => { if(!wrap.contains(e.target)) close(); });
+ document.addEventListener('keydown', e => { if(e.key==='Escape') close(); });
+ dd.querySelectorAll('[data-export]').forEach(btn => {
+ btn.addEventListener('click', () => {
+ const what = btn.dataset.export;
+ close();
+ if (what === 'csv') exportCSV();
+ if (what === 'pdf-this') exportEstrattoContoPDF(new Date());
+ if (what === 'pdf-last') { const d = new Date(); d.setMonth(d.getMonth()-1); exportEstrattoContoPDF(d); }
+ });
+ });
+}
+
+/* ════════════════════════════════════════════════════════
+ MOBILE DRAWER
+════════════════════════════════════════════════════════ */
+function initDrawer() {
+ const hamburger = document.getElementById('hamburger');
+ const drawer = document.getElementById('mob-drawer');
+ const overlay = document.getElementById('mob-overlay');
+ const closeBtn = document.getElementById('mob-close');
+ if (!hamburger || !drawer) return;
+ let last = null;
+ const open = () => {
+ last = document.activeElement;
+ drawer.classList.add('open'); overlay.classList.add('open');
+ document.body.classList.add('no-scroll');
+ hamburger.setAttribute('aria-expanded','true'); overlay.setAttribute('aria-hidden','false');
+ setTimeout(() => { const f=drawer.querySelector('a,button'); if(f) f.focus(); }, 100);
+ };
+ const close = () => {
+ drawer.classList.remove('open'); overlay.classList.remove('open');
+ document.body.classList.remove('no-scroll');
+ hamburger.setAttribute('aria-expanded','false'); overlay.setAttribute('aria-hidden','true');
+ if(last && last.focus) last.focus();
+ };
+ hamburger.addEventListener('click', open);
+ overlay.addEventListener('click', close);
+ if(closeBtn) closeBtn.addEventListener('click', close);
+ document.addEventListener('keydown', e => { if(e.key==='Escape' && drawer.classList.contains('open')) close(); });
+}
+
+/* ════════════════════════════════════════════════════════
+ QUICK AMOUNT CHIPS + AMOUNT INPUT
+════════════════════════════════════════════════════════ */
+function setAmount(amt, btn) {
+ document.getElementById('wallet-amount').value = amt;
+ document.querySelectorAll('#amount-btns .amt-chip').forEach(b => {
+ const on = b === btn;
+ b.classList.toggle('on', on);
+ b.setAttribute('aria-pressed', on ? 'true' : 'false');
+ });
+ updateBtnAmounts(amt);
+}
+function syncAmountBtns(val) {
+ document.querySelectorAll('#amount-btns .amt-chip').forEach(b => {
+ const on = Number(b.dataset.amt) === Number(val);
+ b.classList.toggle('on', on);
+ b.setAttribute('aria-pressed', on ? 'true' : 'false');
+ });
+ updateBtnAmounts(val);
+}
+function updateBtnAmounts(amt) {
+ const n = Number(amt) || 0;
+ document.querySelectorAll('.btn-amt').forEach(el => el.textContent = n.toLocaleString('it-IT'));
+}
+
+/* ════════════════════════════════════════════════════════
+ TAB METODO PAGAMENTO
+════════════════════════════════════════════════════════ */
+function setWalletTab(tab) {
+  const pnl = document.getElementById('wp-carta');
+  if (pnl) {
+    pnl.classList.add('on');
+    pnl.removeAttribute('hidden');
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+ FORMAT INPUT CARTA + DETECT BRAND + LUHN
+════════════════════════════════════════════════════════ */
+function formatCardNum(inp) {
+ let v = inp.value.replace(/\D/g,'').slice(0,16);
+ inp.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExp(inp) {
+ let v = inp.value.replace(/\D/g,'').slice(0,4);
+ if(v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+ inp.value = v;
+}
+function detectBrand(num) {
+ const s = num.replace(/\s/g,'');
+ if (/^4/.test(s)) return 'visa';
+ if (/^(5[1-5]|2[2-7])/.test(s)) return 'mc';
+ if (/^3[47]/.test(s)) return 'amex';
+ return 'other';
+}
+function luhn(num) {
+ const s = num.replace(/\s/g,'');
+ if(!/^\d{13,19}$/.test(s)) return false;
+ let sum = 0, alt = false;
+ for(let i = s.length-1; i >= 0; i--) {
+ let n = parseInt(s[i],10);
+ if(alt) { n*=2; if(n>9) n-=9; }
+ sum+=n; alt=!alt;
+ }
+ return sum%10===0;
+}
+
+/* ════════════════════════════════════════════════════════
+ COPIA IBAN
+════════════════════════════════════════════════════════ */
+function copiaIban() {
+ const iban = document.getElementById('iban-text').textContent.replace(/\s/g,'');
+ if(navigator.clipboard) {
+ navigator.clipboard.writeText(iban).then(() => showToast('IBAN copiato negli appunti'));
+ } else {
+ const ta = document.createElement('textarea');
+ ta.value=iban; document.body.appendChild(ta); ta.select();
+ document.execCommand('copy'); document.body.removeChild(ta);
+ showToast('IBAN copiato negli appunti');
+ }
+}
+
+/* ════════════════════════════════════════════════════════
+ CODICE PROMO
+════════════════════════════════════════════════════════ */
+async function applyPromo() {
+  const inp = document.getElementById('promo-input');
+  const code = inp.value.trim().toUpperCase();
+  if (!code) { showToast('Inserisci un codice', false); shakeEl('promo-wrap'); return; }
+
+  const amt = parseFloat(document.getElementById('wallet-amount').value) || 0;
+  let bonus = 0;
+  let desc = '';
+
+  const promo = PROMO_CODES[code];
+  if (promo) {
+    if (amt < promo.min) {
+      showToast('Codice valido da ' + fmtEur(promo.min) + ' di ricarica', false);
+      shakeEl('promo-wrap');
+      return;
+    }
+    bonus = promo.type === 'percent' ? amt * (promo.value / 100) : promo.value;
+    desc = promo.desc;
+  } else if (window.VEX_API && typeof window.VEX_API.checkCoupon === 'function') {
+    try {
+      const res = await window.VEX_API.checkCoupon(code);
+      if (res && (res.valid || res.result === 'OK')) {
+        bonus = res.bonus ?? res.discount ?? res.amount ?? 5;
+        desc = res.description || 'Bonus promozionale';
+      } else {
+        showToast(res?.message || 'Codice non valido o scaduto', false);
+        shakeEl('promo-wrap');
+        return;
+      }
+    } catch(err) {
+      showToast('Codice non valido o scaduto', false);
+      shakeEl('promo-wrap');
+      return;
+    }
+  } else {
+    showToast('Codice non valido', false);
+    shakeEl('promo-wrap');
+    return;
+  }
+
+  appliedPromo = { code, bonus, desc, promo: promo || { code, bonus } };
+  document.getElementById('promo-wrap').style.display = 'none';
+  document.getElementById('promo-applied').style.display = 'flex';
+  document.getElementById('promo-code-tag').textContent = code;
+  document.getElementById('promo-msg').textContent = 'Bonus di ' + fmtEur(bonus);
+  showToast('Codice applicato — bonus ' + fmtEur(bonus));
+}
+function removePromo() {
+ appliedPromo = null;
+ document.getElementById('promo-wrap').style.display = 'flex';
+ document.getElementById('promo-applied').style.display = 'none';
+ document.getElementById('promo-input').value = '';
+}
+function shakeEl(id) {
+ const el = document.getElementById(id);
+ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+}
+
+/* ════════════════════════════════════════════════════════
+ METODI DI PAGAMENTO SALVATI & SELEZIONE MODALITÀ
+════════════════════════════════════════════════════════ */
+const INITIAL_METHODS = [];
+
+function getMethods() {
+  const raw = safeStorage.get(KEY_METHODS);
+  if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+  return [];
+}
+function setMethods(arr) { safeStorage.set(KEY_METHODS, JSON.stringify(arr)); }
+function addMethod(m) {
+  const list = getMethods();
+  if (!list.length) m.default = true;
+  m.id = 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  list.push(m);
+  setMethods(list);
+  updateSavedCardDisplay();
+}
+
+let currentPayMode = 'new';
+
+function selectPayMode(mode) {
+  currentPayMode = mode;
+  const btnSaved = document.getElementById('btn-mode-saved');
+  const btnNew = document.getElementById('btn-mode-new');
+  const boxSaved = document.getElementById('box-saved-card');
+  const boxNew = document.getElementById('box-new-card');
+
+  if (btnSaved) btnSaved.classList.toggle('active', mode === 'saved');
+  if (btnNew) btnNew.classList.toggle('active', mode === 'new');
+
+  if (boxSaved) boxSaved.style.display = (mode === 'saved') ? 'block' : 'none';
+  if (boxNew) boxNew.style.display = (mode === 'new') ? 'block' : 'none';
+}
+
+function updateSavedCardDisplay() {
+  const list = getMethods();
+  const def = list.find(m => m.default) || list[0];
+  const btnSaved = document.getElementById('btn-mode-saved');
+  if (def) {
+    if (btnSaved) btnSaved.style.display = 'flex';
+    const brandLabel = { visa:'VISA', mc:'MC', amex:'AMEX', other:'CARD' };
+    const descEl = document.getElementById('lbl-saved-card-desc');
+    const bBrand = document.getElementById('quick-card-brand');
+    const bNum = document.getElementById('quick-card-num');
+    const bMeta = document.getElementById('quick-card-meta');
+    if (descEl) descEl.textContent = (brandLabel[def.brand] || 'Carta') + ' •••• ' + def.last4;
+    if (bBrand) bBrand.textContent = brandLabel[def.brand] || 'CARD';
+    if (bNum) bNum.textContent = '•••• •••• •••• ' + def.last4;
+    if (bMeta) bMeta.textContent = (def.holder || '') + (def.exp ? ' · Scad. ' + def.exp : '');
+  } else {
+    selectPayMode('new');
+    if (btnSaved) btnSaved.style.display = 'none';
+    const descEl = document.getElementById('lbl-saved-card-desc');
+    if (descEl) descEl.textContent = 'Nessuna carta memorizzata';
+  }
+}
+
+function eseguiRicaricaPortafoglio() {
+  const amt = parseFloat(document.getElementById('wallet-amount').value);
+  if (!amt || amt <= 0) {
+    showToast('Inserisci un importo valido', false);
+    return;
+  }
+  if (amt > 10000) {
+    showToast('Importo massimo ricaricabile € 10.000', false);
+    return;
+  }
+
+  if (currentPayMode === 'new') {
+    const numEl = document.getElementById('card-num');
+    const expEl = document.getElementById('card-exp');
+    const cvvEl = document.getElementById('card-cvv');
+    const hldEl = document.getElementById('card-holder');
+    const num = (numEl ? numEl.value : '').replace(/\s/g,'');
+    const exp = expEl ? expEl.value.trim() : '';
+    const cvv = cvvEl ? cvvEl.value.trim() : '';
+    const hld = hldEl ? hldEl.value.trim() : '';
+
+    if (num.length < 13) { showToast('Inserisci un numero di carta valido', false); return; }
+    if (!/^\d{2}\/\d{2}$/.test(exp)) { showToast('Scadenza non valida (MM/AA)', false); return; }
+    if (cvv.length < 3) { showToast('CVV non valido', false); return; }
+    if (!hld) { showToast("Inserisci l'intestatario della carta", false); return; }
+
+    const saveCheck = document.getElementById('save-card-check');
+    if (saveCheck && saveCheck.checked) {
+      const last4 = num.slice(-4);
+      const brand = num.startsWith('4') ? 'visa' : (num.startsWith('5') ? 'mc' : 'other');
+      addMethod({ brand, last4, exp, holder: hld });
+    }
+  }
+
+  avviaRicarica('carta');
+}
+
+/* ════════════════════════════════════════════════════════
+ IMPOSTAZIONI: AUTO-RICARICA / NOTIFY / SPEND LIMIT
+════════════════════════════════════════════════════════ */
+function getAutoreload() {
+ const raw = safeStorage.get(KEY_AUTORELOAD);
+ if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+ return { enabled:false, threshold:50, amount:200, methodId:null };
+}
+function setAutoreload(v) { safeStorage.set(KEY_AUTORELOAD, JSON.stringify(v)); }
+
+function getNotify() {
+ const raw = safeStorage.get(KEY_NOTIFY);
+ if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+ return { enabled:false, threshold:50, email:'' };
+}
+function setNotify(v) { safeStorage.set(KEY_NOTIFY, JSON.stringify(v)); }
+
+function getSpendlimit() {
+ const raw = safeStorage.get(KEY_SPENDLIMIT);
+ if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+ return { enabled:false, period:'month', amount:500 };
+}
+function setSpendlimit(v) { safeStorage.set(KEY_SPENDLIMIT, JSON.stringify(v)); }
+
+function loadSettings() {
+ // Auto-reload
+ const ar = getAutoreload();
+ const arTh = document.getElementById('ar-threshold');
+ if (arTh) arTh.value = ar.threshold || 50;
+ const arAmt = document.getElementById('ar-amount');
+ if (arAmt) arAmt.value = ar.amount || 100;
+ const bAr = document.getElementById('badge-autoreload');
+ if (bAr && ar.enabled) {
+   bAr.textContent = 'Attiva';
+   bAr.className = 'badge b-green text-[11px] px-2.5 py-1';
+ }
+ // Notify
+ const nf = getNotify();
+ const nfTh = document.getElementById('nf-threshold');
+ if (nfTh) nfTh.value = nf.threshold || 30;
+ const nfEm = document.getElementById('nf-email');
+ if (nfEm && nf.email) nfEm.value = nf.email;
+ // Spend limit
+ const sl = getSpendlimit();
+ const slPer = document.getElementById('sl-period');
+ if (slPer && sl.period) slPer.value = sl.period;
+ const slAmt = document.getElementById('sl-amount');
+ if (slAmt) slAmt.value = sl.amount || 1000;
+ // Billing
+ refreshBillingDesc();
+}
+function toggleSet(id, on) {
+ const t = document.getElementById(id);
+ t.classList.toggle('on', !!on);
+ t.setAttribute('aria-checked', on ? 'true' : 'false');
+}
+function refreshAutoreloadMethodSelect(currentId) {
+ const sel = document.getElementById('ar-method');
+ const list = getMethods();
+ sel.innerHTML = '<option value="">— Nessun metodo —</option>' + list.map(m =>
+ `<option value="${m.id}">${m.brand.toUpperCase()} •••• ${m.last4} (${m.holder})</option>`
+ ).join('');
+ if (currentId) sel.value = currentId;
+}
+
+function persistAutoreload() {
+ const thEl = document.getElementById('ar-threshold');
+ const amtEl = document.getElementById('ar-amount');
+ setAutoreload({
+ enabled: true,
+ threshold: parseFloat(thEl ? thEl.value : 50) || 50,
+ amount: parseFloat(amtEl ? amtEl.value : 100) || 100,
+ methodId: null
+ });
+}
+function persistNotify() {
+ const thEl = document.getElementById('nf-threshold');
+ const emEl = document.getElementById('nf-email');
+ setNotify({
+ enabled: true,
+ threshold: parseFloat(thEl ? thEl.value : 30) || 30,
+ email: emEl ? emEl.value.trim() : 'damiano.arcidiacono@azienda.it'
+ });
+}
+function persistSpendlimit() {
+ const perEl = document.getElementById('sl-period');
+ const amtEl = document.getElementById('sl-amount');
+ setSpendlimit({
+ enabled: true,
+ period: perEl ? perEl.value : 'month',
+ amount: parseFloat(amtEl ? amtEl.value : 1000) || 1000
+ });
+}
+
+/* Auto-ricarica trigger */
+function maybeTriggerAutoreload(newSaldo) {
+ const ar = getAutoreload();
+ if (!ar.enabled || !ar.methodId) return;
+ if (newSaldo >= ar.threshold) return;
+ const m = getMethods().find(x => x.id === ar.methodId);
+ if (!m) return;
+ // Mock: ricarica subito (in produzione: chiamata al PSP)
+ setTimeout(() => {
+ setSaldo(getSaldo() + ar.amount);
+ addTransazione({
+ tipo: 'ricarica',
+ metodo: m.brand.toUpperCase() + ' •••• ' + m.last4 + ' (Auto)',
+ desc: 'Auto-ricarica',
+ importo: ar.amount,
+ data: new Date().toISOString(),
+ isAuto: true
+ });
+ renderTransazioni(); renderStats();
+ showToast('Auto-ricarica di ' + fmtEur(ar.amount) + ' eseguita');
+ }, 1200);
+}
+
+/* ════════════════════════════════════════════════════════
+ DATI FATTURAZIONE
+════════════════════════════════════════════════════════ */
+function getBilling() {
+ const raw = safeStorage.get(KEY_BILLING);
+ if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+ return null;
+}
+function setBilling(v) { safeStorage.set(KEY_BILLING, JSON.stringify(v)); refreshBillingDesc(); }
+function refreshBillingDesc() {
+ const b = getBilling();
+ const d = document.getElementById('billing-desc');
+ if (!d) return;
+ if (b && b.name) {
+ d.textContent = b.name + (b.piva ? ' · P.IVA ' + b.piva : '') + (b.city ? ' · ' + b.city : '');
+ d.style.color = '#0A0A0B';
+ } else {
+ d.textContent = 'Compila i dati per scaricare le fatture delle ricariche.';
+ d.style.color = '#9CA3AF';
+ }
+}
+function openBillingModal() {
+ const b = getBilling() || {};
+ ['name','address','cap','city','province','country','cf','piva','sdi'].forEach(k => {
+ const el = document.getElementById('bl-'+k);
+ if (el) el.value = b[k] || el.value || '';
+ });
+ openModal('modal-billing');
+}
+function saveBillingFromModal() {
+ const b = {};
+ ['name','address','cap','city','province','country','cf','piva','sdi'].forEach(k => {
+ b[k] = document.getElementById('bl-'+k).value.trim();
+ });
+ if (!b.name || !b.address || !b.cap || !b.city || !b.cf) {
+ showToast('Compila almeno nome, indirizzo, CAP, città e CF', false);
+ return;
+ }
+ setBilling(b);
+ closeModal('modal-billing');
+ showToast('Dati di fatturazione salvati');
+}
+
+/* ════════════════════════════════════════════════════════
+ VALIDAZIONE + ESEGUI RICARICA
+════════════════════════════════════════════════════════ */
+function validaForm(metodo, amt) {
+ if(!amt || amt <= 0) { showToast('Inserisci un importo valido', false); return false; }
+ if(amt > 10000) { showToast('Importo massimo € 10.000', false); return false; }
+ if(metodo === 'carta') {
+ const numEl = document.getElementById('card-num');
+ const cvv = document.getElementById('card-cvv').value;
+ const hld = document.getElementById('card-holder').value.trim();
+ const exp = document.getElementById('card-exp').value;
+ const isSavedCard = /^•••• •••• ••••/.test(numEl.value);
+ if (!isSavedCard) {
+ const num = numEl.value.replace(/\s/g,'');
+ if(!luhn(num)) { showToast('Numero carta non valido', false); return false; }
+ }
+ if(!/^\d{2}\/\d{2}$/.test(exp)) { showToast('Scadenza non valida (MM/AA)', false); return false; }
+ const [mm,yy] = exp.split('/').map(Number);
+ if(mm<1||mm>12) { showToast('Mese di scadenza non valido', false); return false; }
+ const now=new Date(), cy=now.getFullYear()%100, cm=now.getMonth()+1;
+ if(yy<cy||(yy===cy&&mm<cm)) { showToast('Carta scaduta', false); return false; }
+ if(cvv.length<3) { showToast('CVV non valido', false); return false; }
+ if(!hld) { showToast("Inserisci l'intestatario", false); return false; }
+ }
+ return true;
+}
+
+async function eseguiRicarica(metodo, amt) {
+  const overlay = document.getElementById('proc-overlay');
+  const btns = document.querySelectorAll('[data-pay]');
+  if (overlay) { overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false'); }
+  btns.forEach(b => b.disabled = true);
+
+  const bonus = appliedPromo ? appliedPromo.bonus : 0;
+  const totale = amt + bonus;
+
+  // 1. Salva carta se richiesto
+  if (metodo === 'carta') {
+    const savedCheckbox = document.getElementById('save-card-check');
+    const numEl = document.getElementById('card-num');
+    const isSavedCard = numEl ? /^•••• •••• ••••/.test(numEl.value) : false;
+    if (savedCheckbox && savedCheckbox.checked && !isSavedCard && numEl) {
+      const num = numEl.value.replace(/\s/g,'');
+      const exp = document.getElementById('card-exp') ? document.getElementById('card-exp').value : '';
+      const hld = document.getElementById('card-holder') ? document.getElementById('card-holder').value.trim() : '';
+      const last4 = num.slice(-4);
+      const brand = detectBrand(num);
+      const exists = getMethods().some(m => m.last4 === last4 && m.brand === brand);
+      if (!exists) {
+        addMethod({ brand, last4, exp, holder: hld, token: 'tok_' + Date.now() });
+        showToast('Carta memorizzata nel portafoglio');
+      }
+      savedCheckbox.checked = false;
+    }
+  }
+
+  // 2. Chiamata API server reale se autenticato
+  if (window.VEX_API && typeof window.VEX_API.rechargeAccount === 'function' && window.VEX_API.getToken()) {
+    try {
+      await window.VEX_API.rechargeAccount(totale, metodo === 'carta' ? 'stripe' : metodo, 'tx_' + Date.now());
+      await window.VEX_API.getMe();
+    } catch(err) {
+      console.warn('[Portafoglio] Errore API recharge:', err);
+    }
+  }
+
+  // 3. Aggiorna saldo locale
+  setSaldo(getSaldo() + totale);
+  const metodoLabel = metodo === 'carta' ? 'Carta' : metodo === 'paypal' ? 'PayPal' : 'Bonifico';
+  addTransazione({
+    tipo: 'ricarica',
+    metodo: metodoLabel,
+    desc: 'Ricarica credito' + (bonus > 0 ? ' (+ bonus ' + appliedPromo.code + ')' : ''),
+    importo: totale,
+    base: amt,
+    bonus: bonus,
+    promoCode: appliedPromo?.code || null,
+    data: new Date().toISOString()
+  });
+
+  if (typeof renderTransazioni === 'function') renderTransazioni();
+  if (typeof renderStats === 'function') renderStats();
+
+  // 4. Reset promo + form
+  if (appliedPromo) removePromo();
+
+  setTimeout(() => {
+    if (overlay) { overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); }
+    btns.forEach(b => b.disabled = false);
+    showToast('Ricarica di ' + fmtEur(totale) + ' completata con successo ✓');
+  }, 1000);
+}
+
+function avviaRicarica(metodo) {
+ const amt = parseFloat(document.getElementById('wallet-amount').value);
+ if(!validaForm(metodo, amt)) return;
+ const bonus = appliedPromo ? appliedPromo.bonus : 0;
+ // Conferma per importi alti (> 500)
+ if(amt > 500) {
+ document.getElementById('conf-amt').textContent = amt.toLocaleString('it-IT');
+ document.getElementById('conf-met').textContent = metodo==='carta'?'Carta':metodo==='paypal'?'PayPal':'Bonifico';
+ const bonusRow = document.getElementById('conf-bonus-row');
+ if (bonus > 0) {
+ bonusRow.style.display = 'flex';
+ document.getElementById('conf-bonus').textContent = bonus.toLocaleString('it-IT', {minimumFractionDigits:2});
+ } else {
+ bonusRow.style.display = 'none';
+ }
+ openModal('modal-conferma');
+ document.getElementById('modal-confirm').onclick = () => { closeModal('modal-conferma'); eseguiRicarica(metodo, amt); };
+ } else {
+ eseguiRicarica(metodo, amt);
+ }
+}
+
+/* ════════════════════════════════════════════════════════
+ MODAL HELPERS
+════════════════════════════════════════════════════════ */
+let modalPrevFocus = null;
+function openModal(id) {
+ const m = document.getElementById(id);
+ modalPrevFocus = document.activeElement;
+ m.classList.add('open'); m.setAttribute('aria-hidden','false');
+ document.body.classList.add('no-scroll');
+ setTimeout(() => { const f=m.querySelector('input, button'); if(f) f.focus(); }, 100);
+}
+function closeModal(id) {
+ const m = document.getElementById(id);
+ m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+ document.body.classList.remove('no-scroll');
+ if(modalPrevFocus && modalPrevFocus.focus) modalPrevFocus.focus();
+}
+
+/* ════════════════════════════════════════════════════════
+ TRANSAZIONI
+════════════════════════════════════════════════════════ */
+const TX_MOCK = [];
+function getTransazioni() {
+ const raw = safeStorage.get(KEY_TX);
+ if(raw) { try { return JSON.parse(raw); } catch(e) {} }
+ return [];
+}
+function addTransazione(tx) {
+ const list = getTransazioni(); list.unshift(tx);
+ safeStorage.set(KEY_TX, JSON.stringify(list));
+}
+
+let currentFilter = 'all';
+let currentDateFilter = 'all';
+
+function applyDateFilter(list) {
+ if (currentDateFilter === 'all') return list;
+ const now = new Date();
+ let from;
+ if (currentDateFilter === '7d') { from = new Date(); from.setDate(from.getDate()-7); }
+ if (currentDateFilter === '30d') { from = new Date(); from.setDate(from.getDate()-30); }
+ if (currentDateFilter === 'month') { from = new Date(now.getFullYear(), now.getMonth(), 1); }
+ return list.filter(tx => new Date(tx.data) >= from);
+}
+
+let selectedTxIndices = new Set();
+
+function getActiveTxList() {
+ let list = getTransazioni();
+ if(currentFilter !== 'all') list = list.filter(tx => tx.tipo === currentFilter);
+ return applyDateFilter(list);
+}
+
+function handleRowClick(e, idx) {
+ if (e.target.closest('.tx-invoice-btn') || e.target.closest('input[type="checkbox"]')) return;
+ const chk = document.querySelector(`.tx-chk[data-idx="${idx}"]`);
+ if (chk) {
+   chk.checked = !chk.checked;
+   toggleTxSelection(idx, chk.checked);
+ }
+}
+
+function toggleTxSelection(idx, checked) {
+ if (checked) {
+   selectedTxIndices.add(idx);
+ } else {
+   selectedTxIndices.delete(idx);
+ }
+ updateSelectionUI();
+}
+
+function toggleSelectAllTx(checked) {
+ const list = getActiveTxList();
+ if (checked) {
+   list.forEach((_, idx) => selectedTxIndices.add(idx));
+ } else {
+   selectedTxIndices.clear();
+ }
+ updateSelectionUI();
+}
+
+function updateSelectionUI() {
+ const count = selectedTxIndices.size;
+ const countEl = document.getElementById('tx-selected-count');
+ if (countEl) countEl.textContent = count + ' selezionat' + (count === 1 ? 'a' : 'e');
+ 
+ const btnText = document.getElementById('btn-export-text');
+ if (btnText) {
+   btnText.textContent = count > 0 ? `Esporta PDF (${count} selezionate)` : 'Esporta PDF Storico';
+ }
+
+ const allChk = document.getElementById('tx-select-all');
+ const list = getActiveTxList();
+ if (allChk) {
+   allChk.checked = list.length > 0 && selectedTxIndices.size === list.length;
+ }
+
+ document.querySelectorAll('.tx-row').forEach(row => {
+   const idx = parseInt(row.dataset.idx, 10);
+   const chk = row.querySelector('.tx-chk');
+   const isSel = selectedTxIndices.has(idx);
+   if (chk) chk.checked = isSel;
+   row.classList.toggle('selected', isSel);
+ });
+}
+
+function renderTransazioni() {
+ const list = getActiveTxList();
+ const el = document.getElementById('tx-list');
+ if(!list.length) {
+ el.innerHTML = '<p style="padding:32px 0;text-align:center;color:#9CA3AF;font-size:13px">Nessuna transazione nel periodo selezionato</p>';
+ selectedTxIndices.clear();
+ updateSelectionUI();
+ return;
+ }
+ const svgIn = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>';
+ const svgOut = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M12 22V12"/></svg>';
+ const svgInvoice = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" x2="12" y1="18" y2="12"/><line x1="9" x2="15" y1="15" y2="15"/></svg>';
+
+ el.innerHTML = list.map((tx, idx) => {
+ const isIn = tx.importo > 0;
+ const meta = isIn ? (tx.metodo||'') : (tx.corriere||'');
+ const dt = new Date(tx.data);
+ const data = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' + dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+ const isSel = selectedTxIndices.has(idx);
+ const invoiceBtn = isIn ? `<button class="tx-invoice-btn" data-invoice="${idx}" aria-label="Scarica fattura" title="Scarica fattura">${svgInvoice}</button>` : '<div style="width:28px"></div>';
+
+ return `<div class="tx-row ${isSel?'selected':''}" data-idx="${idx}" onclick="handleRowClick(event, ${idx})" style="display:grid!important;grid-template-columns:24px 36px 1fr auto 32px!important;gap:12px!important;align-items:center!important">
+ <input type="checkbox" class="tx-chk w-4 h-4 rounded accent-blue-600 cursor-pointer" data-idx="${idx}" ${isSel?'checked':''} onclick="event.stopPropagation(); toggleTxSelection(${idx}, this.checked)">
+ <div class="tx-icon ${isIn?'in':'out'}">${isIn?svgIn:svgOut}</div>
+ <div><div class="tx-desc">${tx.desc}</div><div class="tx-meta">${meta}${meta?' · ':''}${data}</div></div>
+ <div class="tx-amt ${isIn?'pos':'neg'}">${isIn?'+':'−'} ${fmtEur(Math.abs(tx.importo))}</div>
+ ${invoiceBtn}
+ </div>`;
+ }).join('');
+
+ updateSelectionUI();
+
+ // Attach handlers fattura
+ el.querySelectorAll('[data-invoice]').forEach(b => {
+ b.addEventListener('click', (e) => {
+   e.stopPropagation();
+   downloadFattura(list[parseInt(b.dataset.invoice,10)]);
+ });
+ });
+}
+
+function exportFilteredOrSelectedPDF() {
+ if (!window.jspdf) { showToast('Libreria PDF non caricata, riprova', false); return; }
+ const fullList = getActiveTxList();
+ if (!fullList.length) { showToast('Nessuna transazione da esportare', false); return; }
+
+ let exportItems = fullList;
+ if (selectedTxIndices.size > 0) {
+   exportItems = fullList.filter((_, idx) => selectedTxIndices.has(idx));
+ }
+
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF({ unit:'mm', format:'a4' });
+ const W = 210, M = 18;
+
+ // Header VEX ONE
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(22);
+ doc.setTextColor(10,10,11);
+ doc.text('VEX', M, 22);
+ doc.setTextColor(0,120,255);
+ doc.text('ONE', M+18, 22);
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(8.5);
+ doc.setTextColor(120,120,120);
+ doc.text('Il comparatore corrieri italiano — Portafoglio', M, 27);
+
+ doc.setFontSize(8.5);
+ doc.setTextColor(80,80,80);
+ doc.text('VEX ONE Srl · P.IVA 01234567890', W - M, 18, { align:'right' });
+ doc.text('Data estrazione: ' + new Date().toLocaleDateString('it-IT') + ' ore ' + new Date().toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'}), W - M, 23, { align:'right' });
+
+ doc.setDrawColor(225,231,239);
+ doc.line(M, 32, W - M, 32);
+
+ // Titolo documento
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(15);
+ doc.setTextColor(10,10,11);
+ const titleText = selectedTxIndices.size > 0 ? `Estratto Conto (${exportItems.length} transazioni selezionate)` : 'Estratto Conto Completo Movimenti';
+ doc.text(titleText, M, 42);
+
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(9);
+ doc.setTextColor(100,100,100);
+ doc.text('Intestatario: Damiano Arcidiacono · Conto Business VEX ONE', M, 47);
+
+ // Calcolo totali
+ let totIn = 0, totOut = 0;
+ exportItems.forEach(tx => {
+   if (tx.importo > 0) totIn += tx.importo;
+   else totOut += Math.abs(tx.importo);
+ });
+
+ let y = 54;
+ doc.setFillColor(248,250,252);
+ doc.roundedRect(M, y, W - 2*M, 20, 2.5, 2.5, 'F');
+ doc.setDrawColor(226,232,240);
+ doc.roundedRect(M, y, W - 2*M, 20, 2.5, 2.5, 'S');
+
+ const colW = (W - 2*M) / 3;
+ doc.setFontSize(7);
+ doc.setTextColor(120,120,120);
+ doc.text('TOTALE ACCREDITI / RICARICHE', M + 5, y + 6);
+ doc.text('TOTALE SPESE SPEDIZIONI', M + colW + 5, y + 6);
+ doc.text('SALDO MOVIMENTI', M + 2*colW + 5, y + 6);
+
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(11.5);
+ doc.setTextColor(22,163,74);
+ doc.text('+ ' + fmtEur(totIn), M + 5, y + 14.5);
+ doc.setTextColor(17,24,39);
+ doc.text('− ' + fmtEur(totOut), M + colW + 5, y + 14.5);
+ doc.setTextColor(0,120,255);
+ doc.text(fmtEur(totIn - totOut), M + 2*colW + 5, y + 14.5);
+
+ // Tabella Header
+ y += 28;
+ doc.setFillColor(10,10,11);
+ doc.rect(M, y, W - 2*M, 8, 'F');
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(8);
+ doc.setTextColor(255,255,255);
+ doc.text('DATA', M + 4, y + 5.2);
+ doc.text('TIPO', M + 28, y + 5.2);
+ doc.text('DESCRIZIONE', M + 54, y + 5.2);
+ doc.text('DETTAGLIO', M + 120, y + 5.2);
+ doc.text('IMPORTO', W - M - 4, y + 5.2, { align:'right' });
+
+ y += 12;
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(8);
+
+ exportItems.forEach((tx, i) => {
+   if (y > 272) {
+     doc.addPage();
+     y = 22;
+     doc.setFillColor(10,10,11);
+     doc.rect(M, y, W - 2*M, 8, 'F');
+     doc.setFont('helvetica','bold');
+     doc.setFontSize(8);
+     doc.setTextColor(255,255,255);
+     doc.text('DATA', M + 4, y + 5.2);
+     doc.text('TIPO', M + 28, y + 5.2);
+     doc.text('DESCRIZIONE', M + 54, y + 5.2);
+     doc.text('DETTAGLIO', M + 120, y + 5.2);
+     doc.text('IMPORTO', W - M - 4, y + 5.2, { align:'right' });
+     y += 12;
+     doc.setFont('helvetica','normal');
+     doc.setFontSize(8);
+   }
+
+   if (i % 2 === 1) {
+     doc.setFillColor(248,250,252);
+     doc.rect(M, y - 4, W - 2*M, 6.2, 'F');
+   }
+
+   const dt = new Date(tx.data);
+   doc.setTextColor(75,85,99);
+   doc.text(dt.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'}), M + 4, y);
+
+   doc.setFont('helvetica','bold');
+   doc.text(tx.tipo.toUpperCase(), M + 28, y);
+
+   doc.setFont('helvetica','normal');
+   doc.setTextColor(17,24,39);
+   const desc = (tx.desc || '').length > 36 ? tx.desc.slice(0,34) + '…' : (tx.desc || '');
+   doc.text(desc, M + 54, y);
+
+   doc.setTextColor(107,114,128);
+   doc.text(tx.metodo || tx.corriere || '—', M + 120, y);
+
+   if (tx.importo > 0) doc.setTextColor(22,163,74);
+   else doc.setTextColor(17,24,39);
+   doc.setFont('helvetica','bold');
+   doc.text((tx.importo > 0 ? '+ ' : '− ') + fmtEur(Math.abs(tx.importo)), W - M - 4, y, { align:'right' });
+   doc.setFont('helvetica','normal');
+
+   y += 6.2;
+ });
+
+ doc.setFontSize(7.5);
+ doc.setTextColor(156,163,175);
+ doc.text('Documento contabile generato da VEX ONE Srl · P.IVA 01234567890 · www.vexone.it', W/2, 287, { align:'center' });
+
+ const fileName = 'VEXONE_Estratto_Conto_' + new Date().toISOString().slice(0,10) + '.pdf';
+ doc.save(fileName);
+ showToast('Estratto conto PDF scaricato');
+}
+
+// Settings Handlers
+function saveAutoReload() {
+ const th = document.getElementById('ar-threshold').value;
+ const amt = document.getElementById('ar-amount').value;
+ const b = document.getElementById('badge-autoreload');
+ if (b) { b.textContent = 'Attiva'; b.className = 'badge b-green text-[11px] px-2.5 py-1'; }
+ showToast(`Auto-ricarica salvata: € ${amt} sotto i € ${th}`);
+}
+
+function saveSpendLimit() {
+ const amt = document.getElementById('sl-amount').value;
+ showToast(`Limite mensile salvato: € ${amt}`);
+}
+
+function saveAlertPrefs() {
+ const th = document.getElementById('nf-threshold').value;
+ const em = document.getElementById('nf-email').value;
+ showToast(`Avviso impostato: sotto € ${th} a ${em}`);
+}
+
+/* ════════════════════════════════════════════════════════
+ STATS + RISPARMIO
+════════════════════════════════════════════════════════ */
+async function renderStats() {
+  let nSped = 0, totSpeso = 0, nRic = 0;
+
+  if (window.VEX_API && typeof window.VEX_API.getShipments === 'function' && window.VEX_API.getToken()) {
+    try {
+      const [shipments, topups] = await Promise.allSettled([
+        window.VEX_API.getShipments(),
+        window.VEX_API.listTopups()
+      ]);
+
+      if (shipments.status === 'fulfilled' && Array.isArray(shipments.value)) {
+        nSped = shipments.value.length;
+        totSpeso = shipments.value.reduce((acc, s) => {
+          const cost = typeof s.cost === 'number' ? s.cost : (s.cost?.total || s.cost?.amount || s.cost?.price || 0);
+          return acc + Math.abs(cost);
+        }, 0);
+      }
+
+      if (topups.status === 'fulfilled' && Array.isArray(topups.value)) {
+        nRic = topups.value.length;
+      }
+    } catch(e) {
+      console.warn('Errore recupero stats live:', e);
+    }
+  }
+
+  // Fallback su transazioni salvate se zero
+  if (nSped === 0 && nRic === 0) {
+    const list = getTransazioni();
+    list.forEach(tx => {
+      if (tx.tipo === 'spedizione') { nSped++; totSpeso += Math.abs(tx.importo); }
+      if (tx.tipo === 'ricarica') { nRic++; }
+    });
+  }
+
+  const risparmio = totSpeso > 0 ? totSpeso * 0.25 : 0;
+  const statSped = document.getElementById("stat-sped");
+  const statSpeso = document.getElementById("stat-speso");
+  const statRic = document.getElementById("stat-ric");
+  const statRisp = document.getElementById("stat-risparmio");
+
+  if (statSped) statSped.textContent = nSped;
+  if (statSpeso) statSpeso.textContent = fmtEur(totSpeso);
+  if (statRic) statRic.textContent = nRic;
+  if (statRisp) statRisp.textContent = fmtEur(risparmio);
+
+  const bs = document.getElementById("bar-sped");
+  const bsp = document.getElementById("bar-speso");
+  const br = document.getElementById("bar-ric");
+  if (bs) bs.style.width = (nSped > 0 ? Math.min(Math.round((nSped / 50) * 100), 100) : 0) + "%";
+  if (bsp) bsp.style.width = (totSpeso > 0 ? Math.min(Math.round((totSpeso / 500) * 100), 100) : 0) + "%";
+  if (br) br.style.width = (nRic > 0 ? Math.min(Math.round((nRic / 5) * 100), 100) : 0) + "%";
+
+  const cp = document.getElementById("credit-pct");
+  const cb = document.getElementById("credit-bar");
+  const currentSaldo = getSaldo();
+  const limit = 2000;
+  const pct = Math.min(100, Math.round((currentSaldo / limit) * 100));
+  if (cp) cp.textContent = pct + "%";
+  if (cb) cb.style.width = pct + "%";
+
+  const now = new Date(), m = now.getMonth(), y = now.getFullYear();
+  const mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  const monthLbl = document.getElementById('stats-month-label');
+  if (monthLbl) monthLbl.textContent = mesi[m] + ' ' + y;
+}
+
+/* ════════════════════════════════════════════════════════
+ EXPORT CSV (full)
+════════════════════════════════════════════════════════ */
+function exportCSV() {
+ const list = getTransazioni();
+ if(!list.length) { showToast('Nessuna transazione da esportare', false); return; }
+ const rows = [['Data','Tipo','Descrizione','Metodo/Corriere','Importo (EUR)']];
+ list.forEach(tx => rows.push([
+ new Date(tx.data).toLocaleString('it-IT'), tx.tipo, tx.desc,
+ tx.tipo==='ricarica'?(tx.metodo||''):(tx.corriere||''),
+ Number(tx.importo).toFixed(2).replace('.',',')
+ ]));
+ const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+ const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href=url; a.download='vexone_transazioni_'+new Date().toISOString().slice(0,10)+'.csv';
+ document.body.appendChild(a); a.click(); document.body.removeChild(a);
+ URL.revokeObjectURL(url);
+ showToast('CSV esportato');
+}
+
+/* ════════════════════════════════════════════════════════
+ PDF: FATTURA SINGOLA RICARICA
+════════════════════════════════════════════════════════ */
+function downloadFattura(tx) {
+ if (!window.jspdf) { showToast('PDF non disponibile, riprova', false); return; }
+ // Richiedi dati fatturazione se mancano
+ const billing = getBilling();
+ if (!billing || !billing.name) {
+ showToast('Compila prima i dati di fatturazione', false);
+ openBillingModal();
+ return;
+ }
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF({ unit:'mm', format:'a4' });
+ const W = 210, M = 20; // margini
+
+ // Header VEX ONE
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(22);
+ doc.setTextColor(10,10,11);
+ doc.text('VEX', M, 25);
+ doc.setTextColor(0,120,255);
+ doc.text('ONE', M+18, 25);
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(8);
+ doc.setTextColor(120,120,120);
+ doc.text('Il comparatore corrieri italiano', M, 30);
+
+ // Dati emittente (a destra)
+ doc.setFontSize(8);
+ doc.setTextColor(80,80,80);
+ doc.text('VEX ONE Srl', W - M, 18, { align:'right' });
+ doc.text('Via Esempio 1, 00100 Roma', W - M, 22, { align:'right' });
+ doc.text('P.IVA 01234567890', W - M, 26, { align:'right' });
+ doc.text('fatture@vexone.it', W - M, 30, { align:'right' });
+
+ // Linea separatrice
+ doc.setDrawColor(220,220,220);
+ doc.line(M, 38, W - M, 38);
+
+ // Titolo
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(16);
+ doc.setTextColor(10,10,11);
+ doc.text('Ricevuta di ricarica', M, 50);
+
+ const numeroFattura = 'VX-' + new Date(tx.data).getFullYear() + '-' + Date.now().toString().slice(-6);
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(9);
+ doc.setTextColor(120,120,120);
+ doc.text('N° ' + numeroFattura, M, 55);
+ doc.text('Data: ' + fmtDate(tx.data), M, 60);
+
+ // Dati cliente
+ doc.setFontSize(8);
+ doc.setTextColor(150,150,150);
+ doc.text('FATTURATO A', M, 72);
+ doc.setFontSize(10);
+ doc.setTextColor(10,10,11);
+ doc.setFont('helvetica','bold');
+ doc.text(billing.name, M, 78);
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(9);
+ let y = 84;
+ if (billing.address) { doc.text(billing.address, M, y); y += 5; }
+ if (billing.cap || billing.city) { doc.text([billing.cap, billing.city, billing.province].filter(Boolean).join(' '), M, y); y += 5; }
+ if (billing.country) { doc.text(billing.country, M, y); y += 5; }
+ if (billing.cf) { doc.text('CF: ' + billing.cf, M, y); y += 5; }
+ if (billing.piva) { doc.text('P.IVA: ' + billing.piva, M, y); y += 5; }
+ if (billing.sdi) { doc.text('SDI/PEC: ' + billing.sdi, M, y); y += 5; }
+
+ // Tabella dettaglio
+ y = Math.max(y + 10, 120);
+ doc.setFillColor(248, 249, 250);
+ doc.rect(M, y, W - 2*M, 10, 'F');
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(9);
+ doc.setTextColor(80,80,80);
+ doc.text('DESCRIZIONE', M + 3, y + 6.5);
+ doc.text('IMPORTO', W - M - 3, y + 6.5, { align:'right' });
+
+ y += 18;
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(10);
+ doc.setTextColor(10,10,11);
+ doc.text(tx.desc, M + 3, y);
+ const importoBase = tx.base || tx.importo;
+ doc.text(fmtEur(importoBase), W - M - 3, y, { align:'right' });
+ doc.setFontSize(8);
+ doc.setTextColor(150,150,150);
+ doc.text('Metodo: ' + (tx.metodo || '—'), M + 3, y + 5);
+
+ // Bonus promo (se presente)
+ if (tx.bonus && tx.bonus > 0) {
+ y += 12;
+ doc.setFontSize(10);
+ doc.setTextColor(90, 153, 0);
+ doc.text('Bonus promo (' + tx.promoCode + ')', M + 3, y);
+ doc.text('+ ' + fmtEur(tx.bonus), W - M - 3, y, { align:'right' });
+ }
+
+ // Totale
+ y += 15;
+ doc.setDrawColor(220,220,220);
+ doc.line(M, y, W - M, y);
+ y += 8;
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(12);
+ doc.setTextColor(10,10,11);
+ doc.text('TOTALE', M + 3, y);
+ doc.setFontSize(16);
+ doc.setTextColor(0,120,255);
+ doc.text(fmtEur(tx.importo), W - M - 3, y, { align:'right' });
+
+ // Nota
+ y += 14;
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(8);
+ doc.setTextColor(150,150,150);
+ const nota = 'Operazione esente IVA ai sensi dell\'art. 10 del DPR 633/72 — Ricarica credito prepagato per servizi di spedizione.';
+ doc.text(doc.splitTextToSize(nota, W - 2*M), M, y);
+
+ // Footer
+ doc.setFontSize(8);
+ doc.setTextColor(180,180,180);
+ doc.text('VEX ONE Srl · P.IVA 01234567890 · vexone.it', W/2, 285, { align:'center' });
+
+ doc.save('VEXONE_Fattura_' + numeroFattura + '.pdf');
+ showToast('Fattura scaricata');
+}
+
+/* ════════════════════════════════════════════════════════
+ PDF: ESTRATTO CONTO MENSILE
+════════════════════════════════════════════════════════ */
+function exportEstrattoContoPDF(refDate) {
+ const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+ if (!jsPDFClass) { showToast('PDF non disponibile, riprova', false); return; }
+ const doc = new jsPDFClass({ unit:'mm', format:'a4' });
+ const W = 210, M = 20;
+ const mese = refDate.getMonth();
+ const anno = refDate.getFullYear();
+ const mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+
+ // Filtra transazioni del mese
+ const list = getTransazioni().filter(tx => {
+ const d = new Date(tx.data);
+ return d.getMonth() === mese && d.getFullYear() === anno;
+ }).sort((a,b) => new Date(a.data) - new Date(b.data));
+
+ if (!list.length) { showToast('Nessuna transazione in questo mese', false); return; }
+
+ // Calcolo totali
+ let totIn = 0, totOut = 0;
+ list.forEach(tx => { if (tx.importo > 0) totIn += tx.importo; else totOut += Math.abs(tx.importo); });
+
+ // Header
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(22);
+ doc.setTextColor(10,10,11);
+ doc.text('VEX', M, 25);
+ doc.setTextColor(0,120,255);
+ doc.text('ONE', M+18, 25);
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(8);
+ doc.setTextColor(120,120,120);
+ doc.text('Estratto conto portafoglio', M, 30);
+
+ doc.setFontSize(8);
+ doc.setTextColor(80,80,80);
+ doc.text('VEX ONE Srl', W - M, 18, { align:'right' });
+ doc.text('Generato il ' + fmtDate(new Date()), W - M, 22, { align:'right' });
+
+ doc.setDrawColor(220,220,220);
+ doc.line(M, 38, W - M, 38);
+
+ // Periodo
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(18);
+ doc.setTextColor(10,10,11);
+ doc.text(mesi[mese] + ' ' + anno, M, 52);
+
+ const user = getUser();
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(9);
+ doc.setTextColor(120,120,120);
+ doc.text('Intestatario: ' + user.name + ' · ' + user.plan, M, 58);
+
+ // Riepilogo
+ let y = 70;
+ doc.setFillColor(248,249,250);
+ doc.roundedRect(M, y, W - 2*M, 28, 3, 3, 'F');
+ const colW = (W - 2*M) / 3;
+
+ doc.setFontSize(7);
+ doc.setTextColor(150,150,150);
+ doc.text('TOTALE RICARICHE', M + 5, y + 7);
+ doc.text('TOTALE SPEDIZIONI', M + colW + 5, y + 7);
+ doc.text('SALDO NETTO', M + 2*colW + 5, y + 7);
+
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(13);
+ doc.setTextColor(90,153,0);
+ doc.text(fmtEur(totIn), M + 5, y + 18);
+ doc.setTextColor(10,10,11);
+ doc.text('− ' + fmtEur(totOut), M + colW + 5, y + 18);
+ doc.setTextColor(0,120,255);
+ doc.text(fmtEur(totIn - totOut), M + 2*colW + 5, y + 18);
+
+ // Tabella transazioni
+ y += 42;
+ doc.setFillColor(10,10,11);
+ doc.rect(M, y, W - 2*M, 9, 'F');
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(8);
+ doc.setTextColor(255,255,255);
+ doc.text('DATA', M + 3, y + 6);
+ doc.text('DESCRIZIONE', M + 30, y + 6);
+ doc.text('METODO', M + 95, y + 6);
+ doc.text('IMPORTO', W - M - 3, y + 6, { align:'right' });
+
+ y += 14;
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(9);
+
+ list.forEach((tx, i) => {
+ if (y > 270) { doc.addPage(); y = 20; }
+ if (i % 2 === 1) { doc.setFillColor(250,250,251); doc.rect(M, y - 4, W - 2*M, 7, 'F'); }
+ const dt = new Date(tx.data);
+ doc.setTextColor(80,80,80);
+ doc.text(dt.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'}), M + 3, y);
+ doc.setTextColor(10,10,11);
+ const desc = (tx.desc || '').length > 30 ? tx.desc.slice(0,28)+'…' : (tx.desc || '');
+ doc.text(desc, M + 30, y);
+ doc.setTextColor(120,120,120);
+ doc.text(tx.metodo || tx.corriere || '—', M + 95, y);
+ if (tx.importo > 0) doc.setTextColor(90,153,0); else doc.setTextColor(10,10,11);
+ doc.text((tx.importo > 0 ? '+ ' : '− ') + fmtEur(Math.abs(tx.importo)), W - M - 3, y, { align:'right' });
+ y += 7;
+ });
+
+ // Footer
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(7);
+ doc.setTextColor(180,180,180);
+ doc.text('Documento generato automaticamente — VEX ONE Srl · P.IVA 01234567890 · vexone.it', W/2, 287, { align:'center' });
+
+ doc.save('VEXONE_Estratto_' + anno + '-' + String(mese+1).padStart(2,'0') + '.pdf');
+ showToast('Estratto conto scaricato');
+}
+
+/* ════════════════════════════════════════════════════════
+ COOKIE BANNER
+════════════════════════════════════════════════════════ */
+function initCookies() {
+ if(safeStorage.get(KEY_COOKIES)) return;
+ const banner = document.getElementById('cookie-banner');
+ setTimeout(() => banner.classList.add('show'), 700);
+ document.querySelectorAll('[data-cookie]').forEach(btn => {
+ btn.addEventListener('click', () => {
+ safeStorage.set(KEY_COOKIES, JSON.stringify({level:btn.dataset.cookie, ts:Date.now()}));
+ banner.classList.remove('show');
+ });
+ });
+}
+
+/* ════════════════════════════════════════════════════════
+ INIT NAV
+════════════════════════════════════════════════════════ */
+function initNav() {
+  const user = getUser();
+  const saldo = getSaldo();
+  const nn = document.getElementById('nav-name');
+  const np = document.getElementById('nav-plan');
+  const na = document.getElementById('nav-avatar');
+  if(nn) nn.textContent = user.name;
+  if(np) np.textContent = user.plan || 'VEX Base';
+  if(na) na.textContent = user.initials;
+  const dds = document.getElementById('dd-saldo');
+  if(dds) dds.textContent = fmtEur(saldo);
+  const sld = document.getElementById('saldo-display');
+  if(sld) sld.textContent = fmtEur(saldo);
+  const hu = document.getElementById('hero-user');
+  const hp = document.getElementById('hero-plan');
+  const eu = document.getElementById('eyebrow-user');
+  const ep = document.getElementById('eyebrow-plan');
+  if(hu) hu.textContent = user.name + ' · Conto Verificato';
+  if(hp) hp.textContent = user.plan || 'Tariffa Base';
+  if(eu) eu.textContent = user.name;
+  if(ep) ep.textContent = user.plan || 'Conto Verificato';
+  const ma=document.getElementById('mob-avatar'), mn=document.getElementById('mob-name');
+  const mp=document.getElementById('mob-plan'), ms=document.getElementById('mob-saldo');
+  if(ma) ma.textContent = user.initials;
+  if(mn) mn.textContent = user.name;
+  if(mp) mp.textContent = user.plan || 'VEX Base';
+  if(ms) ms.textContent = fmtEur(saldo);
+  updateCreditBar(saldo);
+  checkLowCredit(saldo);
+
+  // Sincronizzazione in tempo reale dal server FastAPI se loggato
+  if (window.VEX_API && typeof window.VEX_API.getMe === 'function' && window.VEX_API.getToken()) {
+    window.VEX_API.getMe().then(realUser => {
+      const credit = realUser.profile?.credit !== undefined ? realUser.profile.credit : realUser.credit;
+      if (typeof credit === 'number') {
+        setSaldo(credit);
+      }
+    }).catch(e => console.warn('[Portafoglio] sync live differito:', e));
+  }
+
+  if(user.role === 'admin') {
+    const svgShield = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/></svg>';
+    const ds = document.getElementById('dd-admin-slot');
+    const mbs = document.getElementById('mob-admin-slot');
+    // admin link removed
+    // admin link removed
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+ INIT GENERALE
+════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+ initNav();
+ initDropdown();
+ initDrawer();
+ initCookies();
+ if (typeof initExportDropdown === 'function') initExportDropdown();
+
+ updateBtnAmounts(100);
+ renderStats();
+ updateSavedCardDisplay();
+
+ // Chips importo rapido
+ document.querySelectorAll('#amount-btns .amt-chip').forEach(btn =>
+ btn.addEventListener('click', () => setAmount(Number(btn.dataset.amt), btn))
+ );
+ document.getElementById('wallet-amount').addEventListener('input', e => syncAmountBtns(e.target.value));
+
+ // Tab metodo
+ document.querySelectorAll('[data-tab]').forEach(btn =>
+ btn.addEventListener('click', () => setWalletTab(btn.dataset.tab))
+ );
+
+ // Format carta
+ document.getElementById('card-num').addEventListener('input', e => formatCardNum(e.target));
+ document.getElementById('card-exp').addEventListener('input', e => formatExp(e.target));
+
+ // Pulsanti pagamento
+ document.querySelectorAll('[data-pay]').forEach(btn =>
+ btn.addEventListener('click', () => avviaRicarica(btn.dataset.pay))
+ );
+
+ // IBAN
+ const ibanBtn = document.getElementById('btn-copia-iban');
+ if (ibanBtn) ibanBtn.addEventListener('click', copiaIban);
+
+ // Filtri tipo
+ document.querySelectorAll('[data-filter]').forEach(btn =>
+ btn.addEventListener('click', () => {
+ currentFilter = btn.dataset.filter;
+ document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('on', b===btn));
+ renderTransazioni();
+ })
+ );
+  // Filtro data
+  const dateFilt = document.getElementById("date-filter");
+  if (dateFilt) {
+    dateFilt.addEventListener("change", e => {
+      currentDateFilter = e.target.value;
+      if (typeof renderTransazioni === "function") renderTransazioni();
+    });
+  }
+
+  // Modal conferma
+  const modalCancel = document.getElementById("modal-cancel");
+  if (modalCancel) modalCancel.addEventListener("click", () => closeModal("modal-conferma"));
+  const modalConf = document.getElementById("modal-conferma");
+  if (modalConf) modalConf.addEventListener("click", e => { if(e.target.id==="modal-conferma") closeModal("modal-conferma"); });
+
+  // Modal billing
+  const btnEditBill = document.getElementById("btn-edit-billing");
+  if (btnEditBill) btnEditBill.addEventListener("click", openBillingModal);
+  const btnCancelBill = document.getElementById("billing-cancel");
+  if (btnCancelBill) btnCancelBill.addEventListener("click", () => closeModal("modal-billing"));
+  const btnSaveBill = document.getElementById("billing-save");
+  if (btnSaveBill) btnSaveBill.addEventListener("click", saveBillingFromModal);
+  const modalBill = document.getElementById("modal-billing");
+  if (modalBill) modalBill.addEventListener("click", e => { if(e.target.id==="modal-billing") closeModal("modal-billing"); });
+
+  // ESC chiude qualsiasi modal
+  document.addEventListener("keydown", e => {
+    if(e.key !== "Escape") return;
+    const mc = document.getElementById("modal-conferma");
+    if(mc && mc.classList.contains("open")) closeModal("modal-conferma");
+    const mb = document.getElementById("modal-billing");
+    if(mb && mb.classList.contains("open")) closeModal("modal-billing");
+  });
+
+  // Promo
+  const promoApp = document.getElementById("promo-apply");
+  if (promoApp) promoApp.addEventListener("click", applyPromo);
+  const promoInp = document.getElementById("promo-input");
+  if (promoInp) promoInp.addEventListener("keydown", e => { if(e.key==="Enter") { e.preventDefault(); applyPromo(); } });
+  const promoRem = document.getElementById("promo-remove");
+  if (promoRem) promoRem.addEventListener("click", removePromo);
+
+  // Field change listeners for settings
+  ["ar-threshold","ar-amount"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("change", persistAutoreload);
+  });
+  ["nf-threshold","nf-email"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("change", persistNotify);
+  });
+  ["sl-period","sl-amount"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("change", persistSpendlimit);
+  });
+});
+</script>
+<script src="assets/js/nav-user.js"></script>
+</body>
+</html>

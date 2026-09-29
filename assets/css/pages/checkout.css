@@ -1,0 +1,139 @@
+/* ==========================================================================
+   VEXONE - CHECKOUT & SPEDIZIONE (checkout.html)
+   ========================================================================== */
+.hamb {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #F8F9FA;
+  border: 1.5px solid #E8E8E8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all .25s;
+  flex-shrink: 0;
+}
+.hamb:hover {
+  background: #0A0A0B;
+}
+.hamb span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: #0A0A0B;
+  border-radius: 2px;
+  transition: all .3s cubic-bezier(.23, 1, .32, 1);
+}
+.hamb:hover span {
+  background: #fff;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 13px 0;
+  border-bottom: 1px solid #F3F4F6;
+  gap: 16px;
+}
+.row:last-child {
+  border-bottom: none;
+}
+.row .k {
+  font-size: 11px;
+  font-weight:700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #9CA3AF;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.row .v {
+  font-size: 14px;
+  font-weight:700;
+  
+  letter-spacing: -.01em;
+  text-align: right;
+}
+.row .v .sub {
+  display: block;
+  color: #9CA3AF;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 11px;
+  margin-top: 2px;
+}
+.pay-opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid #EDEFF2;
+  border-radius:var(--radius-md);
+  cursor: pointer;
+  transition: all .2s;
+  background: #fff;
+  width: 100%;
+  text-align: left;
+}
+.pay-opt:hover {
+  border-color: #C7D2DC;
+}
+.pay-opt.sel {
+  border-color: #0078FF;
+  background: rgba(0, 120, 255, .04);
+}
+.pay-opt.disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.pay-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #D1D5DB;
+  flex-shrink: 0;
+  position: relative;
+  transition: all .2s;
+}
+.pay-opt.sel .pay-radio {
+  border-color: #0078FF;
+}
+.pay-opt.sel .pay-radio::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #0078FF;
+}
+.step-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #D1D5DB;
+  transition: all .3s;
+}
+.sdot.on {
+  background: #0078FF;
+  width: 22px;
+  border-radius: 6px;
+}
+.sdot.done {
+  background: #16a34a;
+}
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, .3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+}

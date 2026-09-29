@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Cookie policy di VEX ONE: quali cookie usiamo e come gestire le tue preferenze.">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Cookie Policy</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/legal.css">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body class="bg-white">
+
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header style="background:#0A0A0B;color:#fff;padding:54px 0 46px;position:relative;overflow:hidden">
+ <div style="position:absolute;top:-40px;right:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(184,255,0,.12),transparent 70%)"></div>
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6">
+ <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#B8FF00;margin:0 0 10px">Legale</p>
+ <h1 style="font-size:clamp(30px,6vw,48px);font-weight:700;letter-spacing:-0.015em;line-height:.98;margin:0">Cookie Policy</h1>
+ <p style="font-size:14px;color:rgba(255,255,255,.6);font-weight:600;margin:14px 0 0">Ultimo aggiornamento: <span class="ph">[data]</span></p>
+ </div>
+</header>
+
+<div style="background:#FEF9E7;border-bottom:1px solid #F0E2B0">
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6 py-4">
+ <p style="font-size:13px;color:#7A6212;font-weight:600;margin:0;line-height:1.5"> <strong>Bozza da completare.</strong> L'elenco dei cookie qui sotto è un esempio: va aggiornato con i cookie realmente impostati dal sito (es. quelli di Google Analytics o del provider di pagamento) una volta integrati gli strumenti definitivi.</p>
+ </div>
+</div>
+
+<main style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6 py-12">
+ <div class="grid lg:grid-cols-[230px_1fr] gap-12 items-start">
+
+ <aside class="toc hidden lg:block" style="position:sticky;top:90px">
+ <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9CA3AF;margin:0 0 10px">Indice</p>
+ <a href="#cosa">1. Cosa sono i cookie</a>
+ <a href="#tipi">2. Tipi di cookie usati</a>
+ <a href="#elenco">3. Elenco cookie</a>
+ <a href="#gestione">4. Come gestirli</a>
+ <a href="#terze">5. Cookie di terze parti</a>
+ <a href="#contatti">6. Contatti</a>
+ </aside>
+
+ <article class="legal">
+ <p>Questa Cookie Policy spiega come <span class="ph">[VEX ONE Srl]</span> utilizza cookie e tecnologie simili sul sito, in conformità alle Linee Guida del Garante Privacy e alla normativa vigente. Per il trattamento dei dati personali vedi la <a href="privacy.html">Privacy Policy</a>.</p>
+
+ <h2 id="cosa">1. Cosa sono i cookie</h2>
+ <p>I cookie sono piccoli file di testo che i siti salvano sul tuo dispositivo per memorizzare informazioni, ad esempio le tue preferenze o lo stato di accesso. Possono essere "tecnici" (necessari al funzionamento) o di "profilazione/analitici" (soggetti al tuo consenso).</p>
+
+ <h2 id="tipi">2. Tipi di cookie che utilizziamo</h2>
+ <ul>
+ <li><strong>Cookie tecnici necessari:</strong> indispensabili per il funzionamento del sito (sessione, login, carrello/checkout). Non richiedono consenso.</li>
+ <li><strong>Cookie funzionali:</strong> memorizzano preferenze come lingua o tema. Migliorano l'esperienza ma non sono indispensabili.</li>
+ <li><strong>Cookie analitici:</strong> ci aiutano a capire come viene usato il sito in forma aggregata. Installati solo previo consenso (salvo versioni anonimizzate equiparabili ai tecnici).</li>
+ </ul>
+
+ <h2 id="elenco">3. Elenco dei cookie</h2>
+ <table class="ck-table">
+ <thead><tr><th>Nome</th><th>Tipo</th><th>Finalità</th><th>Durata</th></tr></thead>
+ <tbody>
+ <tr>
+ <td><strong>vexone:user</strong></td>
+ <td><span class="badge tech">Tecnico</span></td>
+ <td>Mantiene la sessione e i dati dell'account durante la navigazione</td>
+ <td>Sessione</td>
+ </tr>
+ <tr>
+ <td><strong>vexone:checkout</strong></td>
+ <td><span class="badge tech">Tecnico</span></td>
+ <td>Conserva i dati della spedizione tra il comparatore e il checkout</td>
+ <td>Sessione</td>
+ </tr>
+ <tr>
+ <td><strong>vexone:consent</strong></td>
+ <td><span class="badge tech">Tecnico</span></td>
+ <td>Memorizza le tue scelte sul banner cookie</td>
+ <td><span class="ph">[6 mesi]</span></td>
+ </tr>
+ <tr>
+ <td><strong><span class="ph">[_ga]</span></strong></td>
+ <td><span class="badge opt">Analitico</span></td>
+ <td><span class="ph">[Google Analytics — statistiche di utilizzo]</span></td>
+ <td><span class="ph">[2 anni]</span></td>
+ </tr>
+ </tbody>
+ </table>
+ <p style="font-size:13px;color:#9CA3AF">I cookie analitici e di terze parti vengono installati solo dopo il tuo consenso espresso tramite il banner.</p>
+
+ <h2 id="gestione">4. Come gestire o disattivare i cookie</h2>
+ <p>Puoi modificare le tue preferenze in qualsiasi momento tramite il banner dei cookie del sito. Inoltre puoi gestire o eliminare i cookie dalle impostazioni del tuo browser. Disattivare i cookie tecnici potrebbe compromettere alcune funzionalità del sito.</p>
+
+ <h2 id="terze">5. Cookie di terze parti</h2>
+ <p>Alcuni servizi integrati (ad esempio strumenti di analisi o il provider di pagamento) possono impostare propri cookie, regolati dalle rispettive privacy policy: <span class="ph">[link Google]</span>, <span class="ph">[link provider pagamento]</span>.</p>
+
+ <h2 id="contatti">6. Contatti</h2>
+ <p>Per domande su questa Cookie Policy scrivi a <span class="ph">[privacy@vexone.it]</span>.</p>
+
+ <div style="margin-top:40px;padding-top:24px;border-top:1px solid #F1F2F4;display:flex;gap:18px;flex-wrap:wrap">
+ <a href="privacy.html" class="footer-link" style="color:#0078FF">Privacy Policy →</a>
+ <a href="termini.html" class="footer-link" style="color:#0078FF">Termini & Condizioni →</a>
+ </div>
+ </article>
+ </div>
+</main>
+
+<footer style="background:#0A0A0B;border-top:1px solid rgba(255,255,255,0.08);color:#fff" class="pt-14 pb-8">
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6">
+ <div class="flex flex-col sm:flex-row justify-between items-start gap-6 mb-8">
+ <div>
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:32px;width:auto;display:block">
+ <p style="font-size:12px;color:#9CA3AF;font-weight:600;margin:6px 0 0;max-width:280px">Spedisci smart, paga il giusto. Confronta i migliori corrieri in pochi secondi.</p>
+ </div>
+ <div class="flex gap-12">
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Piattaforma</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="comparatore.html" class="footer-link">Calcola Tariffa</a></li>
+ <li><a href="tracking.html" class="footer-link">Traccia Spedizione</a></li>
+ <li><a href="dashboard.html" class="footer-link">Dashboard</a></li>
+ </ul>
+ </div>
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Legale</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="privacy.html" class="footer-link">Privacy Policy</a></li>
+ <li><a href="termini.html" class="footer-link">Termini & Condizioni</a></li>
+ <li><a href="cookie.html" class="footer-link" style="color:#0078FF">Cookie Policy</a></li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;font-size:11px;color:#6B7280;font-weight:500">
+ <p style="margin:0">© 2026 VEX ONE — Tutti i diritti riservati · <span class="ph">[VEX ONE Srl]</span> · P.IVA <span class="ph">[numero]</span></p>
+ </div>
+ </div>
+</footer>
+
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/nav-user.js"></script>
+</body>
+</html>

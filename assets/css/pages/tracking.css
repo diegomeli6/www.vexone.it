@@ -1,0 +1,96 @@
+/* ==========================================================================
+   VEXONE - TRACKING SPEDIZIONI (tracking.html)
+   ========================================================================== */
+/* NAV */
+/* ACCOUNT DROPDOWN */
+.dd-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:14px; cursor:pointer; font-size:12px; font-weight:700; color:#374151; transition:background .15s; }
+.dd-item:hover { background:#F8F9FA; color:#0A0A0B; }
+.dd-item.adm { color:#0078FF; }
+.dd-item.adm:hover { background:rgba(0,120,255,.06); }
+.dd-item.danger:hover { background:rgba(220,38,38,.06); color:#dc2626; }
+.dd-sep { height:1px; background:#F3F4F6; margin:6px 8px; }
+/* BUTTONS */
+.btn-blue { background:#0078FF; color:#fff; border:none; font-size:13px; font-weight:600; padding:10px 18px; border-radius:var(--radius-sm); cursor:pointer; transition:all var(--duration); font-family:var(--font-sans); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+.btn-blue:hover { background:#0066DB; }
+.btn-icon { background:#F3F4F6; border:none; width:34px; height:34px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; transition:background .15s; flex-shrink:0; }
+.btn-icon:hover { background:#E5E7EB; }
+
+/* BADGE */
+.badge { display:inline-block; padding:3px 9px; border-radius:var(--radius-sm); font-size:11px; font-weight:600; white-space:nowrap; }
+.b-blue  { background:#EFF6FF; color:#0078FF; }
+.b-green { background:#F0FDF4; color:#16a34a; }
+.b-amber { background:#FFFBEB; color:#d97706; }
+.b-red   { background:#FEF2F2; color:#dc2626; }
+.b-gray  { background:#F3F4F6; color:#6B7280; }
+.b-dark  { background:#0A0A0B; color:#B8FF00; }
+.b-lime  { background:rgba(184,255,0,.2); color:#3E6B00; }
+
+/* TABS */
+.trk-tabs { display:flex; gap:4px; background:#F3F4F6; padding:4px; border-radius:var(--radius-sm); }
+.trk-tab { flex:1; padding:8px 14px; border-radius:calc(var(--radius-sm) - 2px); border:none; background:transparent; font-size:12px; font-weight:600; cursor:pointer; color:#6B7280; transition:all .2s; font-family:var(--font-sans); }
+.trk-tab.on { background:#fff; color:#0A0A0B; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+.trk-panel { display:none; }
+.trk-panel.on { display:block; }
+
+/* SHIP LIST */
+.ship-row { display:grid; grid-template-columns:40px 1fr auto 18px; gap:10px; align-items:center; padding:12px 14px; border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; border:1px solid transparent; }
+.ship-row:hover { background:#F9FAFB; }
+.ship-row.sel { background:#fff; border-color:#0078FF; box-shadow:0 2px 8px rgba(0,120,255,.1); }
+/* ALERT DOT */
+.alert-dot { width:7px; height:7px; border-radius:50%; background:#ef4444; flex-shrink:0; animation:alertBlink 1.5s infinite; }
+@keyframes alertBlink { 0%,100%{opacity:1} 50%{opacity:.3} }
+/* TRACKING MAP */
+@keyframes radar { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(3.2);opacity:0} }
+.rp::before { content:''; position:absolute; width:100%; height:100%; background:#B8FF00; border-radius:50%; z-index:-1; animation:radar 2s cubic-bezier(.215,.61,.355,1) infinite; }
+.map-bg { background-color:#0A0A0B; background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px); background-size:20px 20px; }
+/* PROGRESS */
+.prog-track { height:5px; background:#F3F4F6; border-radius:99px; overflow:visible; position:relative; }
+.prog-fill { height:100%; border-radius:99px; background:#0078FF; transition:width .6s ease; position:relative; }
+.prog-fill::after { content:''; position:absolute; right:-4px; top:-3px; width:11px; height:11px; border-radius:50%; background:#0078FF; border:2px solid #fff; box-shadow:0 0 0 2px #0078FF; }
+/* PROGRESS STEPS */
+.prog-steps { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; margin-bottom:6px; }
+.prog-step { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#C4C9D4; text-align:center; }
+.prog-step:first-child { text-align:left; }
+.prog-step:last-child { text-align:right; }
+.prog-step.done { color:#0078FF; }
+.prog-step.cur { color:#0A0A0B; }
+/* ACTIONS */
+.actions { display:flex; gap:8px; flex-wrap:wrap; }
+/* COUNTDOWN */
+.countdown { display:flex; gap:4px; align-items:center; }
+.countdown-unit { background:#0A0A0B; color:#fff; border-radius:6px; padding:4px 7px; font-size:11px; font-weight:700;  min-width:28px; text-align:center; }
+.countdown-sep { font-size:14px; font-weight:700; color:#0A0A0B; }
+/* NOTA */
+.nota { background:rgba(0,120,255,.06); border:1px solid rgba(0,120,255,.12); border-radius:12px; padding:10px 14px; font-size:11px; font-weight:700; color:#374151; display:flex; align-items:flex-start; gap:8px; }
+.nota-warn { background:rgba(245,158,11,.06); border-color:rgba(245,158,11,.15); }
+.nota-green { background:rgba(22,163,74,.06); border-color:rgba(22,163,74,.15); }
+/* MAP LABEL */
+.map-route-label { position:absolute; background:rgba(0,0,0,.55); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; color:#fff; letter-spacing:0.04em; text-transform:uppercase; z-index:10; }
+/* TIMELINE */
+.tl-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.tl-ship-ref { font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:.15em; color:#9CA3AF; background:#F3F4F6; padding:4px 10px; border-radius:8px; }
+/* SECTION TITLE */
+.sec-title { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#9CA3AF;  margin-bottom:14px; }
+/* KPI BAR */
+.kpi-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+.kpi { background:#fff; border-radius:16px; padding:16px 18px; border:1px solid rgba(0,0,0,.05); }
+.kpi-lbl { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#9CA3AF;  margin-bottom:6px; }
+.kpi-val { font-size:26px; font-weight:700;  letter-spacing:-0.015em; line-height:1; }
+.kpi-sub { font-size:10px; font-weight:700; color:#9CA3AF; margin-top:4px; }
+/* TOAST */
+/* MODAL */
+.modal-ov { position:fixed; inset:0; background:rgba(10,10,11,.55); backdrop-filter:blur(6px); z-index:999; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s; }
+.modal-ov.open { opacity:1; pointer-events:all; }
+.modal-box { background:#fff; border-radius:var(--radius-lg); padding:30px; width:480px; max-width:94vw; box-shadow:0 40px 80px rgba(0,0,0,.2); transform:translateY(16px); transition:transform .3s cubic-bezier(.23,1,.32,1); }
+.modal-ov.open .modal-box { transform:translateY(0); }
+/* EMPTY */
+.empty { text-align:center; padding:48px 20px; }
+
+/* TOAST & FAB */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0A0A0B;color:#FFFFFF;padding:10px 18px;border-radius:9999px;font-size:12.5px;font-weight:500;z-index:9999;opacity:0;transition:all .32s cubic-bezier(.23,1,.32,1);box-shadow:0 12px 32px rgba(0,0,0,.25);pointer-events:none;display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;white-space:nowrap;border:1px solid rgba(255,255,255,0.14)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:#B8FF00;box-shadow:0 0 6px rgba(184,255,0,.6);flex-shrink:0;display:inline-block}
+.fab-new-shipment{position:fixed!important;bottom:26px!important;right:26px!important;z-index:900!important;display:inline-flex!important;align-items:center!important;gap:8px!important;background:#0A0A0B!important;color:#FFFFFF!important;padding:11px 18px!important;border-radius:9999px!important;font-size:12.5px!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,0.2)!important;border:1px solid rgba(255,255,255,0.15)!important;transition:all 0.25s cubic-bezier(0.23,1,0.32,1)!important}
+.fab-new-shipment:hover{background:#0078FF!important;transform:translateY(-2px) scale(1.03)!important;box-shadow:0 12px 28px rgba(0,120,255,0.32)!important;color:#FFFFFF!important}
+.fab-new-shipment .fab-icon{width:20px!important;height:20px!important;border-radius:50%!important;background:#B8FF00!important;color:#0A0A0B!important;display:flex!important;align-items:center!important;justify-content:center!important;font-weight:700!important;font-size:13px!important;flex-shrink:0!important}
+

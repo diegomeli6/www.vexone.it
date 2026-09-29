@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Checkout</title>
+<meta name="description" content="Completa la prenotazione della tua spedizione su VEX ONE: pagamento sicuro, conferma immediata e generazione lettera di vettura.">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/checkout.css">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body>
+
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════ STEP PAGAMENTO ════════ -->
+<div id="view-pay" class="max-w-5xl mx-auto px-5 sm:px-6 py-8 md:py-12">
+
+ <!-- breadcrumb + step -->
+ <div class="flex flex-wrap justify-between items-center gap-4 mb-7">
+ <div>
+ <div class="flex items-center gap-2 mb-2" style="font-size:11px;font-weight:700;color:#9CA3AF">
+ <a href="comparatore.html" style="color:inherit;text-decoration:none" class="ts hover:text-vexBlue">Nuova Spedizione</a>
+ <span>›</span><span style="color:#0A0A0B">Checkout</span>
+ </div>
+ <h1 style="font-size:clamp(28px,5vw,42px);font-weight:700;letter-spacing:-0.015em;line-height:.95;margin:0">Conferma e <span style="color:#0078FF">paga.</span></h1>
+ </div>
+ <div class="step-dots">
+ <span class="sdot done"></span><span class="sdot done"></span><span class="sdot on"></span>
+ <span style="font-size:12px;font-weight:500;color:#6B7280;margin-left:6px">Passo 3 di 3</span>
+ </div>
+ </div>
+
+ <div class="grid lg:grid-cols-[1fr_360px] gap-5 items-start">
+
+ <!-- COLONNA SINISTRA: riepilogo + pagamento -->
+ <div class="flex flex-col gap-5">
+
+ <!-- Riepilogo spedizione -->
+ <div class="card p-6 md:p-7" style="animation:fadeIn .5s">
+ <div class="flex justify-between items-center mb-4">
+ <p class="lbl">Riepilogo spedizione</p>
+ <a href="comparatore.html" style="font-size:12px;font-weight:600;color:#0078FF;text-decoration:none">Modifica</a>
+ </div>
+
+  <!-- corriere -->
+  <div style="display:flex;align-items:center;gap:13px;background:#F8F9FA;border-radius:16px;padding:14px 16px;margin-bottom:18px">
+  <div id="ck-carrier-badge" style="width:52px;height:40px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0"><img id="ck-carrier-img" src="carriers/dhl.svg" width="48" height="36" class="carrier-logo-icon" style="object-fit:contain" alt="Corriere"></div>
+ <div style="flex:1;min-width:0">
+ <p id="ck-carrier-name" style="font-size:16px;font-weight:700;letter-spacing:-.02em;margin:0">DHL Express</p>
+ <p id="ck-carrier-delivery" style="font-size:11px;color:#9CA3AF;margin:0;font-weight:700"> Consegna in 24/48h</p>
+ </div>
+ <p id="ck-carrier-price" style="font-size:24px;font-weight:700;letter-spacing:-0.015em;color:#0078FF;margin:0">€ 14,50</p>
+ </div>
+
+ <div class="row"><span class="k">Mittente</span><span class="v" id="ck-mitt">—<span class="sub">—</span></span></div>
+ <div class="row"><span class="k">Destinatario</span><span class="v" id="ck-dest">—<span class="sub">—</span></span></div>
+ <div class="row"><span class="k">Colli</span><span class="v" id="ck-colli">1 collo · 3,20 kg</span></div>
+ <div class="row"><span class="k">Ritiro</span><span class="v" id="ck-ritiro"> Domicilio</span></div>
+ <div class="row"><span class="k">Servizi</span><span class="v" id="ck-svc">—</span></div>
+ <div class="row" id="ck-rif-row" style="display:none"><span class="k">Riferimento</span><span class="v" id="ck-rif">—</span></div>
+ </div>
+
+ <!-- Metodo di pagamento -->
+ <div class="card p-6 md:p-7" style="animation:fadeIn .6s">
+ <p class="lbl mb-4">Come vuoi pagare?</p>
+ <div class="flex flex-col gap-3">
+
+ <button class="pay-opt sel" id="opt-wallet" onclick="selectPay('wallet')">
+ <span class="pay-radio"></span>
+ <span style="display:inline-flex;align-items:center"><svg class="icon text-green-600" style="width:22px;height:22px" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span>
+ <span style="flex:1">
+ <span style="display:block;font-size:14px;font-weight:700;">Saldo Wallet</span>
+ <span style="display:block;font-size:11px;color:#9CA3AF;font-weight:700">Disponibile: <span id="opt-wallet-bal" style="color:#16a34a;font-weight:700">€ 0,00</span></span>
+ </span>
+ <span id="opt-wallet-warn" style="display:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:#FEF3C7;color:#92400E;padding:4px 9px;border-radius:10px">Saldo insufficiente</span>
+ </button>
+
+ <button class="pay-opt" id="opt-card" onclick="selectPay('card')">
+ <span class="pay-radio"></span>
+ <span style="display:inline-flex;align-items:center"><svg class="icon text-vexBlue" style="width:22px;height:22px" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>
+ <span style="flex:1">
+ <span style="display:block;font-size:14px;font-weight:700;">Carta di credito</span>
+ <span style="display:block;font-size:11px;color:#9CA3AF;font-weight:700">Pagamento sicuro · Visa, Mastercard</span>
+ </span>
+ </button>
+
+ <!-- form carta (mostrato solo se selezionato) -->
+ <div id="card-form" style="display:none;padding:6px 2px 2px">
+ <div style="background:#F0F9FF;border:1px solid rgba(0,120,255,.18);border-radius:12px;padding:11px 13px;margin-bottom:14px;display:flex;gap:9px;align-items:flex-start">
+ <span style="display:inline-flex;align-items:center;margin-top:2px"><svg class="icon text-vexBlue" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+ <p style="font-size:11px;color:#1E5A8A;font-weight:600;margin:0;line-height:1.4">Sarai reindirizzato al circuito sicuro del nostro provider di pagamento. I dati della carta non transitano né vengono salvati sui server VEX ONE.</p>
+ </div>
+ <div class="flex flex-col gap-3">
+ <div>
+ <label class="lbl" style="display:block;margin-bottom:6px">Numero carta</label>
+ <input class="inp" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmtCard(this)">
+ </div>
+ <div class="grid grid-cols-2 gap-3">
+ <div>
+ <label class="lbl" style="display:block;margin-bottom:6px">Scadenza</label>
+ <input class="inp" inputmode="numeric" placeholder="MM/AA" maxlength="5" oninput="fmtExp(this)">
+ </div>
+ <div>
+ <label class="lbl" style="display:block;margin-bottom:6px">CVV</label>
+ <input class="inp" inputmode="numeric" placeholder="123" maxlength="4">
+ </div>
+ </div>
+ <div>
+ <label class="lbl" style="display:block;margin-bottom:6px">Intestatario</label>
+ <input class="inp" placeholder="Nome come sulla carta" value="" autocomplete="cc-name">
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- COLONNA DESTRA: totale (sticky) -->
+ <div class="card p-6" style="animation:fadeIn .7s;position:sticky;top:90px">
+ <p class="lbl mb-4">Totale ordine</p>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;font-weight:700;color:#6B7280">
+ <span>Spedizione</span><span id="sum-ship">€ 14,50</span>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;font-weight:700;color:#6B7280">
+ <span>Servizi opzionali</span><span id="sum-svc">€ 0,00</span>
+ </div>
+ <div id="sum-iva-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:12px;font-weight:600;color:#9CA3AF">
+ <span>di cui IVA (22%)</span><span id="sum-iva">€ 2,61</span>
+ </div>
+ <div id="sum-save-row" style="display:none;align-items:center;gap:8px;padding:10px 12px;margin:8px 0 0;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.18);border-radius:12px">
+ <span style="display:inline-flex;align-items:center"><svg class="icon text-green-600" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>
+ <span style="font-size:12px;font-weight:700;color:#16a34a">Stai risparmiando <span id="sum-save">€ 0,00</span> rispetto al listino diretto</span>
+ </div>
+ <div style="border-top:2px solid #F1F2F4;margin-top:10px;padding-top:14px;display:flex;justify-content:space-between;align-items:flex-end">
+ <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0A0A0B">Totale</span>
+ <span id="sum-total" style="font-size:30px;font-weight:700;letter-spacing:-0.015em;color:#0A0A0B;line-height:1">€ 14,50</span>
+ </div>
+ <p style="font-size:10px;color:#9CA3AF;font-weight:600;text-align:right;margin:2px 0 18px">IVA inclusa</p>
+
+ <button class="btn-lime w-full" id="pay-btn" style="display:flex;align-items:center;justify-content:center;gap:9px" onclick="pay()">
+ <span id="pay-btn-txt">Paga € 14,50</span>
+ </button>
+
+ <div class="flex items-center justify-center gap-1.5 mt-4" style="font-size:10px;color:#9CA3AF;font-weight:700">
+ <span></span><span>Pagamento protetto SSL</span>
+ </div>
+ </div>
+
+ </div>
+</div>
+
+<!-- ════════ STEP CONFERMA (nascosto all'inizio) ════════ -->
+<div id="view-done" class="max-w-2xl mx-auto px-5 sm:px-6 py-10 md:py-16" style="display:none">
+ <div class="card p-7 md:p-10" style="animation:fadeIn .5s;text-align:center">
+
+ <!-- check animato -->
+ <div style="width:84px;height:84px;border-radius:50%;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:popIn .6s cubic-bezier(.34,1.5,.64,1)">
+ <svg width="44" height="44" viewBox="0 0 52 52">
+ <path fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M14 27 l8 8 l16 -18" style="stroke-dasharray:60;animation:drawCheck .5s .3s ease-out backwards"/>
+ </svg>
+ </div>
+
+ <h1 style="font-size:clamp(26px,4.5vw,36px);font-weight:700;letter-spacing:-0.015em;margin:0 0 8px">Spedizione confermata!</h1>
+ <p style="font-size:14px;color:#6B7280;font-weight:600;margin:0 0 26px;max-width:380px;margin-left:auto;margin-right:auto;line-height:1.5">Abbiamo prenotato il ritiro. Trovi tutto nella sezione Tracking e ti invieremo gli aggiornamenti via email.</p>
+
+ <!-- codice spedizione -->
+ <div style="background:#0A0A0B;border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:14px;position:relative;overflow:hidden">
+ <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle,rgba(184,255,0,.15),transparent 70%)"></div>
+ <p style="font-size:12px;font-weight:600;color:rgba(255,255,255,.7);margin:0 0 6px">Codice spedizione</p>
+ <div class="flex items-center justify-center gap-3">
+ <span id="done-code" style="font-size:clamp(22px,5vw,30px);font-weight:700;letter-spacing:-.02em;color:#B8FF00">VEX-984-DHL</span>
+ <button onclick="copyCode()" class="ts" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Copia codice"><svg class="icon" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+ </div>
+ </div>
+
+ <!-- mini riepilogo -->
+ <div style="display:flex;justify-content:center;gap:0;background:#F8F9FA;border-radius:16px;padding:4px;margin-bottom:26px">
+ <div style="flex:1;padding:14px 8px;border-right:1px solid #E8E9EC">
+ <p class="lbl" style="margin:0 0 3px">Corriere</p>
+ <p id="done-carrier" style="font-size:13px;font-weight:700;margin:0">DHL Express</p>
+ </div>
+ <div style="flex:1;padding:14px 8px;border-right:1px solid #E8E9EC">
+ <p class="lbl" style="margin:0 0 3px">Pagato</p>
+ <p id="done-total" style="font-size:13px;font-weight:700;margin:0;color:#16a34a">€ 14,50</p>
+ </div>
+ <div style="flex:1;padding:14px 8px">
+ <p class="lbl" style="margin:0 0 3px">Metodo</p>
+ <p id="done-method" style="font-size:13px;font-weight:700;margin:0">Wallet</p>
+ </div>
+ </div>
+
+ <!-- azioni -->
+ <div class="flex flex-col sm:flex-row gap-3 justify-center">
+ <button class="btn-dark" style="flex:1" onclick="downloadLabel()"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Scarica etichetta</button>
+ <a href="tracking.html" class="btn-lime" style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none"> Segui spedizione</a>
+ </div>
+ <a href="comparatore.html" style="display:inline-block;margin-top:18px;font-size:12px;font-weight:600;color:#6B7280;text-decoration:none" class="ts hover:text-vexBlue">+ Nuova spedizione</a>
+ </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-ic"></span><span id="toast-msg">Fatto</span></div>
+
+<script>
+/* ═══════════════ STORAGE (stesso pattern del resto del sito) ═══════════════ */
+const safeStorage = {
+ get(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } },
+ getLocal(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+ setLocal(k,v){ try { localStorage.setItem(k,v); return true; } catch(e){ return false; } }
+};
+const KEY_CHECKOUT = 'vexone:checkout:v1'; // scritto dal comparatore
+const KEY_SALDO = 'vexone:wallet:saldo:v1';
+
+const fmt = n => '€ ' + Number(n).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ─── Dati di esempio (fallback se si arriva qui senza passare dal comparatore) ─── */
+const DEMO = {
+ carrierShort:'DHL', carrierName:'DHL Express', delivery:'Consegna in 24/48h',
+ price:14.50, listPrice:23.70, svcTotal:0,
+ mittNome: (typeof VEX_AUTH !== 'undefined') ? VEX_AUTH.getUser().displayName : 'Mittente', mittCap:'', mittCity:'',
+ destNome:'Destinatario', destCap:'', destCity:'',
+ colli:1, peso:1.0, ritiro:'domicilio', svc:'Nessuno', rif:''
+};
+
+let isDemoData = false;
+let DATA = loadCheckout();
+let PAY = 'wallet';
+let saldo = readSaldo();
+
+function loadCheckout(){
+ const raw = safeStorage.get(KEY_CHECKOUT);
+ if(raw){ try { return Object.assign({}, DEMO, JSON.parse(raw)); } catch(e){} }
+ isDemoData = true;
+ return DEMO;
+}
+function readSaldo(){
+ if (typeof VEX_AUTH !== 'undefined') return VEX_AUTH.getSaldo();
+ const s = safeStorage.getLocal(KEY_SALDO);
+ return s !== null ? parseFloat(s) : 0.00;
+}
+
+/* ═══════════════ RENDER ═══════════════ */
+function render(){
+ // Se non arrivano dati reali dal comparatore, avvisa che è un esempio
+ if(isDemoData){
+ const bc = document.querySelector('#view-pay');
+ if(bc && !document.getElementById('demo-banner')){
+ const w = document.createElement('div');
+ w.id = 'demo-banner';
+ w.style.cssText = 'background:#FEF9E7;border:1px solid #F0E2B0;border-radius:14px;padding:13px 16px;margin-bottom:20px;font-size:13px;color:#7A6212;font-weight:600;line-height:1.5';
+ w.innerHTML = ' Stai vedendo un riepilogo di esempio. Per spedire davvero, <a href="comparatore.html" style="color:#0078FF;font-weight:700;text-decoration:none">parti dal comparatore</a> e compila la tua spedizione.';
+ bc.insertBefore(w, bc.firstChild);
+ }
+ }
+ const total = (DATA.price || 0) + (DATA.svcTotal || 0);
+  // corriere
+  const _brand = window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getBrand(DATA.carrierName || DATA.carrierShort) : null;
+  const _cSlug = _brand ? _brand.slug : (DATA.carrierId || DATA.carrierShort || 'dhl').toLowerCase();
+  const _badgeEl = document.getElementById('ck-carrier-badge');
+  if (_badgeEl) {
+    _badgeEl.innerHTML = `<img src="carriers/${_cSlug}.svg" width="48" height="36" class="carrier-logo-icon" style="object-fit:contain" alt="${DATA.carrierName}" onerror="this.onerror=null;this.src='carriers/dhl.svg'">`;
+  }
+  document.getElementById('ck-carrier-name').textContent = DATA.carrierName;
+  document.getElementById('ck-carrier-delivery').textContent = ' ' + DATA.delivery;
+  document.getElementById('ck-carrier-price').textContent = fmt(DATA.price);
+ // indirizzi
+ document.getElementById('ck-mitt').innerHTML = `${DATA.mittNome}<span class="sub">${DATA.mittCap} ${DATA.mittCity}</span>`;
+ document.getElementById('ck-dest').innerHTML = `${DATA.destNome}<span class="sub">${DATA.destCap} ${DATA.destCity}</span>`;
+ document.getElementById('ck-colli').textContent = `${DATA.colli} ${DATA.colli===1?'collo':'colli'} · ${Number(DATA.peso).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})} kg`;
+ document.getElementById('ck-ritiro').textContent = DATA.ritiro==='hub' ? ' Hub corriere' : ' Domicilio';
+ document.getElementById('ck-svc').textContent = DATA.svc || 'Nessuno';
+ if(DATA.rif){ document.getElementById('ck-rif-row').style.display='flex'; document.getElementById('ck-rif').textContent = DATA.rif; }
+ // wallet
+ document.getElementById('nav-wallet').textContent = fmt(saldo);
+ document.getElementById('opt-wallet-bal').textContent = fmt(saldo);
+ // totale
+ document.getElementById('sum-ship').textContent = fmt(DATA.price);
+ document.getElementById('sum-svc').textContent = fmt(DATA.svcTotal || 0);
+ document.getElementById('sum-iva').textContent = fmt(total - total/1.22);
+ document.getElementById('sum-total').textContent = fmt(total);
+ // Risparmio rispetto al listino diretto del corriere
+ const saving = (DATA.listPrice || 0) - (DATA.price || 0);
+ if(saving > 0.5){
+ document.getElementById('sum-save').textContent = fmt(saving);
+ document.getElementById('sum-save-row').style.display = 'flex';
+ }
+ // valuta capienza wallet
+ updateWalletState(total);
+ updatePayBtn(total);
+}
+
+function updateWalletState(total){
+ const insuff = saldo < total;
+ const opt = document.getElementById('opt-wallet');
+ document.getElementById('opt-wallet-warn').style.display = insuff ? 'inline-block' : 'none';
+ if(insuff){
+ opt.classList.add('disabled');
+ if(PAY==='wallet') selectPay('card'); // passa a carta se il wallet non basta
+ } else {
+ opt.classList.remove('disabled');
+ }
+}
+
+function selectPay(method){
+ if(method==='wallet' && document.getElementById('opt-wallet').classList.contains('disabled')) return;
+ PAY = method;
+ document.getElementById('opt-wallet').classList.toggle('sel', method==='wallet');
+ document.getElementById('opt-card').classList.toggle('sel', method==='card');
+ document.getElementById('card-form').style.display = method==='card' ? 'block' : 'none';
+}
+
+function updatePayBtn(total){
+ document.getElementById('pay-btn-txt').textContent = 'Paga ' + fmt(total);
+}
+
+/* ═══════════════ PAGAMENTO (simulato) ═══════════════ */
+let isPaying = false; // guardia anti-doppio-pagamento
+function pay(){
+ // ── Blocco anti-doppio-invio: se un pagamento è già in corso, esci subito ──
+ if(isPaying) return;
+
+ const total = (DATA.price || 0) + (DATA.svcTotal || 0);
+
+ // Verifica capienza wallet anche qui (non fidarsi solo della UI)
+ if(PAY==='wallet' && saldo < total){
+ toast('Saldo wallet insufficiente'); 
+ selectPay('card');
+ return;
+ }
+
+ isPaying = true;
+ const btn = document.getElementById('pay-btn');
+ const txt = document.getElementById('pay-btn-txt');
+ btn.disabled = true;
+ txt.innerHTML = '<span class="spinner"></span> Elaborazione...';
+
+ // TODO backend: POST /api/orders {data: DATA, payment: PAY}
+ // IMPORTANTE: inviare un idempotency-key univoco (es. UUID generato qui e
+ // salvato), così se la richiesta parte due volte il server NON crea due ordini.
+ // Il server addebita (wallet o provider carta), crea la spedizione col corriere,
+ // restituisce { trackingCode, labelUrl }. Qui sotto è una simulazione lato demo.
+ setTimeout(() => {
+ // scala il wallet se pagamento con saldo (demo)
+ if(PAY==='wallet'){
+ saldo = Math.max(0, saldo - total);
+ safeStorage.setLocal(KEY_SALDO, String(saldo));
+ }
+ const code = genCode(DATA.carrierShort);
+ showDone(code, total);
+ // consuma i dati del checkout: così un reload non ripropone lo stesso ordine
+ try { sessionStorage.removeItem(KEY_CHECKOUT); } catch(e){}
+ // isPaying resta true: il pagamento è concluso, la pagina ora mostra la conferma
+ }, 1400);
+}
+
+function genCode(carrier){
+ const n = Math.floor(100 + Math.random()*900);
+ const c = (carrier||'VEX').replace(/[^A-Za-z]/g,'').toUpperCase().slice(0,3) || 'VEX';
+ return `VEX-${n}-${c}`;
+}
+
+let LAST = { code:'', total:0 };
+function showDone(code, total){
+ LAST = { code, total };
+ document.getElementById('done-code').textContent = code;
+ document.getElementById('done-carrier').textContent = DATA.carrierName;
+ document.getElementById('done-total').textContent = fmt(total);
+ document.getElementById('done-method').textContent = PAY==='wallet' ? 'Wallet' : 'Carta';
+ document.getElementById('view-pay').style.display = 'none';
+ document.getElementById('view-done').style.display = 'block';
+ window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ═══════════════ AZIONI CONFERMA ═══════════════ */
+function copyCode(){
+ const code = document.getElementById('done-code').textContent;
+ navigator.clipboard?.writeText(code).then(()=>toast('Codice copiato '), ()=>toast('Codice: '+code));
+}
+
+function downloadLabel(){
+ // Etichetta demo in formato testo. In produzione il backend fornisce un PDF reale.
+ const d = DATA;
+ const label =
+`╔══════════════════════════════════════╗
+ VEX ONE · ETICHETTA SPEDIZIONE
+╚══════════════════════════════════════╝
+
+CODICE: ${LAST.code}
+CORRIERE: ${d.carrierName}
+SERVIZIO: ${d.delivery}
+
+────────────────────────────────────────
+MITTENTE
+ ${d.mittNome}
+ ${d.mittCap} ${d.mittCity}
+
+DESTINATARIO
+ ${d.destNome}
+ ${d.destCap} ${d.destCity}
+────────────────────────────────────────
+
+COLLI: ${d.colli} · ${Number(d.peso).toLocaleString('it-IT',{minimumFractionDigits:2})} kg
+RITIRO: ${d.ritiro==='hub'?'Hub corriere':'Domicilio'}
+TOTALE: ${fmt(LAST.total)} (IVA incl.)
+${d.rif?'RIFERIMENTO: '+d.rif+'\\n':''}
+Generata da VEX ONE — vexone.it
+`;
+ const blob = new Blob([label], {type:'text/plain;charset=utf-8'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url; a.download = `etichetta-${LAST.code}.txt`;
+ document.body.appendChild(a); a.click();
+ document.body.removeChild(a); URL.revokeObjectURL(url);
+ toast('Etichetta scaricata ');
+}
+
+/* ═══════════════ FORMATTAZIONE INPUT CARTA ═══════════════ */
+function fmtCard(el){
+ let v = el.value.replace(/\D/g,'').slice(0,16);
+ el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExp(el){
+ let v = el.value.replace(/\D/g,'').slice(0,4);
+ if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
+ el.value = v;
+}
+
+/* ═══════════════ TOAST ═══════════════ */
+let _t;
+function toast(msg, ic){
+ document.getElementById('toast-msg').textContent = msg;
+ document.getElementById('toast-ic').textContent = ic || '';
+ const t = document.getElementById('toast');
+ t.classList.add('show'); clearTimeout(_t);
+ _t = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* init */
+render();
+</script>
+<script src="assets/js/carrier-logos.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/nav-user.js"></script>
+</body>
+</html>

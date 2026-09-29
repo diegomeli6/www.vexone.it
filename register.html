@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+  <title>VEX ONE — Registrati</title>
+  <meta name="description" content="Crea un account gratuito su VEX ONE. Inizia subito a spedire pacchi e pallet in tutta Italia ed Europa con le tariffe più convenienti.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body {
+      background-color: #F8F9FA;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: 100vh;
+    }
+    @media (min-width: 1024px) {
+      .auth-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+    @media (min-width: 1280px) {
+      .auth-grid {
+        grid-template-columns: 520px 1fr;
+      }
+    }
+    .auth-banner {
+      background: linear-gradient(145deg, #0A0A0B 0%, #16161A 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-banner::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(184, 255, 0, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .auth-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(0, 120, 255, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .inp-field {
+      width: 100%;
+      height: 46px;
+      padding: 0 16px;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #0A0A0B;
+      background: #FFFFFF;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .inp-field:focus {
+      border-color: #0078FF;
+      box-shadow: 0 0 0 4px rgba(0, 120, 255, 0.12);
+    }
+    .inp-field.err {
+      border-color: #EF4444;
+      background: #FEF2F2;
+    }
+    .type-pill {
+      flex: 1;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #6B7280;
+      transition: all 0.2s;
+      user-select: none;
+      border: none;
+      background: transparent;
+    }
+    .type-pill svg {
+      width: 15px;
+      height: 15px;
+      transition: color 0.2s;
+    }
+    .type-pill.active {
+      background: #FFFFFF;
+      color: #0A0A0B;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .type-pill.active svg {
+      color: #0078FF;
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-grid">
+  <!-- ════════ BRAND COLUMN (Desktop) ════════ -->
+  <div class="auth-banner hidden lg:flex flex-col justify-between p-12 text-white z-10">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="assets/logos/logo.svg" alt="VEX ONE" class="h-8 w-auto">
+    </a>
+
+    <div class="my-auto py-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-bold uppercase tracking-wider text-lime-400 mb-6">
+        <span class="w-2 h-2 rounded-full bg-lime-400"></span> Registrazione Gratuita
+      </div>
+      <h1 class="text-4xl xl:text-5xl font-black tracking-tight leading-tight mb-4">
+        Spedisci senza pensieri.<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-300 to-teal-200">
+          Al miglior prezzo.
+        </span>
+      </h1>
+      <p class="text-gray-400 text-sm xl:text-base leading-relaxed max-w-sm mb-10 font-medium">
+        Unisciti a VEX ONE: crea etichette, confronta tariffe in tempo reale e risparmia fino al 60% sui corrieri espresso.
+      </p>
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          Nessun canone fisso mensile, paghi solo ciò che spedisci
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          Fatturazione elettronica automatica con codice SDI
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          Ritiro a domicilio o consegna in oltre 30.000 punti
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-6 border-t border-white/10 text-xs text-gray-500 font-medium">
+      © 2026 VEX ONE S.r.l. · P.IVA IT05849300871
+    </div>
+  </div>
+
+  <!-- ════════ FORM COLUMN ════════ -->
+  <div class="flex flex-col justify-between p-6 sm:p-12 lg:p-16 xl:p-20 bg-white overflow-y-auto">
+    <!-- Mobile Header -->
+    <div class="flex justify-between items-center lg:justify-end mb-6">
+      <a href="index.html" class="lg:hidden">
+        <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="h-7 w-auto">
+      </a>
+      <a href="index.html" class="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-vexBlue flex items-center gap-1.5 transition">
+        <span>←</span> Torna alla home
+      </a>
+    </div>
+
+    <!-- Register Box -->
+    <div class="max-w-lg w-full mx-auto my-auto py-4">
+      <div class="mb-6">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 mb-2">Crea account.</h2>
+        <p class="text-sm text-gray-500 font-medium">Compila i campi sottostanti per iniziare subito a spedire.</p>
+      </div>
+
+      <!-- Account Type Switcher con Icone SVG -->
+      <div class="flex bg-gray-100 p-1 rounded-xl mb-6">
+        <button type="button" id="type-priv" onclick="setAccountType('priv')" class="type-pill active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Privato</span>
+        </button>
+        <button type="button" id="type-biz" onclick="setAccountType('biz')" class="type-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/>
+            <path d="M9 22v-4h6v4"/>
+            <path d="M8 6h.01"/>
+            <path d="M16 6h.01"/>
+            <path d="M8 10h.01"/>
+            <path d="M16 10h.01"/>
+            <path d="M8 14h.01"/>
+            <path d="M16 14h.01"/>
+          </svg>
+          <span>Azienda / P.IVA</span>
+        </button>
+      </div>
+
+      <form id="form-register" onsubmit="handleRegister(event)" novalidate class="space-y-4">
+        <!-- SEZIONE PRIVATO -->
+        <div id="sec-priv" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="reg-nome" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Nome</label>
+            <input type="text" id="reg-nome" class="inp-field" placeholder="Mario" autocomplete="given-name">
+          </div>
+          <div>
+            <label for="reg-cognome" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Cognome</label>
+            <input type="text" id="reg-cognome" class="inp-field" placeholder="Rossi" autocomplete="family-name">
+          </div>
+        </div>
+
+        <!-- SEZIONE AZIENDA -->
+        <div id="sec-biz" class="space-y-3.5 hidden">
+          <div>
+            <label for="reg-ragione" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Ragione Sociale</label>
+            <input type="text" id="reg-ragione" class="inp-field" placeholder="Es. Rossi Logistica S.r.l." autocomplete="organization">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="reg-piva" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Partita IVA / C.F.</label>
+              <input type="text" id="reg-piva" class="inp-field uppercase" placeholder="IT01234567890" maxlength="16">
+            </div>
+            <div>
+              <label for="reg-referente" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Referente</label>
+              <input type="text" id="reg-referente" class="inp-field" placeholder="Nome e Cognome">
+            </div>
+          </div>
+        </div>
+
+        <!-- TELEFONO & EMAIL -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="reg-tel" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Telefono</label>
+            <input type="tel" id="reg-tel" class="inp-field" placeholder="+39 340 1234567" autocomplete="tel">
+          </div>
+          <div>
+            <label for="reg-email" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Email</label>
+            <input type="email" id="reg-email" class="inp-field" placeholder="mario@esempio.it" autocomplete="email">
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="reg-pass" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Password</label>
+            <input type="password" id="reg-pass" class="inp-field" placeholder="Min. 8 caratteri" autocomplete="new-password">
+          </div>
+          <div>
+            <label for="reg-pass-conf" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Conferma Password</label>
+            <input type="password" id="reg-pass-conf" class="inp-field" placeholder="Ripeti password" autocomplete="new-password">
+          </div>
+        </div>
+
+        <!-- Error Message Container -->
+        <p id="reg-err" class="text-xs font-semibold text-red-500 hidden"></p>
+
+        <!-- Terms and Privacy -->
+        <div class="pt-2">
+          <label class="flex items-start gap-2.5 cursor-pointer select-none">
+            <input type="checkbox" id="reg-terms" class="w-4 h-4 mt-0.5 rounded border-gray-300 text-vexBlue focus:ring-vexBlue">
+            <span class="text-xs text-gray-600 leading-relaxed">
+              Ho letto e accetto i <a href="termini.html" target="_blank" class="text-vexBlue font-semibold underline">Termini e Condizioni</a> e la <a href="privacy.html" target="_blank" class="text-vexBlue font-semibold underline">Privacy Policy</a> di VEX ONE.
+            </span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="btn-reg-submit" class="btn-dark shine w-full py-3.5 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 mt-4">
+          <span>Crea il mio account →</span>
+        </button>
+      </form>
+
+      <!-- Divisore -->
+      <div class="relative my-7 text-center">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+        <span class="relative px-4 bg-white text-xs font-bold text-gray-400 uppercase tracking-widest">oppure</span>
+      </div>
+
+      <!-- Link Login -->
+      <div class="text-center">
+        <p class="text-xs font-medium text-gray-500">
+          Hai già un account?
+          <a href="login.html" class="font-bold text-vexBlue hover:underline ml-1">Accedi qui →</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Mobile -->
+    <div class="text-center text-xs text-gray-400 font-medium py-4">
+      Nessun costo di attivazione o vincolo contrattuale
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 z-50 flex items-center gap-2.5">
+  <span id="toast-ic" class="flex items-center">
+    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  </span>
+  <span id="toast-msg">Registrazione completata</span>
+</div>
+
+<script src="assets/js/api.js"></script>
+<script>
+  let accountType = 'priv';
+
+  function setAccountType(type) {
+    accountType = type;
+    document.getElementById('type-priv').classList.toggle('active', type === 'priv');
+    document.getElementById('type-biz').classList.toggle('active', type === 'biz');
+    document.getElementById('sec-priv').classList.toggle('hidden', type === 'biz');
+    document.getElementById('sec-biz').classList.toggle('hidden', type === 'priv');
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    const ic = document.getElementById('toast-ic');
+    if (type === 'success') {
+      ic.innerHTML = '<svg class="w-4 h-4 text-emerald-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    } else {
+      ic.innerHTML = '<svg class="w-4 h-4 text-rose-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+    }
+    t.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+      t.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('reg-err');
+    errEl.classList.add('hidden');
+
+    const email = document.getElementById('reg-email').value.trim();
+    const tel = document.getElementById('reg-tel').value.trim();
+    const pass = document.getElementById('reg-pass').value;
+    const passConf = document.getElementById('reg-pass-conf').value;
+    const terms = document.getElementById('reg-terms').checked;
+
+    if (!terms) {
+      errEl.textContent = 'È necessario accettare i Termini e la Privacy Policy per proseguire.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      errEl.textContent = 'Inserisci un indirizzo email valido.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    if (!pass || pass.length < 6) {
+      errEl.textContent = 'La password deve contenere almeno 6 caratteri.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    if (pass !== passConf) {
+      errEl.textContent = 'Le due password non corrispondono.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    let firstName = '';
+    let lastName = '';
+
+    if (accountType === 'priv') {
+      const nome = document.getElementById('reg-nome').value.trim();
+      const cognome = document.getElementById('reg-cognome').value.trim();
+      if (!nome || !cognome) {
+        errEl.textContent = 'Inserisci Nome e Cognome.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      firstName = nome;
+      lastName = cognome;
+    } else {
+      const ragione = document.getElementById('reg-ragione').value.trim();
+      const piva = document.getElementById('reg-piva').value.trim();
+      const referente = document.getElementById('reg-referente').value.trim();
+      if (!ragione || !piva) {
+        errEl.textContent = 'Inserisci Ragione Sociale e Partita IVA / Codice Fiscale.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      firstName = referente || ragione;
+      lastName = ragione;
+    }
+
+    const btn = document.getElementById('btn-reg-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span> Creazione account...';
+
+    try {
+      await VEX_API.register({
+        email: email,
+        password: pass,
+        firstName: firstName,
+        lastName: lastName,
+        phone: tel
+      });
+
+      showToast('Account creato con successo! Accesso in corso...', 'success');
+
+      try {
+        await VEX_API.login(email, pass);
+      } catch(loginErr) {
+        console.warn('Auto-login post register differito:', loginErr);
+      }
+
+      setTimeout(() => {
+        window.location.href = 'comparatore.html';
+      }, 600);
+    } catch (err) {
+      console.error('Errore registrazione:', err);
+      btn.disabled = false;
+      btn.innerHTML = '<span>Crea il mio account →</span>';
+      const msg = err.message || 'Errore durante la registrazione. Riprova.';
+      errEl.textContent = msg;
+      errEl.classList.remove('hidden');
+      showToast(msg, 'error');
+    }
+  }
+</script>
+</body>
+</html>

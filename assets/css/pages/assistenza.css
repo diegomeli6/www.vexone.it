@@ -1,0 +1,75 @@
+/* ==========================================================================
+   VEXONE - CENTRO ASSISTENZA (assistenza.html)
+   ========================================================================== */
+.chan {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1.5px solid #EDEFF2;
+  border-radius:var(--radius-md);
+  transition: all .2s;
+  text-decoration: none;
+  background: #fff;
+}
+.chan:hover {
+  border-color: var(--vexBlue, #0078FF);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 120, 255, .1);
+}
+.faq-item {
+  border: 1px solid #EDEFF2;
+  border-radius: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: border .2s;
+  background: #fff;
+  margin-bottom: 10px;
+}
+.faq-item:hover {
+  border-color: #C7D2DC;
+}
+.faq-item.open {
+  border-color: var(--vexBlue, #0078FF);
+}
+.faq-body {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .4s ease, opacity .3s;
+}
+.faq-item.open .faq-body {
+  max-height: 320px;
+  opacity: 1;
+}
+.faq-arr {
+  transition: transform .3s;
+  display: inline-block;
+  color: var(--vexMuted, #9CA3AF);
+}
+.faq-item.open .faq-arr {
+  transform: rotate(180deg);
+  color: var(--vexBlue, #0078FF);
+}
+.cat-pill {
+  font-size: 11px;
+  font-weight:700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 8px 16px;
+  border-radius:var(--radius-lg);
+  border: 1.5px solid #E5E7EB;
+  background: #fff;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cat-pill:hover {
+  border-color: var(--vexDark, #0A0A0B);
+  color: var(--vexDark, #0A0A0B);
+}
+.cat-pill.active {
+  background: var(--vexDark, #0A0A0B);
+  color: #fff;
+  border-color: var(--vexDark, #0A0A0B);
+}

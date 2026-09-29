@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Traccia la tua spedizione VEX ONE in tempo reale: stato aggiornato, posizione del mezzo e avvisi di consegna, tutti i corrieri in un unico posto.">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Tracking</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/tracking.css">
+  <script>
+    (function(){
+      try {
+        const isLogged = localStorage.getItem('vexone_logged_in') === 'true' || 
+                         localStorage.getItem('vexone:auth:v1') === 'true' ||
+                         !!localStorage.getItem('vexone_access_token');
+        if (!isLogged) {
+          window.location.replace('login.html?redirect=tracking.html');
+          return;
+        }
+        document.documentElement.classList.add('is-logged-in');
+      } catch(e){}
+    })();
+  </script>
+  <script src="assets/js/carrier-logos.js"></script>
+</head>
+<body>
+
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ PAGE ══ -->
+<main class="app-page-container">
+
+  <!-- HEADER UNIFICATO -->
+  <header class="page-header">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="page-eyebrow">
+          <span>Monitoraggio Live</span>
+          <span>·</span>
+          <span id="hdr-transit-count">Tutte le Spedizioni</span>
+        </div>
+        <h1 class="page-title">Tracking Spedizioni</h1>
+        <p class="page-subtitle">Monitora lo stato di consegna in tempo reale, tappe intermedie e orari stimati di arrivo.</p>
+      </div>
+      <button class="btn-blue shine flex items-center gap-2 self-start md:self-auto" onclick="openAddModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Aggiungi Spedizione
+      </button>
+    </div>
+  </header>
+
+ <!-- KPI bar -->
+ <div class="kpi-bar">
+ <div class="kpi">
+ <div class="kpi-lbl">Spedizioni attive</div>
+ <div class="kpi-val" id="kpi-active">0</div>
+ <div class="kpi-sub" id="kpi-active-sub">totali</div>
+ </div>
+ <div class="kpi">
+ <div class="kpi-lbl">In consegna oggi</div>
+ <div class="kpi-val text-vexBlue" id="kpi-today">0</div>
+ <div class="kpi-sub flex items-center gap-1.5" id="kpi-today-sub">—</div>
+ </div>
+ <div class="kpi">
+ <div class="kpi-lbl">In transito</div>
+ <div class="kpi-val" id="kpi-transit">0</div>
+ <div class="kpi-sub" id="kpi-transit-sub">—</div>
+ </div>
+ <div class="kpi">
+ <div class="kpi-lbl">In hub</div>
+ <div class="kpi-val" id="kpi-hub">0</div>
+ <div class="kpi-sub" id="kpi-hub-sub">—</div>
+ </div>
+ </div>
+
+ <!-- Tabs -->
+ <div class="max-w-md mb-8">
+ <div class="trk-tabs">
+ <button class="trk-tab on" onclick="switchTab('mie')" id="tab-mie"> Le mie spedizioni</button>
+ <button class="trk-tab" onclick="switchTab('cerca')" id="tab-cerca"> Cerca codice</button>
+ </div>
+ </div>
+
+ <!-- ═══ PANEL MIE ═══ -->
+ <div class="trk-panel on" id="panel-mie">
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+ <!-- LISTA -->
+ <div class="lg:col-span-4">
+ <div class="bg-white rounded-2xl p-5" style="box-shadow:0 6px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)">
+ <div class="flex justify-between items-center mb-4">
+ <h2 class="text-base font-bold tracking-tight">Spedizioni attive</h2>
+ <span class="badge b-blue" id="kpi-badge-count">0 attive</span>
+ </div>
+ <!-- Filtri -->
+ <div class="flex gap-2 mb-4 flex-wrap">
+ <button class="btn-ghost on text-xs py-1.5 px-3" onclick="filterShip('all',this)">Tutte</button>
+ <button class="btn-ghost text-xs py-1.5 px-3" onclick="filterShip('consegna',this)">In consegna</button>
+ <button class="btn-ghost text-xs py-1.5 px-3" onclick="filterShip('transit',this)">In transito</button>
+ <button class="btn-ghost text-xs py-1.5 px-3" onclick="filterShip('hub',this)">In hub</button>
+ </div>
+      <!-- Lista -->
+      <div id="ship-list" class="space-y-2"></div>
+    </div>
+  </div>
+
+ <!-- DETTAGLIO -->
+ <div class="lg:col-span-8" id="det-wrap">
+
+ <!-- Alert urgente (solo se in consegna oggi) -->
+ <div id="det-alert" class="nota mb-4 hidden">
+ <span class="text-base flex items-center"><svg class="icon text-amber-500" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg></span>
+ <div>
+ <p class="font-bold text-sm">Consegna prevista oggi!</p>
+ <p id="det-alert-txt" class="text-gray-500 text-xs mt-0.5">Preparati a ricevere il pacco entro le 18:00.</p>
+ </div>
+ <div class="ml-auto flex-shrink-0" id="det-countdown-wrap">
+ <p class="text-xs font-medium text-gray-500 mb-1 text-right">Tempo rimasto</p>
+ <div class="countdown" id="det-countdown"></div>
+ </div>
+ </div>
+
+ <!-- Stato + info -->
+ <div class="bg-white rounded-2xl p-7 mb-5" style="box-shadow:0 12px 40px rgba(0,0,0,.07);border:1px solid rgba(0,0,0,.04)">
+ <div class="flex justify-between items-start mb-5 gap-4">
+ <div class="flex-1 min-w-0">
+ <span class="badge b-blue mb-2 inline-block" id="det-badge">—</span>
+ <h2 class="text-4xl font-bold tracking-tight leading-none mb-1" id="det-title">—</h2>
+ <p class="text-gray-400 font-medium text-sm" id="det-eta">—</p>
+ </div>
+ <div class="text-right flex-shrink-0">
+ <p class="lbl mb-1">Codice tracking</p>
+ <p class="font-bold text-sm" id="det-code">—</p>
+ <!-- Azioni rapide -->
+ <div class="flex gap-1.5 justify-end mt-2">
+ <button class="btn-icon" title="Copia codice" onclick="copyCode()"><svg class="icon" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+ <button class="btn-icon" title="Condividi link" onclick="shareLink()"><svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg></button>
+ <button class="btn-icon" title="Notifiche" onclick="toggleNotif()"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
+ </div>
+ </div>
+ </div>
+
+ <!-- Progress -->
+ <div class="mb-5">
+ <div class="prog-steps" id="det-prog-steps">
+ <span class="prog-step done">Creata</span>
+ <span class="prog-step done">Ritirata</span>
+ <span class="prog-step cur">Transito</span>
+ <span class="prog-step">Consegnata</span>
+ </div>
+ <div class="prog-track">
+ <div class="prog-fill" id="det-prog" style="width:0%"></div>
+ </div>
+ </div>
+
+ <!-- Info grid -->
+ <div class="bg-vexLight rounded-2xl p-5 grid grid-cols-2 md:grid-cols-4 gap-4 border border-gray-100 mb-5">
+ <div><span class="lbl">Vettore</span><span class="text-base font-bold" id="det-carrier">—</span></div>
+ <div><span class="lbl">Servizio</span><span class="text-base font-bold" id="det-service">—</span></div>
+ <div><span class="lbl">Mittente</span><span class="text-sm font-bold text-gray-600" id="det-from">—</span></div>
+ <div><span class="lbl">Destinazione</span><span class="text-sm font-bold text-gray-600" id="det-to">—</span></div>
+ </div>
+
+ <!-- Azioni -->
+ <div class="actions" id="det-actions">
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="showToast('Apertura chat corriere...')"> Contatta corriere</button>
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="openProblemModal()"> Segnala problema</button>
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="showToast('Istruzione di consegna salvata ')"> Istruzioni consegna</button>
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="showToast('PDF generato ')"><svg class="icon mr-1.5 inline" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica documenti</button>
+ </div>
+ </div>
+
+ <!-- Timeline + Mappa -->
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+ <!-- Timeline -->
+ <div class="bg-white p-6 rounded-2xl" style="box-shadow:0 6px 24px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.04)">
+ <div class="tl-header">
+ <div>
+ <h3 class="text-base font-bold tracking-tight">Cronologia eventi</h3>
+ <p class="text-[10px] text-gray-400 font-bold mt-0.5">Aggiornamenti in tempo reale</p>
+ </div>
+ <span class="tl-ship-ref" id="det-tl-ref">—</span>
+ </div>
+ <div class="relative border-l-2 border-gray-100 ml-3 space-y-5 pb-2" id="det-tl"></div>
+ </div>
+
+  <!-- Scheda Tratta & Checkpoint -->
+  <div class="bg-white p-6 rounded-2xl flex flex-col justify-between" style="box-shadow:0 6px 24px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.04)">
+    <div>
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+        <div>
+          <h3 class="text-base font-bold tracking-tight text-gray-900 m-0">Tratta &amp; Checkpoint</h3>
+          <p class="text-xs text-gray-400 font-medium m-0 mt-0.5">Rilevamento del percorso in tempo reale</p>
+        </div>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+          Checkpoint Attivo
+        </span>
+      </div>
+
+      <!-- Tratta Origine / Destinazione -->
+      <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 mb-4">
+        <div class="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+          <span>Percorso Spedizione</span>
+          <span id="det-map-route" class="text-blue-600 font-bold normal-case text-xs">— → —</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+            <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-900 m-0">Hub di Smistamento</p>
+            <p class="text-xs text-gray-500 m-0 mt-0.5">Ultimo passaggio registrato ai varchi automatizzati</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Box Mezzo & Distanza -->
+    <div class="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center justify-between gap-4 mt-auto">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm flex-shrink-0" id="det-veh-av">D</div>
+        <div class="min-w-0">
+          <span class="block text-xs font-medium text-gray-400">Mezzo incaricato</span>
+          <span class="text-sm font-bold text-gray-900 truncate block" id="det-vehicle">—</span>
+        </div>
+      </div>
+      <div class="text-right flex-shrink-0">
+        <span class="block text-xs font-medium text-gray-400">Stima distanza</span>
+        <span class="text-base font-bold text-blue-600" id="det-dist">—</span>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- ═══ PANEL CERCA ═══ -->
+  <div class="trk-panel" id="panel-cerca">
+ <div class="max-w-2xl mx-auto mb-8">
+ <div class="relative mb-3">
+ <input type="text" id="search-inp"
+ placeholder="es. VEX-984-2026-DHL oppure 1Z999AA101234567"
+ class="w-full bg-white border-2 border-gray-100 rounded-full px-10 py-5 text-lg md:text-xl font-bold tracking-widest uppercase outline-none focus:border-vexBlue/50 ts shadow-sm text-vexDark text-center"
+ onkeydown="if(event.key==='Enter')doSearch()"
+ oninput="detectCarrier(this.value)">
+ <button onclick="doSearch()" class="absolute right-3 top-3 bottom-3 bg-vexDark text-white px-6 rounded-full font-semibold text-xs hover:bg-vexBlue ts shine">Cerca</button>
+ </div>
+ <!-- Carrier rilevato automaticamente -->
+ <div id="carrier-hint" class="hidden text-center mb-3">
+ <span class="badge b-blue" id="carrier-hint-txt">—</span>
+ </div>
+ <!-- Recenti reali salvate -->
+  <div id="recent-search-wrap" class="hidden flex gap-2 justify-center flex-wrap items-center">
+    <span class="text-xs font-medium text-gray-500 self-center">Recenti:</span>
+    <div id="recent-search-chips" class="flex gap-2 flex-wrap"></div>
+  </div>
+ </div>
+
+ <!-- Empty state -->
+ <div id="sr-empty" class="empty">
+ <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4 text-gray-400"><svg class="icon" style="width:32px;height:32px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+ <h3 class="text-2xl font-bold tracking-tight mb-2">Inserisci un codice</h3>
+ <p class="text-gray-400 text-sm max-w-sm mx-auto">Supportiamo codici VEX, DHL Express, GLS, BRT, FedEx, UPS e SDA. Il risultato compare in tempo reale.</p>
+ </div>
+
+ <!-- Risultato ricerca -->
+ <div id="sr-result" class="hidden">
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
+
+ <div class="lg:col-span-5 space-y-6">
+ <!-- Alert -->
+ <div id="sr-alert" class="nota hidden">
+ <span></span>
+ <div><p class="font-bold text-sm">Consegna prevista oggi!</p><p class="text-gray-500 text-xs mt-0.5" id="sr-alert-txt">—</p></div>
+ </div>
+
+ <!-- Card stato -->
+ <div class="bg-white p-8 rounded-2xl" style="box-shadow:0 20px 50px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)">
+ <div class="flex justify-between items-center mb-6">
+ <span class="badge b-blue" id="sr-badge">—</span>
+ <div class="flex gap-1.5">
+ <button class="btn-icon" title="Copia codice" onclick="copyCode(true)"><svg class="icon" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+ <button class="btn-icon" title="Condividi link" onclick="shareLink()"><svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg></button>
+ </div>
+ </div>
+ <h2 class="text-4xl font-bold tracking-tight leading-none mb-2" id="sr-title">—</h2>
+ <p class="text-gray-400 font-medium text-sm mb-6" id="sr-eta">—</p>
+ <div class="mb-5">
+ <div class="prog-steps mb-2" id="sr-prog-steps">
+ <span class="prog-step">Creata</span><span class="prog-step">Ritirata</span><span class="prog-step">Transito</span><span class="prog-step">Consegnata</span>
+ </div>
+ <div class="prog-track"><div class="prog-fill" id="sr-prog" style="width:0%"></div></div>
+ </div>
+ <div class="bg-vexLight rounded-2xl p-5 grid grid-cols-2 gap-4 border border-gray-100">
+ <div><span class="lbl">Vettore</span><span class="text-lg font-bold" id="sr-carrier">—</span></div>
+ <div><span class="lbl">Servizio</span><span class="text-lg font-bold" id="sr-service">—</span></div>
+ <div><span class="lbl">Mittente</span><span class="text-sm font-bold text-gray-600" id="sr-from">—</span></div>
+ <div><span class="lbl">Destinazione</span><span class="text-sm font-bold text-gray-600" id="sr-to">—</span></div>
+ </div>
+ </div>
+
+ <!-- Timeline -->
+ <div class="bg-white p-7 rounded-2xl" style="box-shadow:0 6px 24px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.04)">
+ <div class="tl-header">
+ <div>
+ <h3 class="text-lg font-bold tracking-tight">Cronologia eventi</h3>
+ <p class="text-[10px] text-gray-400 font-bold mt-0.5">Aggiornamenti in tempo reale</p>
+ </div>
+ <span class="tl-ship-ref" id="sr-tl-ref">—</span>
+ </div>
+ <div class="relative border-l-2 border-gray-100 ml-3 space-y-6 pb-2" id="sr-tl"></div>
+ </div>
+
+ <!-- Azioni -->
+ <div class="actions">
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="showToast('Spedizione aggiunta al tuo account ')"> Aggiungi al mio account</button>
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="showToast('Apertura chat corriere...')"> Contatta corriere</button>
+ <button class="btn-ghost text-xs py-2 px-3.5" onclick="openProblemModal()"> Segnala problema</button>
+ </div>
+ </div>
+
+ <!-- Mappa grande -->
+ <div class="lg:col-span-7 map-bg rounded-2xl relative overflow-hidden border border-gray-800 min-h-[520px] flex items-center justify-center" style="box-shadow:0 24px 60px rgba(0,0,0,.28)">
+ <div class="absolute top-6 left-6 bg-black/50 backdrop-blur-md border border-gray-700 px-5 py-2.5 rounded-full flex items-center gap-3 z-10">
+ <span class="w-2.5 h-2.5 rounded-full bg-vexLime animate-pulse"></span>
+ <span class="text-white text-xs font-semibold">Posizione in tempo reale</span>
+ </div>
+ <div class="map-route-label" style="top:20px;right:16px" id="sr-map-route">— → —</div>
+ <svg class="absolute w-full h-full z-0 opacity-25" viewBox="0 0 100 100" preserveAspectRatio="none">
+ <path d="M 10 85 Q 35 55 50 50 T 90 15" stroke="#B8FF00" stroke-width=".5" fill="transparent" stroke-dasharray="2,2"/>
+ <circle cx="10" cy="85" r="2" fill="#9CA3AF"/>
+ <circle cx="90" cy="15" r="2.5" fill="#B8FF00"/>
+ </svg>
+ <div class="relative w-6 h-6 bg-vexLime rounded-full rp border-2 border-white shadow-[0_0_20px_#B8FF00] z-10">
+ <div class="absolute inset-0 flex items-center justify-center rotate-45"><div class="w-2 h-2 bg-vexDark rounded-sm"></div></div>
+ </div>
+ <div class="absolute bottom-6 left-6 right-6 bg-white/10 backdrop-blur-xl border border-white/10 p-5 rounded-2xl z-10 flex justify-between items-center text-white">
+ <div class="flex items-center gap-4">
+ <div class="w-11 h-11 bg-vexBlue rounded-full flex items-center justify-center font-bold text-lg" id="sr-veh-av">—</div>
+ <div>
+ <span class="block text-xs font-medium text-gray-500 mb-0.5">Mezzo in avvicinamento</span>
+ <span class="text-lg font-bold" id="sr-vehicle">—</span>
+ </div>
+ </div>
+ <div class="text-right hidden sm:block">
+ <span class="block text-xs font-medium text-gray-500 mb-0.5">Distanza</span>
+ <span class="text-2xl font-bold text-vexLime" id="sr-dist">—</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</main>
+
+<!-- ══ MODAL: AGGIUNGI SPEDIZIONE ══ -->
+<div class="modal-ov" id="modal-add" onclick="closeModal('modal-add')">
+ <div class="modal-box" onclick="event.stopPropagation()">
+ <div class="flex justify-between items-center mb-6">
+ <h2 class="text-2xl font-bold tracking-tight">Aggiungi spedizione</h2>
+ <button class="btn-icon" onclick="closeModal('modal-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+ </div>
+ <p class="text-sm text-gray-500 mb-6">Inserisci il codice tracking del corriere per aggiungerlo alle tue spedizioni monitorate.</p>
+ <div class="space-y-4">
+ <div>
+ <label class="lbl">Codice tracking *</label>
+ <input type="text" placeholder="es. 1Z999AA101234567 o VEX-000-0000-DHL" class="inp" id="add-code-inp" oninput="detectCarrier(this.value,'add')">
+ <div id="add-carrier-hint" class="hidden mt-2"><span class="badge b-green" id="add-carrier-txt">—</span></div>
+ </div>
+ <div>
+ <label class="lbl">Nome / descrizione (opzionale)</label>
+ <input type="text" placeholder="es. Componenti PC, Regalo compleanno..." class="inp">
+ </div>
+ <div class="grid grid-cols-2 gap-3">
+ <div>
+ <label class="lbl">Corriere</label>
+ <select class="inp">
+ <option>Rileva automaticamente</option>
+ <option>DHL Express</option>
+ <option>GLS Italy</option>
+ <option>BRT Corriere</option>
+ <option>FedEx</option>
+ <option>UPS</option>
+ <option>SDA</option>
+ <option>Poste Italiane</option>
+ </select>
+ </div>
+ <div>
+ <label class="lbl">Notifiche</label>
+ <select class="inp">
+ <option>Email + Push</option>
+ <option>Solo Email</option>
+ <option>Solo Push</option>
+ <option>Disabilitate</option>
+ </select>
+ </div>
+ </div>
+ </div>
+ <div class="flex gap-3 mt-7">
+ <button class="btn-dark flex-1 shine" onclick="addShipment()">Aggiungi e traccia</button>
+ <button class="btn-ghost" onclick="closeModal('modal-add')">Annulla</button>
+ </div>
+ </div>
+</div>
+
+<!-- ══ MODAL: SEGNALA PROBLEMA ══ -->
+<div class="modal-ov" id="modal-problem" onclick="closeModal('modal-problem')">
+ <div class="modal-box" onclick="event.stopPropagation()">
+ <div class="flex justify-between items-center mb-6">
+ <h2 class="text-2xl font-bold tracking-tight">Segnala problema</h2>
+ <button class="btn-icon" onclick="closeModal('modal-problem')"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+ </div>
+ <div class="space-y-3 mb-6">
+ <label class="lbl">Tipo di problema</label>
+ <div class="grid grid-cols-2 gap-2">
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Pacco danneggiato</span></button>
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Ritardo consegna</span></button>
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Tentativo fallito</span></button>
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Tracking fermo</span></button>
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Indirizzo errato</span></button>
+ <button class="nota text-left hover:border-vexBlue ts cursor-pointer" style="background:#F8F9FA;border-color:#E5E7EB" onclick="selectProblem(this)"><svg class="icon mr-2 text-gray-400 inline" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="text-xs font-semibold">Altro problema</span></button>
+ </div>
+ </div>
+ <div class="mb-6">
+ <label class="lbl">Descrizione (opzionale)</label>
+ <textarea class="inp resize-none" rows="3" placeholder="Descrivi il problema in dettaglio..."></textarea>
+ </div>
+ <div class="flex gap-3">
+ <button class="btn-dark flex-1 shine" onclick="submitProblem()">Invia segnalazione</button>
+ <button class="btn-ghost" onclick="closeModal('modal-problem')">Annulla</button>
+ </div>
+ </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite" style="display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;white-space:nowrap!important">
+  <span class="toast-dot" style="width:8px;height:8px;border-radius:50%;background:#B8FF00;flex-shrink:0;display:inline-block;box-shadow:0 0 6px rgba(184,255,0,.6)"></span>
+  <span id="toast-msg">OK</span>
+</div>
+
+<!-- Floating Action Button (+ Nuova Spedizione) -->
+<a href="comparatore.html" class="fab-new-shipment" title="Crea una nuova spedizione">
+  <span class="fab-icon">+</span>
+  <span>Nuova Spedizione</span>
+</a>
+
+<script src="assets/js/api.js"></script>
+<script>
+// ── DATI REALI (Zero dati fittizi) ─────────────────────────────────
+let SHIPS = [];
+window._DEFAULT_DET_HTML = document.getElementById('det-wrap') ? document.getElementById('det-wrap').innerHTML : '';
+
+// ── TABS ─────────────────────────────────────────────────────────────
+function switchTab(t) {
+ ['mie','cerca'].forEach(x => {
+   const tab = document.getElementById('tab-'+x);
+   const panel = document.getElementById('panel-'+x);
+   if (tab) tab.classList.toggle('on', x===t);
+   if (panel) panel.classList.toggle('on', x===t);
+ });
+}
+
+// ── KPI COUNTERS ─────────────────────────────────────────────────────
+function updateKpis() {
+  const total = SHIPS.length;
+  const active = SHIPS.filter(s => s.status !== 'consegnato' && s.status !== 'delivered').length;
+  const today = SHIPS.filter(s => s.todayAlert || (s.status === 'consegna')).length;
+  const transit = SHIPS.filter(s => s.status === 'transit').length;
+  const hub = SHIPS.filter(s => s.status === 'hub').length;
+
+  const elActive = document.getElementById('kpi-active');
+  const elActiveSub = document.getElementById('kpi-active-sub');
+  const elToday = document.getElementById('kpi-today');
+  const elTodaySub = document.getElementById('kpi-today-sub');
+  const elTransit = document.getElementById('kpi-transit');
+  const elTransitSub = document.getElementById('kpi-transit-sub');
+  const elHub = document.getElementById('kpi-hub');
+  const elHubSub = document.getElementById('kpi-hub-sub');
+  const elBadgeCount = document.getElementById('kpi-badge-count');
+
+  if (elActive) elActive.textContent = active;
+  if (elActiveSub) elActiveSub.textContent = `su ${total} totali`;
+  if (elToday) elToday.textContent = today;
+  if (elTodaySub) elTodaySub.innerHTML = today > 0 ? `<span class="alert-dot"></span> In arrivo` : `—`;
+  if (elTransit) elTransit.textContent = transit;
+  if (elTransitSub) elTransitSub.textContent = transit > 0 ? `${transit} in viaggio` : `—`;
+  if (elHub) elHub.textContent = hub;
+  if (elHubSub) elHubSub.textContent = hub > 0 ? `In lavorazione` : `—`;
+  if (elBadgeCount) elBadgeCount.textContent = `${active} attive`;
+
+  const hdrCount = document.getElementById('hdr-transit-count');
+  if (hdrCount) {
+    hdrCount.textContent = active > 0 ? `${active} Spedizioni in Transito` : 'Tutte le Spedizioni';
+  }
+}
+
+// ── LISTA ─────────────────────────────────────────────────────────────
+function buildList() {
+  const listEl = document.getElementById('ship-list');
+  if (!listEl) return;
+
+  if (SHIPS.length === 0) {
+    listEl.innerHTML = `
+      <div class="text-center py-12 px-3">
+        <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+            <polyline points="3.29 7 12 12 20.71 7"/>
+            <line x1="12" y1="22" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <p class="font-bold text-sm text-gray-800 mb-1">Nessuna spedizione attiva</p>
+        <p class="text-xs text-gray-500 mb-4">Non hai ancora spedizioni collegate a questo account.</p>
+        <a href="comparatore.html" class="inline-flex items-center gap-1.5 px-4 py-2 bg-vexDark text-white text-xs font-bold rounded-xl hover:bg-vexBlue transition">
+          Spedisci ora →
+        </a>
+      </div>`;
+    renderEmptyDetail();
+    return;
+  }
+
+  listEl.innerHTML = SHIPS.map((s, idx) => {
+    const carrierLogo = window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getLogoHtml(s.carrier, 38) : `<div style="width:38px;height:38px;border-radius:22%;background:#EFF6FF;color:#0078FF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${s.initials||'VX'}</div>`;
+    return `
+    <div class="ship-row${idx === 0 ? ' sel' : ''}" id="sr-row-${idx}" data-status="${s.status}" onclick="selShip(${idx})">
+      <div style="flex-shrink:0">${carrierLogo}</div>
+      <div style="min-width:0">
+        <div style="font-size:12.5px;font-weight:700;color:#0A0A0B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.recipient}</div>
+        <div style="font-size:11px;font-weight:500;color:#6B7280;margin-top:1px">${s.code} · ${s.dest}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        ${s.todayAlert ? '<span class="alert-dot"></span>' : ''}
+        <span class="badge ${s.badgeClass}">${s.badge}</span>
+      </div>
+      <span style="color:#D1D5DB;font-size:14px">›</span>
+    </div>`;
+  }).join('');
+
+  renderDet(SHIPS[0]);
+}
+
+function selShip(idx) {
+  document.querySelectorAll('.ship-row').forEach(r => r.classList.remove('sel'));
+  const row = document.getElementById('sr-row-' + idx);
+  if (row) row.classList.add('sel');
+  if (SHIPS[idx]) renderDet(SHIPS[idx]);
+}
+
+function filterShip(status, btn) {
+  document.querySelectorAll('#panel-mie .btn-ghost').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.ship-row').forEach(r => {
+    r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
+  });
+}
+
+function renderEmptyDetail() {
+  const detWrap = document.getElementById('det-wrap');
+  if (!detWrap) return;
+  detWrap.innerHTML = `
+    <div class="bg-white rounded-2xl p-10 md:p-14 text-center" style="box-shadow:0 6px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)">
+      <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4 text-vexBlue">
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h2"/>
+          <circle cx="7" cy="17" r="2"/>
+          <circle cx="17" cy="17" r="2"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Monitora le tue spedizioni</h3>
+      <p class="text-sm text-gray-500 max-w-md mx-auto mb-6">Non risultano spedizioni create. Quando spedisci con VEX ONE, potrai seguire qui ogni avanzamento del corriere con stime di consegna precise.</p>
+      <a href="comparatore.html" class="inline-flex items-center gap-2 px-6 py-3 bg-vexBlue text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg hover:bg-blue-600 transition">
+        Confronta Tariffe e Spedisci →
+      </a>
+    </div>`;
+}
+
+// ── DETTAGLIO ─────────────────────────────────────────────────────────
+function renderDet(s) {
+  if (!s) return;
+  const detWrap = document.getElementById('det-wrap');
+  if (!detWrap) return;
+
+  if (!document.getElementById('det-code')) {
+    if (window._DEFAULT_DET_HTML) {
+      detWrap.innerHTML = window._DEFAULT_DET_HTML;
+    } else {
+      return;
+    }
+  }
+
+  el('det-badge').textContent = s.badge;
+  el('det-badge').className = 'badge ' + s.badgeClass + ' mb-2 inline-block';
+  el('det-title').textContent = s.title;
+  el('det-eta').innerHTML = s.eta;
+  el('det-code').textContent = s.code;
+  el('det-carrier').innerHTML = window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getLogoHtml(s.carrier, 22, true) : s.carrier;
+  el('det-service').textContent = s.service;
+  el('det-from').textContent = s.from;
+  el('det-to').textContent = s.to;
+  el('det-vehicle').textContent = s.vehicle;
+  el('det-veh-av').textContent = s.vav;
+  el('det-dist').textContent = s.dist;
+  el('det-map-route').textContent = s.from + ' → ' + s.to;
+  el('det-prog').style.width = s.prog + '%';
+  renderProgSteps('det-prog-steps', s.progSteps);
+  el('det-tl-ref').textContent = s.code + ' · ' + s.carrierShort;
+  renderTL('det-tl', s.tl);
+
+  if (s.todayAlert) {
+    el('det-alert').classList.remove('hidden');
+    el('det-alert-txt').textContent = 'Preparati a ricevere il pacco per ' + s.to + ' entro le 18:00.';
+    startCountdown();
+  } else {
+    el('det-alert').classList.add('hidden');
+  }
+}
+
+function renderProgSteps(containerId, steps) {
+  const labels = ['Creata','Ritirata','Transito','Consegnata'];
+  const cont = el(containerId);
+  if (!cont) return;
+  cont.innerHTML = labels.map((l, i) => {
+    const done = steps && steps[i];
+    return `
+      <div class="flex flex-col items-center">
+        <div class="prog-dot ${done ? 'done' : ''}">${done ? '✓' : i + 1}</div>
+        <span class="prog-lbl ${done ? 'font-bold text-gray-900' : 'text-gray-400'}">${l}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderTL(containerId, tl) {
+  const cont = el(containerId);
+  if (!cont) return;
+  cont.innerHTML = (tl || []).map((step, idx) => `
+    <div class="tl-item ${step.s}">
+      <div class="tl-dot"></div>
+      <div>
+        <p class="font-bold text-xs text-gray-900 leading-snug">${step.l}</p>
+        <p class="text-[11px] text-gray-500 mt-0.5">${step.m}</p>
+      </div>
+    </div>`).join('');
+}
+
+function startCountdown() {
+  const now = new Date();
+  const target = new Date();
+  target.setHours(18, 0, 0, 0);
+  let diff = Math.max(0, Math.floor((target - now) / 1000));
+  const cd = el('det-cd');
+  if (!cd) return;
+  function update() {
+    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+    const s = String(diff % 60).padStart(2, '0');
+    cd.textContent = `${h}:${m}:${s}`;
+    if (diff > 0) { diff--; setTimeout(update, 1000); }
+  }
+  update();
+}
+
+// ── RICERCHE RECENTI ─────────────────────────────────────────────────
+function getRecentSearches() {
+  try {
+    return JSON.parse(localStorage.getItem('vex_recent_tracking') || '[]');
+  } catch(e) { return []; }
+}
+
+function saveRecentSearch(code) {
+  if (!code) return;
+  try {
+    let list = getRecentSearches().filter(c => c !== code);
+    list.unshift(code);
+    if (list.length > 5) list = list.slice(0, 5);
+    localStorage.setItem('vex_recent_tracking', JSON.stringify(list));
+    renderRecentSearches();
+  } catch(e) {}
+}
+
+function renderRecentSearches() {
+  const wrap = document.getElementById('recent-search-wrap');
+  const chips = document.getElementById('recent-search-chips');
+  if (!wrap || !chips) return;
+  const list = getRecentSearches();
+  if (list.length === 0) {
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  chips.innerHTML = list.map(c => `
+    <button class="btn-ghost text-xs py-1 px-2.5 rounded-lg border border-gray-200" onclick="quickSearch('${c}')">${c}</button>
+  `).join('');
+}
+
+function quickSearch(code) {
+  document.getElementById('search-inp').value = code;
+  detectCarrier(code);
+  doSearch();
+}
+
+// ── SEARCH LIVE DA API FASTAPI ───────────────────────────────────────
+async function doSearch() {
+  const code = document.getElementById('search-inp').value.trim().toUpperCase();
+  if (!code) { showToast('Inserisci un codice tracking'); return; }
+
+  el('sr-result').classList.add('hidden');
+  el('sr-empty').style.display = 'none';
+
+  let s = SHIPS.find(x => x.code.toUpperCase() === code);
+
+  if (!s && window.VEX_API && typeof window.VEX_API.track === 'function') {
+    try {
+      showToast('Ricerca live sul server...', '⟳');
+      const apiRes = await VEX_API.track(code);
+      if (apiRes) {
+        saveRecentSearch(code);
+        const events = Array.isArray(apiRes.events) ? apiRes.events : [];
+        const mappedTl = events.length > 0 ? events.map((ev, idx) => ({
+          s: idx === 0 ? 'active' : 'done',
+          l: ev.status || ev.description || 'Evento Spedizione',
+          m: `${ev.date || ''} — ${ev.location || ''}`
+        })) : [
+          { s: 'done', l: 'Spedizione Creata', m: apiRes.created_at || 'Portale VEX' },
+          { s: 'active', l: 'In Lavorazione', m: apiRes.status || 'In transito' }
+        ];
+
+        s = {
+          id: apiRes.shipment_id || apiRes.code || code,
+          code: apiRes.code || code,
+          recipient: apiRes.destination?.name || apiRes.recipient?.city || 'Destinatario',
+          initials: (apiRes.carrier || 'VX').slice(0, 2).toUpperCase(),
+          initialsBg: '#EFF6FF',
+          initialsColor: '#0078FF',
+          status: (apiRes.status || '').toLowerCase().includes('conseg') ? 'consegna' : 'transit',
+          dest: apiRes.destination?.city || 'Italia',
+          carrierShort: apiRes.carrier || 'VEX',
+          badge: apiRes.status || 'In Transito',
+          badgeClass: (apiRes.status || '').toLowerCase().includes('conseg') ? 'b-blue' : 'b-amber',
+          title: apiRes.status || 'In Transito',
+          eta: apiRes.eta || 'Consegna in lavorazione',
+          ts: apiRes.created_at || 'Oggi',
+          carrier: apiRes.carrier || 'Corriere Espresso',
+          service: 'Spedizione Standard',
+          from: apiRes.origin?.city || 'Hub di partenza',
+          to: apiRes.destination?.city || 'Destinazione',
+          vehicle: 'Furgone Corriere',
+          vav: (apiRes.carrier || 'C').slice(0, 1).toUpperCase(),
+          dist: '—',
+          prog: 65,
+          todayAlert: false,
+          progSteps: [true, true, true, false],
+          tl: mappedTl
+        };
+      }
+    } catch (apiErr) {
+      console.warn('[Tracking] Codice non trovato su server remoto:', apiErr);
+    }
+  }
+
+  if (s) {
+    el('sr-empty').style.display = 'none';
+    fillSR(s);
+    el('sr-result').classList.remove('hidden');
+    showToast('Spedizione trovata ✓');
+  } else {
+    el('sr-empty').innerHTML = `
+      <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4 text-gray-400"><svg class="icon" style="width:32px;height:32px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+      <h3 class="text-2xl font-bold tracking-tight mb-2">Nessun risultato</h3>
+      <p class="text-gray-400 text-sm max-w-sm mx-auto">Nessuna spedizione trovata per <strong>"${code}"</strong>.<br>Verifica il codice o contatta il supporto VexONE.</p>`;
+    el('sr-empty').style.display = 'block';
+    showToast('Nessuna spedizione trovata');
+  }
+}
+
+function fillSR(s) {
+ el('sr-badge').textContent = s.badge; el('sr-badge').className = 'badge '+s.badgeClass;
+ el('sr-title').textContent = s.title;
+ el('sr-eta').innerHTML = s.eta;
+ el('sr-carrier').innerHTML = window.VEX_CARRIER_LOGOS ? window.VEX_CARRIER_LOGOS.getLogoHtml(s.carrier, 24, true) : s.carrier;
+ el('sr-service').textContent = s.service;
+ el('sr-from').textContent = s.from; el('sr-to').textContent = s.to;
+ el('sr-vehicle').textContent = s.vehicle; el('sr-veh-av').textContent = s.vav;
+ el('sr-dist').textContent = s.dist;
+ el('sr-map-route').textContent = s.from + ' → ' + s.to;
+ el('sr-prog').style.width = s.prog + '%';
+ renderProgSteps('sr-prog-steps', s.progSteps);
+ el('sr-tl-ref').textContent = s.code + ' · ' + s.carrierShort;
+ renderTL('sr-tl', s.tl);
+ if (s.todayAlert) {
+ el('sr-alert').classList.remove('hidden');
+ el('sr-alert-txt').textContent = 'Consegna prevista entro le 18:00 per ' + s.to + '.';
+ } else { el('sr-alert').classList.add('hidden'); }
+}
+
+// ── CARRIER DETECT ────────────────────────────────────────────────────
+const CARRIER_MAP = {
+ 'VEX': 'Codice VEX ONE rilevato', 'DHL': 'DHL Express rilevato',
+ 'GLS': 'GLS Italy rilevato', 'BRT': 'BRT Corriere rilevato',
+ 'FDX': 'FedEx rilevato', '1Z': 'UPS rilevato'
+};
+function detectCarrier(val, target='search') {
+ const v = val.toUpperCase().trim();
+ let found = null;
+ for (const [k, label] of Object.entries(CARRIER_MAP)) {
+ if (v.startsWith(k)) { found = label; break; }
+ }
+ const hintEl = el(target==='add' ? 'add-carrier-hint' : 'carrier-hint');
+ const txtEl = el(target==='add' ? 'add-carrier-txt' : 'carrier-hint-txt');
+ if (found && v.length > 3) {
+ txtEl.textContent = ' ' + found;
+ hintEl.classList.remove('hidden');
+ } else { hintEl.classList.add('hidden'); }
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+function openAddModal() { el('modal-add').classList.add('open'); }
+function openProblemModal() { el('modal-problem').classList.add('open'); }
+function closeModal(id) { el(id).classList.remove('open'); }
+function addShipment() { closeModal('modal-add'); showToast('Spedizione aggiunta e monitorata '); }
+function submitProblem() { closeModal('modal-problem'); showToast('Segnalazione inviata al corriere '); }
+function selectProblem(btn) {
+ document.querySelectorAll('#modal-problem .nota').forEach(b => b.style.borderColor = '#E5E7EB');
+ btn.style.borderColor = '#0078FF';
+}
+
+// ── AZIONI ────────────────────────────────────────────────────────────
+function copyCode() { showToast('Codice copiato negli appunti '); }
+function shareLink() { showToast('Link di tracking copiato '); }
+function toggleNotif() { showToast('Notifiche abilitate per questa spedizione '); }
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function showToast(msg) {
+ const t = el('toast'); el('toast-msg').textContent = msg;
+ t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── UTIL ──────────────────────────────────────────────────────────────
+function el(id) { return document.getElementById(id); }
+
+// ── INIT & CARICAMENTO LIVE DA FASTAPI ────────────────────────────────
+async function loadLiveShipments() {
+  updateKpis();
+  buildList();
+  renderRecentSearches();
+
+  if (window.VEX_API && typeof window.VEX_API.getShipments === 'function' && window.VEX_API.getToken()) {
+    try {
+      const liveList = await window.VEX_API.getShipments();
+      if (Array.isArray(liveList) && liveList.length > 0) {
+        SHIPS = liveList.map((item, idx) => {
+          const pkg = item.package_details || {};
+          const rec = item.recipient || item.receiver || {};
+          const snd = item.sender || {};
+          const rawStatus = (item.status || 'in_transito').toLowerCase();
+          const code = item.tracking_code || item.raw_response?.ordine || item.code || item.id || item._id || ('VEX-' + (idx + 100));
+          const carrier = pkg.carrier || item.company?.vettore || item.carrier_name || item.carrier || 'Corriere';
+          const recCity = rec.city || rec.citta || item.destination?.city || 'Destinazione';
+          const sndCity = snd.city || snd.citta || item.origin?.city || 'Partenza';
+          const recName = rec.name || rec.nome || (recCity !== 'Destinazione' ? `Consegna a ${recCity}` : 'Destinatario');
+
+          let status = 'transit';
+          let badge = 'In Transito';
+          let badgeClass = 'b-amber';
+          let prog = 50;
+          let progSteps = [true, true, true, false];
+
+          if (rawStatus.includes('conseg') || rawStatus.includes('deliver')) {
+            status = 'consegna';
+            badge = 'In Consegna';
+            badgeClass = 'b-blue';
+            prog = 75;
+            progSteps = [true, true, true, false];
+          } else if (rawStatus.includes('hub') || rawStatus.includes('smist') || rawStatus.includes('pick')) {
+            status = 'hub';
+            badge = 'In Hub';
+            badgeClass = 'b-gray';
+            prog = 35;
+            progSteps = [true, true, false, false];
+          } else if (rawStatus.includes('creat') || rawStatus.includes('pend') || rawStatus.includes('prenot')) {
+            status = 'creato';
+            badge = 'Creata';
+            badgeClass = 'b-gray';
+            prog = 15;
+            progSteps = [true, false, false, false];
+          }
+
+          const events = Array.isArray(item.tracking_history) ? item.tracking_history : [];
+          const tl = events.length > 0 ? events.map((ev, i) => ({
+            s: i === 0 ? 'active' : 'done',
+            l: ev.description || ev.status || 'Evento Spedizione',
+            m: ev.timestamp ? new Date(ev.timestamp).toLocaleString('it-IT') : (ev.date || '—')
+          })) : [
+            { s: 'done', l: 'Spedizione Creata', m: item.created_at ? new Date(item.created_at).toLocaleString('it-IT') : 'Portale VEX' },
+            { s: 'active', l: 'In lavorazione', m: 'Hub logistico' }
+          ];
+
+          return {
+            id: item.id || item._id || code,
+            code: code,
+            recipient: recName,
+            initials: carrier.slice(0, 2).toUpperCase(),
+            initialsBg: '#EFF6FF',
+            initialsColor: '#0078FF',
+            status: status,
+            dest: recCity,
+            carrierShort: carrier.split(' ')[0].toUpperCase(),
+            badge: badge,
+            badgeClass: badgeClass,
+            title: `Spedizione ${carrier}`,
+            eta: item.eta || 'Consegna in lavorazione',
+            ts: item.created_at ? new Date(item.created_at).toLocaleDateString('it-IT') : 'Oggi',
+            carrier: carrier,
+            service: pkg.service || 'Standard Express',
+            from: sndCity,
+            to: recCity,
+            vehicle: `${carrier} Express`,
+            vav: carrier.slice(0, 1).toUpperCase(),
+            dist: '—',
+            prog: prog,
+            todayAlert: status === 'consegna',
+            progSteps: progSteps,
+            tl: tl
+          };
+        });
+        updateKpis();
+        buildList();
+      }
+    } catch(err) {
+      console.warn('[Tracking] Impossibile recuperare storico live:', err);
+    }
+  }
+}
+
+// Controllo parametro URL (es. ?code=...)
+const urlParams = new URLSearchParams(window.location.search);
+const queryCode = urlParams.get('code') || urlParams.get('cerca') || urlParams.get('q');
+if (queryCode) {
+  switchTab('cerca');
+  const searchInp = document.getElementById('search-inp');
+  if (searchInp) {
+    searchInp.value = queryCode;
+    detectCarrier(queryCode);
+    setTimeout(doSearch, 300);
+  }
+}
+
+loadLiveShipments();
+</script>
+<script src="assets/js/nav-user.js"></script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+  <title>VEX ONE — Accedi</title>
+  <meta name="description" content="Accedi al tuo account VEX ONE: gestisci le tue spedizioni, controlla il wallet e genera etichette con i migliori corrieri.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body {
+      background-color: #F8F9FA;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: 100vh;
+    }
+    @media (min-width: 1024px) {
+      .auth-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+    @media (min-width: 1280px) {
+      .auth-grid {
+        grid-template-columns: 520px 1fr;
+      }
+    }
+    .auth-banner {
+      background: linear-gradient(145deg, #0A0A0B 0%, #16161A 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-banner::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 120, 255, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .auth-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(184, 255, 0, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .inp-field {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A0A0B;
+      background: #FFFFFF;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .inp-field:focus {
+      border-color: #0078FF;
+      box-shadow: 0 0 0 4px rgba(0, 120, 255, 0.12);
+    }
+    .inp-field.err {
+      border-color: #EF4444;
+      background: #FEF2F2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-grid">
+  <!-- ════════ BRAND COLUMN (Desktop) ════════ -->
+  <div class="auth-banner hidden lg:flex flex-col justify-between p-12 text-white z-10">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="assets/logos/logo.svg" alt="VEX ONE" class="h-8 w-auto">
+    </a>
+
+    <div class="my-auto py-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-bold uppercase tracking-wider text-lime-400 mb-6">
+        <span class="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span> Accesso Rapido
+      </div>
+      <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1] mb-6">
+        Spedisci <br><span class="text-lime-400">veloce.</span>
+      </h1>
+      <p class="text-gray-400 text-sm xl:text-base leading-relaxed max-w-sm mb-10 font-medium">
+        La piattaforma intelligente per confrontare e spedire con i migliori corrieri al miglior prezzo.
+      </p>
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center text-xs font-bold">✓</div>
+          Confronto tariffe istantaneo DHL, BRT, UPS, FedEx
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center text-xs font-bold">✓</div>
+          Generazione lettere di vettura in 1 click
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-300 font-medium">
+          <div class="w-5 h-5 rounded-full bg-lime-400/20 text-lime-400 flex items-center justify-center text-xs font-bold">✓</div>
+          Tracking live integrato e wallet ricaricabile
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-6 border-t border-white/10 text-xs text-gray-500 font-medium">
+      © 2026 VEX ONE S.r.l. · P.IVA IT05849300871
+    </div>
+  </div>
+
+  <!-- ════════ FORM COLUMN ════════ -->
+  <div class="flex flex-col justify-between p-6 sm:p-12 lg:p-16 xl:p-20 bg-white">
+    <!-- Mobile Header -->
+    <div class="flex justify-between items-center lg:justify-end mb-8">
+      <a href="index.html" class="lg:hidden">
+        <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="h-7 w-auto">
+      </a>
+      <a href="index.html" class="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-vexBlue flex items-center gap-1.5 transition">
+        <span>←</span> Torna alla home
+      </a>
+    </div>
+
+    <!-- Login Box -->
+    <div class="max-w-md w-full mx-auto my-auto py-6">
+      <div class="mb-8">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 mb-2">Bentornato.</h2>
+        <p class="text-sm text-gray-500 font-medium">Accedi al tuo account VEX ONE per iniziare.</p>
+      </div>
+
+      <form id="form-login" onsubmit="handleLogin(event)" novalidate class="space-y-5">
+        <!-- Email -->
+        <div>
+          <label for="login-email" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Email</label>
+          <div class="relative">
+            <input type="email" id="login-email" class="inp-field" placeholder="es. mario@esempio.it" autocomplete="email" required>
+          </div>
+          <p id="err-email" class="text-xs font-semibold text-red-500 mt-1.5 hidden">Inserisci un indirizzo email valido.</p>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label for="login-pass" class="block text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
+            <a href="recupero-password.html" class="text-xs font-bold text-vexBlue hover:underline">Ho smarrito la password</a>
+          </div>
+          <div class="relative">
+            <input type="password" id="login-pass" class="inp-field pr-11" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" onclick="togglePassVisibility('login-pass', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1" aria-label="Mostra password">
+              <svg class="w-5 h-5 eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="w-5 h-5 eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+            </button>
+          </div>
+          <p id="err-pass" class="text-xs font-semibold text-red-500 mt-1.5 hidden">La password deve avere almeno 6 caratteri.</p>
+        </div>
+
+        <!-- Ricordami -->
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input type="checkbox" id="remember-me" checked class="w-4 h-4 rounded border-gray-300 text-vexBlue focus:ring-vexBlue">
+            <span class="text-xs font-semibold text-gray-600">Resta collegato</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="btn-submit" class="btn-dark shine w-full py-3.5 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2">
+          <span>Accedi</span>
+        </button>
+      </form>
+
+      <!-- Divisore -->
+      <div class="relative my-8 text-center">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+        <span class="relative px-4 bg-white text-xs font-bold text-gray-400 uppercase tracking-widest">oppure</span>
+      </div>
+
+      <!-- Link Registrazione -->
+      <div class="text-center">
+        <p class="text-xs font-medium text-gray-500">
+          Non hai ancora un account?
+          <a href="register.html" class="font-bold text-vexBlue hover:underline ml-1">Crea un account gratis →</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Mobile -->
+    <div class="text-center text-xs text-gray-400 font-medium py-4">
+      Protetto da crittografia SSL a 256-bit
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 z-50 flex items-center gap-2">
+  <span id="toast-ic">✓</span>
+  <span id="toast-msg">Accesso riuscito</span>
+</div>
+
+<script src="assets/js/api.js"></script>
+<script>
+  function togglePassVisibility(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    const eyeOpen = btn.querySelector('.eye-open');
+    const eyeClosed = btn.querySelector('.eye-closed');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      eyeOpen.classList.add('hidden');
+      eyeClosed.classList.remove('hidden');
+    } else {
+      inp.type = 'password';
+      eyeOpen.classList.remove('hidden');
+      eyeClosed.classList.add('hidden');
+    }
+  }
+
+  function showToast(msg, icon = '✓') {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-ic').textContent = icon;
+    t.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+      t.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    const errEmail = document.getElementById('err-email');
+    const errPass = document.getElementById('err-pass');
+    const btn = document.getElementById('btn-submit');
+
+    let valid = true;
+
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      errEmail.classList.remove('hidden');
+      document.getElementById('login-email').classList.add('err');
+      valid = false;
+    } else {
+      errEmail.classList.add('hidden');
+      document.getElementById('login-email').classList.remove('err');
+    }
+
+    if (!pass || pass.length < 5) {
+      errPass.classList.remove('hidden');
+      document.getElementById('login-pass').classList.add('err');
+      valid = false;
+    } else {
+      errPass.classList.add('hidden');
+      document.getElementById('login-pass').classList.remove('err');
+    }
+
+    if (!valid) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span> Accesso in corso...';
+
+    try {
+      // Chiamata reale all'API FastAPI
+      await VEX_API.login(email, pass);
+
+      showToast('Bentornato! Accesso eseguito...', '✓');
+
+      setTimeout(() => {
+        // Redirigi alla dashboard o alla pagina richiesta
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || (email.toLowerCase().includes('admin') ? 'admin.html' : 'dashboard.html');
+        window.location.href = redirect;
+      }, 500);
+    } catch (err) {
+      console.error('Errore login:', err);
+      btn.disabled = false;
+      btn.innerHTML = 'Accedi';
+      
+      const errorDetail = err.message || 'Credenziali non valide. Riprova.';
+      showToast(errorDetail, '✕');
+      
+      document.getElementById('login-pass').classList.add('err');
+      errPass.textContent = errorDetail;
+      errPass.classList.remove('hidden');
+    }
+  }
+</script>
+</body>
+</html>

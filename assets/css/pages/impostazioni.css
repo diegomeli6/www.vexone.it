@@ -1,0 +1,70 @@
+/* ==========================================================================
+   VEXONE - IMPOSTAZIONI PROFILO (impostazioni.html)
+   ========================================================================== */
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight:700;
+  color: #6B7280;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.side-link:hover {
+  background: #F4F5F7;
+  color: var(--vexDark, #0A0A0B);
+}
+.side-link.active {
+  background: var(--vexDark, #0A0A0B);
+  color: #fff;
+}
+.toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius:var(--radius-lg);
+  background: #D1D5DB;
+  cursor: pointer;
+  transition: background .25s;
+  flex-shrink: 0;
+  border: none;
+}
+.toggle.on {
+  background: #16a34a;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .25s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+}
+.toggle.on::after {
+  transform: translateX(20px);
+}
+.sec {
+  display: none;
+}
+.sec.show {
+  display: block;
+  animation: fadeIn .35s;
+}
+.pay-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px;
+  border: 1.5px solid #EDEFF2;
+  border-radius: 16px;
+  background: #fff;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Centro assistenza VEX ONE: risposte alle domande frequenti su spedizioni, pagamenti e tracking. Contatta il nostro team per ricevere supporto.">
+ <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+ <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+ <title>VEX ONE — Centro Assistenza</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="assets/js/tailwind-config.js"></script>
+ <link rel="stylesheet" href="assets/css/main.css">
+ <link rel="stylesheet" href="assets/css/pages/assistenza.css">
+  <script>
+    (function(){
+      try {
+        if (localStorage.getItem('vexone_logged_in') === 'true' || localStorage.getItem('vexone:auth:v1') === 'true') {
+          document.documentElement.classList.add('is-logged-in');
+        }
+      } catch(e){}
+    })();
+  </script>
+</head>
+<body class="bg-white">
+
+<nav id="main-nav" aria-label="Navigazione principale">
+  <div class="nav-container">
+    <!-- Logo: torna a Home -->
+    <a href="index.html" class="flex items-center gap-2 flex-shrink-0" aria-label="VEX ONE — Home">
+      <img src="assets/logos/logo-dark.svg" alt="VEX ONE" class="nav-logo">
+    </a>
+
+    <!-- Link centrali (Ospite) -->
+    <div class="nav-links-guest hidden lg:flex items-center gap-8" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="index.html#tariffe" class="nav-link" data-nav="tariffe">Tariffe</a>
+      <a href="index.html#servizi" class="nav-link" data-nav="servizi">Servizi</a>
+      <a href="index.html#chi-siamo" class="nav-link" data-nav="chi-siamo">Chi siamo</a>
+    </div>
+
+    <!-- Link centrali (Autenticato) -->
+    <div class="nav-links-auth hidden lg:flex items-center gap-7" role="menubar">
+      <a href="index.html" class="nav-link" data-nav="home">Home</a>
+      <a href="dashboard.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="comparatore.html" class="nav-link" data-nav="comparatore">Nuova Spedizione</a>
+      <a href="tracking.html" class="nav-link" data-nav="tracking">Tracking</a>
+      <a href="portafoglio.html" class="nav-link" data-nav="portafoglio">Portafoglio</a>
+    </div>
+
+    <!-- Azioni a destra -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <!-- Bottoni Ospite -->
+      <div class="nav-actions-guest hidden sm:flex items-center gap-3">
+        <a href="login.html" class="nav-btn-secondary">Accedi</a>
+        <a href="register.html" class="nav-btn-primary shine">Crea account</a>
+      </div>
+
+      <!-- Azioni Utente Loggato -->
+      <div class="nav-actions-auth flex items-center gap-3">
+        <!-- Notifiche -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button type="button" class="notif-btn" id="notif-btn" onclick="toggleNavNotif(event)" aria-label="Notifiche" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifiche recenti">
+            <div class="px-3 pt-2.5 pb-2 flex justify-between items-center mb-1" style="border-bottom:1px solid #F3F4F6">
+              <span class="text-xs font-bold text-gray-700">Notifiche</span>
+              <button type="button" onclick="markAllNavNotifsRead()" class="text-xs font-semibold text-vexBlue hover:underline bg-transparent border-none cursor-pointer">Segna lette</button>
+            </div>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-984 in transito — arrivo oggi 14:30</p>
+                <p class="text-[11px] text-gray-500 m-0">DHL Express · Milano</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Oggi, 09:15</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">Credito sotto soglia</p>
+                <p class="text-[11px] text-gray-500 m-0">Meno di €150 disponibili.</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">Ieri, 18:40</p>
+              </div>
+            </a>
+            <a href="notifiche.html" class="notif-item">
+              <div class="notif-dot read"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-gray-900 mb-0.5 leading-snug">VEX-221 consegnata</p>
+                <p class="text-[11px] text-gray-500 m-0">UPS Standard · Roma</p>
+                <p class="text-[10px] text-gray-400 m-0 mt-0.5">26 Maggio</p>
+              </div>
+            </a>
+            <div class="p-2 border-t text-center" style="border-color:#F3F4F6">
+              <a href="notifiche.html" class="text-xs font-semibold text-vexBlue hover:underline notif-all-link">Tutte le notifiche →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saldo Pill -->
+        <a href="portafoglio.html" class="nav-wallet-pill" title="Credito residuo nel portafoglio - Clicca per ricaricare">
+          <svg class="icon text-green-600" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="nav-saldo-val">€ 0,00</span>
+          <span class="plus-badge" aria-label="Ricarica">+</span>
+        </a>
+
+        <!-- Chip Utente + Dropdown -->
+        <div class="relative" id="nav-user-wrap">
+          <button type="button" class="nav-user-chip" id="nav-user-btn" onclick="toggleNavUserDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Menu profilo utente">
+            <div class="nav-user-avatar">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="nav-user-info hidden sm:block">
+              <p class="nav-user-plan" id="nav-user-plan">VEX Pro</p>
+              <p class="nav-user-name" id="nav-user-name">Damiano Arcidiacono</p>
+            </div>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="nav-dropdown-menu" id="nav-user-dropdown" role="menu">
+            <div class="nav-dd-header">
+              <p class="text-xs font-bold text-gray-900 m-0 nav-dd-name" id="nav-dd-name">Damiano Arcidiacono</p>
+              <p class="text-[11px] text-gray-500 m-0 mt-0.5 nav-dd-email" id="nav-dd-email">damiano@vexone.it</p>
+            </div>
+            <a href="dashboard.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              Dashboard
+            </a>
+            <a href="comparatore.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Nuova Spedizione
+            </a>
+            <a href="tracking.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5.5a1 1 0 0 0-.29-.71l-3.5-3.5A1 1 0 0 0 17.5 7H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Tracking Spedizioni
+            </a>
+            <a href="portafoglio.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              Portafoglio &amp; Ricarica
+            </a>
+            <a href="notifiche.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              Centro Notifiche
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="impostazioni.html" class="nav-dd-link" role="menuitem">
+              <svg class="icon text-vexBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              Impostazioni Account
+            </a>
+            <div class="nav-dd-sep"></div>
+            <a href="#" onclick="vexLogout(event)" class="nav-dd-link danger" role="menuitem">
+              <svg class="icon text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Esci dall'account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hamburger mobile -->
+      <button type="button" class="nav-ham-btn lg:hidden" onclick="toggleNavMobileMenu()" aria-label="Menu di navigazione">
+        <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
+          <rect width="18" height="2" rx="1" fill="#111827"/>
+          <rect y="5.5" width="13" height="2" rx="1" fill="#111827"/>
+          <rect y="11" width="8" height="2" rx="1" fill="#111827"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO con ricerca -->
+<header style="background:#0A0A0B;color:#fff;padding:56px 0 50px;position:relative;overflow:hidden">
+ <div style="position:absolute;top:-50px;right:-30px;width:280px;height:280px;background:radial-gradient(circle,rgba(184,255,0,.12),transparent 70%)"></div>
+ <div style="max-width:760px;margin:0 auto;text-align:center" class="px-5 sm:px-6">
+ <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#B8FF00;margin:0 0 12px">Centro Assistenza</p>
+ <h1 style="font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-0.015em;line-height:1;margin:0 0 22px">Come possiamo <span style="color:#0078FF">aiutarti?</span></h1>
+ <div style="position:relative;max-width:520px;margin:0 auto">
+ <input id="faq-search" class="inp" style="padding:15px 18px 15px 46px;border-radius:var(--radius-lg);border:none;font-weight:600" placeholder="Cerca nelle domande frequenti..." oninput="searchFaq()">
+ <span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.5"></span>
+ </div>
+ </div>
+</header>
+
+<main style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6 py-12">
+
+ <!-- canali di contatto rapidi -->
+ <div class="grid sm:grid-cols-3 gap-4 mb-14">
+ <a href="#form" class="chan">
+ <span style="font-size:26px"></span>
+ <span>
+ <span style="display:block;font-size:14px;font-weight:700;">Scrivici</span>
+ <span style="display:block;font-size:11px;color:#9CA3AF;font-weight:700"><span class="ph" style="background:#FEF9E7;border:1px dashed #E0C24A;border-radius:6px;padding:0 6px;color:#92760E">[supporto@vexone.it]</span></span>
+ </span>
+ </a>
+ <a href="tracking.html" class="chan">
+ <span style="font-size:26px"></span>
+ <span>
+ <span style="display:block;font-size:14px;font-weight:700;">Traccia un ordine</span>
+ <span style="display:block;font-size:11px;color:#9CA3AF;font-weight:700">Stato spedizione in tempo reale</span>
+ </span>
+ </a>
+ <a href="#form" class="chan">
+ <span style="font-size:26px"></span>
+ <span>
+ <span style="display:block;font-size:14px;font-weight:700;">Apri un ticket</span>
+ <span style="display:block;font-size:11px;color:#9CA3AF;font-weight:700">Risposta entro <span class="ph" style="background:#FEF9E7;border:1px dashed #E0C24A;border-radius:6px;padding:0 6px;color:#92760E">[24h]</span></span>
+ </span>
+ </a>
+ </div>
+
+ <!-- FAQ -->
+ <div class="mb-7">
+ <h2 style="font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:-0.015em;margin:0 0 6px">Domande frequenti</h2>
+ <p style="font-size:14px;color:#9CA3AF;font-weight:600;margin:0">Filtra per argomento o cerca qui sopra.</p>
+ </div>
+
+ <!-- filtri categoria -->
+ <div class="flex flex-wrap gap-2 mb-7" id="cat-filters">
+ <button class="cat-pill active" data-cat="all" onclick="filterCat('all',this)">Tutte</button>
+ <button class="cat-pill" data-cat="spedizioni" onclick="filterCat('spedizioni',this)">Spedizioni</button>
+ <button class="cat-pill" data-cat="pagamenti" onclick="filterCat('pagamenti',this)">Pagamenti & Wallet</button>
+ <button class="cat-pill" data-cat="tracking" onclick="filterCat('tracking',this)">Tracking</button>
+ <button class="cat-pill" data-cat="account" onclick="filterCat('account',this)">Account</button>
+ </div>
+
+ <div id="faq-list">
+ <!-- spedizioni -->
+ <div class="faq-item" data-cat="spedizioni" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Come prenoto una spedizione?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Inserisci indirizzi, peso e dimensioni nel comparatore, scegli il corriere con la tariffa che preferisci e completa il checkout. Riceverai codice di tracking ed etichetta da stampare.</p></div>
+ </div>
+ <div class="faq-item" data-cat="spedizioni" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Quali corrieri sono disponibili?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Confrontiamo i principali corrieri nazionali e internazionali. La disponibilità può variare in base a destinazione, peso e tipo di servizio richiesto.</p></div>
+ </div>
+ <div class="faq-item" data-cat="spedizioni" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Cosa NON posso spedire?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Denaro contante, merci pericolose o illegali, armi e materiale vietato dalle condizioni del corriere. L'elenco completo dei divieti dipende dal corriere selezionato — trovi i dettagli nei <a href="termini.html" style="color:#0078FF;font-weight:700;text-decoration:none">Termini</a>.</p></div>
+ </div>
+ <!-- pagamenti -->
+ <div class="faq-item" data-cat="pagamenti" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Come funziona il Wallet?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Il wallet ti permette di precaricare credito e usarlo per pagare le spedizioni in un click, senza reinserire la carta ogni volta. Puoi ricaricarlo dalla sezione Portafoglio.</p></div>
+ </div>
+ <div class="faq-item" data-cat="pagamenti" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Posso avere la fattura con P.IVA?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Sì. Inserisci i dati di fatturazione al checkout e la fattura viene emessa automaticamente e inviata via email.</p></div>
+ </div>
+ <div class="faq-item" data-cat="pagamenti" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">I dati della mia carta sono al sicuro?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Sì. I pagamenti con carta sono gestiti da un provider di pagamento certificato. I dati della carta non transitano né vengono salvati sui server VEX ONE.</p></div>
+ </div>
+ <!-- tracking -->
+ <div class="faq-item" data-cat="tracking" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Dove vedo lo stato della mia spedizione?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Nella sezione <a href="tracking.html" style="color:#0078FF;font-weight:700;text-decoration:none">Tracking</a>, inserendo il codice spedizione. Vedrai gli stati aggiornati e, dove disponibile, la posizione del mezzo.</p></div>
+ </div>
+ <div class="faq-item" data-cat="tracking" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Il pacco è in ritardo o smarrito, cosa faccio?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Apri un ticket dal modulo qui sotto indicando il codice spedizione: verifichiamo con il corriere e ti seguiamo nell'iter. Se hai aggiunto l'assicurazione, gestiamo anche la pratica di indennizzo.</p></div>
+ </div>
+ <!-- account -->
+ <div class="faq-item" data-cat="account" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Come modifico i miei dati o la password?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">Dalla pagina <a href="impostazioni.html" style="color:#0078FF;font-weight:700;text-decoration:none">Impostazioni account</a> puoi aggiornare i tuoi dati, la password, i metodi di pagamento e le preferenze di notifica.</p></div>
+ </div>
+ <div class="faq-item" data-cat="account" onclick="toggleFaq(this)">
+ <div class="flex justify-between items-center gap-4"><span style="font-weight:700;font-size:15px">Serve un abbonamento per usare VEX ONE?</span><span class="faq-arr text-xl">↓</span></div>
+ <div class="faq-body"><p style="color:#6B7280;font-size:14px;line-height:1.6;font-weight:500;padding-top:14px;border-top:1px solid #F1F2F4;margin:14px 0 0">No. Puoi confrontare le tariffe e spedire senza abbonamento obbligatorio. Paghi solo le spedizioni che effettui.</p></div>
+ </div>
+ </div>
+ <p id="no-results" style="display:none;text-align:center;color:#9CA3AF;font-weight:600;padding:30px 0">Nessuna domanda trovata. Prova con altre parole o scrivici dal modulo qui sotto.</p>
+
+ <!-- FORM CONTATTO -->
+ <div id="form" class="card p-7 md:p-9 mt-16" style="scroll-margin-top:90px">
+ <div class="mb-6">
+ <h2 style="font-size:clamp(20px,3vw,26px);font-weight:700;letter-spacing:-0.015em;margin:0 0 6px">Non hai trovato la risposta?</h2>
+ <p style="font-size:14px;color:#9CA3AF;font-weight:600;margin:0">Scrivici e ti rispondiamo al più presto.</p>
+ </div>
+ <div class="grid sm:grid-cols-2 gap-4 mb-4">
+ <div><label class="lbl" style="display:block;margin-bottom:6px">Nome</label><input class="inp" id="c-nome" placeholder="Il tuo nome"></div>
+ <div><label class="lbl" style="display:block;margin-bottom:6px">Email</label><input class="inp" id="c-email" type="email" placeholder="nome@email.it"></div>
+ </div>
+ <div class="grid sm:grid-cols-2 gap-4 mb-4">
+ <div><label class="lbl" style="display:block;margin-bottom:6px">Argomento</label>
+ <select class="inp" id="c-arg" style="cursor:pointer">
+ <option>Domanda generale</option>
+ <option>Problema con una spedizione</option>
+ <option>Pagamenti e fatturazione</option>
+ <option>Account e accesso</option>
+ <option>Altro</option>
+ </select>
+ </div>
+ <div><label class="lbl" style="display:block;margin-bottom:6px">Codice spedizione (facoltativo)</label><input class="inp" id="c-code" placeholder="VEX-000-XXX"></div>
+ </div>
+ <div class="mb-5"><label class="lbl" style="display:block;margin-bottom:6px">Messaggio</label><textarea class="inp" id="c-msg" placeholder="Descrivi la tua richiesta..."></textarea></div>
+ <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+ <p style="font-size:11px;color:#9CA3AF;font-weight:600;margin:0;max-width:340px">Inviando accetti il trattamento dei dati secondo la <a href="privacy.html" style="color:#0078FF;font-weight:700;text-decoration:none">Privacy Policy</a>.</p>
+ <button class="btn-lime" onclick="sendForm()">Invia messaggio →</button>
+ </div>
+ </div>
+
+</main>
+
+<footer style="background:#0A0A0B;border-top:1px solid rgba(255,255,255,0.08);color:#fff" class="pt-14 pb-8">
+ <div style="max-width:1100px;margin:0 auto" class="px-5 sm:px-6">
+ <div class="flex flex-col sm:flex-row justify-between items-start gap-6 mb-8">
+ <div>
+ <img src="assets/logos/logo.svg" alt="VEX ONE" style="height:32px;width:auto;display:block">
+ <p style="font-size:12px;color:#9CA3AF;font-weight:600;margin:6px 0 0;max-width:280px">Spedisci smart, paga il giusto. Confronta i migliori corrieri in pochi secondi.</p>
+ </div>
+ <div class="flex gap-12">
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Supporto</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="assistenza.html" class="footer-link" style="color:#0078FF">Centro Assistenza</a></li>
+ <li><a href="#form" class="footer-link">Contattaci</a></li>
+ <li><a href="tracking.html" class="footer-link">Traccia Spedizione</a></li>
+ </ul>
+ </div>
+ <div>
+ <h5 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;margin:0 0 14px">Legale</h5>
+ <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+ <li><a href="privacy.html" class="footer-link">Privacy Policy</a></li>
+ <li><a href="termini.html" class="footer-link">Termini & Condizioni</a></li>
+ <li><a href="cookie.html" class="footer-link">Cookie Policy</a></li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;font-size:11px;color:#6B7280;font-weight:500">
+ <p style="margin:0">© 2026 VEX ONE — Tutti i diritti riservati</p>
+ </div>
+ </div>
+</footer>
+
+<div class="toast" id="toast"><span id="toast-msg">Fatto</span></div>
+
+<script>
+function toggleFaq(el){ el.classList.toggle('open'); }
+
+function filterCat(cat, btn){
+ document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+ btn.classList.add('active');
+ document.getElementById('faq-search').value='';
+ document.querySelectorAll('.faq-item').forEach(it=>{
+ it.style.display = (cat==='all' || it.dataset.cat===cat) ? 'block' : 'none';
+ it.classList.remove('open');
+ });
+ document.getElementById('no-results').style.display='none';
+}
+
+function searchFaq(){
+ const q = document.getElementById('faq-search').value.toLowerCase().trim();
+ document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+ document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+ let visible=0;
+ document.querySelectorAll('.faq-item').forEach(it=>{
+ const txt = it.textContent.toLowerCase();
+ const match = !q || txt.includes(q);
+ it.style.display = match ? 'block' : 'none';
+ if(match) visible++;
+ });
+ document.getElementById('no-results').style.display = visible===0 ? 'block' : 'none';
+}
+
+function sendForm(){
+ const nome = document.getElementById('c-nome').value.trim();
+ const email = document.getElementById('c-email').value.trim();
+ const msg = document.getElementById('c-msg').value.trim();
+ if(!nome || !email || !msg){ toast('Compila nome, email e messaggio'); return; }
+ // TODO backend: POST /api/support {nome,email,argomento,codice,messaggio}
+ toast('Messaggio inviato Ti risponderemo presto');
+ document.getElementById('c-nome').value='';
+ document.getElementById('c-email').value='';
+ document.getElementById('c-msg').value='';
+ document.getElementById('c-code').value='';
+}
+
+let _t;
+function toast(m){
+ document.getElementById('toast-msg').textContent=m;
+ const t=document.getElementById('toast'); t.classList.add('show');
+ clearTimeout(_t); _t=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/nav-user.js"></script>
+</body>
+</html>
